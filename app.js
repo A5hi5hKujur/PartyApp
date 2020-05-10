@@ -24,7 +24,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 mongoose.set("useUnifiedTopology",true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
-mongoose.connect("mongodb://localhost/partyApp",{useNewUrlParser: true});
+// mongoose.connect("mongodb://localhost/partyApp",{useNewUrlParser: true});
+mongoose.connect("mongodb+srv://ravi:ravikumar@cluster0-nwcfy.mongodb.net/test?retryWrites=true&w=majority",{useNewUrlParser: true});
 
 //=================
 //PASSPORT SETUP
