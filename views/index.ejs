@@ -1,3 +1,80 @@
 <%- include("partials/header") %>
-<h1>This will be dashboard</h1>
+  <body class="profile">
+    <header>
+      <a href="/"><div class="logo"><h1>LOGO</h1></div></a>
+      <div class="profile-icon"></div>
+    </header>
+    <div class="profile-banner">
+      <div class="banner-content">
+        <h3>Create a new party</h3>
+        <p>Choose a theme, invite all your friends.</p>
+        <button class="btn-blue" type="button" name="button" onclick="popup(0);">Host Party</button>
+      </div>
+    </div>
+    <div class="filter-party">
+      <h2>Sort</h2>
+      <div class="filter-buttons">
+        <button type="button" name="button" class="active">All</button>
+        <button type="button" name="button">Past</button>
+        <button type="button" name="button">Upcomming</button>
+        <button type="button" name="button">Ongoing</button>
+      </div>
+    </div>
+    <ul class="party-list">
+      <a href="/party/:id">
+        <li>
+          <p class="party-name">Rahul's Birthday</p>
+          <p class="party-date">29 May, 2020</p>
+          <p class="party-contribution">Rs. 4000</p>
+          <p class="party-venue">Raman Hostel, MNNIT</p>
+        </li>
+      </a>
+      <a href="/party/:id">
+        <li>
+          <p class="party-name">5 Year Aniversery</p>
+          <p class="party-date">21 May, 2020</p>
+          <p class="party-contribution">Rs. 10000</p>
+          <p class="party-venue">Raman Hostel, MNNIT</p>
+        </li>
+      </a>
+    </ul>
+  </body>
+  <div class="overlay">
+    <div class="popup">
+      <header>
+        <h2>Host Party</h2>
+        <div class="close-icon" onclick="popup(0)"></div>
+      </header>
+      <form class="" action="/party" method="post">
+        <label for="theme">Select Party Theme</label>
+        <select class="party-theme" name="theme">
+          <option value="1">Anniversery</option>
+          <option value="2">Birthday</option>
+          <option value="3">Graduation</option>
+        </select>
+        <label for="name">Party Name</label>
+        <input type="text" name="name" placeholder="Party Name" value="" required>
+        <label for="name">Venue</label>
+        <input type="text" name="venue" placeholder="Party Venue" value="" required>
+        <label for="name">Time</label>
+        <input type="date" name="date" value="" required>
+        <label for="name">Description</label>
+        <textarea name="description"></textarea>
+        <input class="btn-blue" type="submit" value="Host">
+      </form>
+    </div>
+  </div>
+  <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
+  <script type="text/javascript">
+    // Populate these either by backend or on page load.
+    let past = [];      // store object of past parties.
+    let upcomming = []; // store objects of upcomming parties.
+    let ongoing = [];   // store objects of onging parties.
+
+    // UI interaction function to toggle "Host party" popup.
+    function popup(i)
+    {
+      $(".overlay").eq(i).toggleClass("active");
+    }
+  </script>
 <%- include("partials/footer") %>

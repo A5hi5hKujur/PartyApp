@@ -58,7 +58,7 @@ app.get("/",function(req,res){
 //=====================
 
 //Party Dashboard Route
-app.get("/party",isLoggedIn,function(req,res){
+app.get("/party",function(req,res){
     res.render("index");
 });
 
