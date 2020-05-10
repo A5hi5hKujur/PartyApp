@@ -73,6 +73,7 @@ button{
   display: block;
   border: 0px;
   border-radius: 15px;
+  outline-style: none;
 }
 #signin-form input[type=text],#signin-form input[type=password], #signup-form input[type=text],#signup-form input[type=password]
 {
