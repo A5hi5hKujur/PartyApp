@@ -10,9 +10,9 @@
         <form id="signin-form" action="/login" method="post">
           <h1>Sign In</h1>
           <!-- Check if the entered username matches with any username -->
-          <input type="text" name="username" value="" placeholder="Username" onfocusout="checkUserName();" required/>
+          <input type="text" name="username" value="" placeholder="Username" required/>
           <!-- Throw this error if you are inputting a login id that does not exists -->
-          <p id="username-warning">Entered username is incorrect</p>
+          <p id="username-warning">Username not found</p>
           <input type="password" name="password" value="" placeholder="Password" required/>
           <input type="submit" class="btn-blue" value="Sign In">
           <!-- When the control is redirected to this page with an error message on the URL parameter,
@@ -29,20 +29,20 @@
   </body>
   <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
   <script type="text/javascript">
+
     let usernames = ["ravi.mnnit", "ashishxenon", "namank63"];
-    function checkUserName()
-    {
+    $('input[type="text"]').on("input", function() {
       // Username from sign-in form with no space at start and end
       var enteredUserName = $('input[type="text"]').val().trim();
       // Check if username already exists or not
       for(var i=0; i<usernames.length; i++) {
-        if(enteredUserName === usernames[i]) {
-          $('#username-warning').css("display", "block");
+        if(enteredUserName === usernames[i] || enteredUserName === "") {
+          $('#username-warning').css("display", "none");
           break;
         }
-        $('#username-warning').css("display", "none");
+        $('#username-warning').css("display", "block");
       }
-    }
+    });
 
   </script>
 <%- include("partials/footer") %>
