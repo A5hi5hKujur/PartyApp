@@ -9,8 +9,8 @@ var participantSchema = new mongoose.Schema({
         username: String
     },
     name: String,
-    contribution: Number,
-    host: Boolean
+    
+
 });
 
 module.exports = mongoose.model("Participant",participantSchema);
