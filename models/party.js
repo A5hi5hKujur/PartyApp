@@ -5,12 +5,15 @@ var partySchema = new mongoose.Schema({
     venue: String,
     date: {type: Date},
     participants: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Participant"
-        }
+            {
+                id:{
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "User"
+                },
+                contribution: Number,
+                host: Boolean
+            }
     ],
-    menu: [{name: String}], //will be later verified
     totalcost: Number,
     totalcontribution: Number,
     items: [
@@ -19,7 +22,7 @@ var partySchema = new mongoose.Schema({
                 ref: "Item"
             }
     ],
-    status: String
+    status: String,
 });
 
 module.exports = mongoose.model("Party",partySchema);
