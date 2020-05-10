@@ -29,14 +29,20 @@
   </body>
   <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
   <script type="text/javascript">
-    let usernames = [];
+    let usernames = ["ravi.mnnit", "ashishxenon", "namank63"];
     function checkUserName()
     {
-
+      // Username from sign-in form with no space at start and end
+      var enteredUserName = $('input[type="text"]').val().trim();
+      // Check if username already exists or not
+      for(var i=0; i<usernames.length; i++) {
+        if(enteredUserName === usernames[i]) {
+          $('#username-warning').css("display", "block");
+          break;
+        }
+        $('#username-warning').css("display", "none");
+      }
     }
-    function checkError()
-    {
 
-    }
   </script>
 <%- include("partials/footer") %>
