@@ -1,18 +1,42 @@
 <%- include("partials/header") %>
-<h1>This will be register page</h1>
-<form action="/register" method="POST">
-    <!-- <input type="text" name="user[fname]" placeholder="First Name" required>
-    <input type="text" name="user[lname]" placeholder="Last Name">
-    <br> -->
-    <input type="email" name="username" placeholder="Email" required>
-    <br>
-    <input type="password" name="password" placeholder="Password" required>
-    <br>
-     <!-- confirm password logic will be implemrnted using js file -->
-    <input type="password" name="confirm_password" placeholder="Confirm Password" required>
-    <br>
-    <!-- <input type="text" name="user[mobile_no]" placeholder="Mobile" required>
-    <br> -->
-    <button>Sign Up</button>
-</form>
+<body class="sign-up" onload="">
+    <header>
+      <a href="/"><div class="logo"><h1>LOGO</h1></div></a>
+    </header>
+    <div class="wrapper">
+      <div class="sign-up-banner"></div>
+      <div class="sign-up-content">
+        <!-- Sign in form -->
+        <form id="signup-form" action="/register" method="post">
+          <h1>Sign Up</h1>
+          <!-- Check if the entered username matches with any username -->
+          <input type="text" name="username" value="" placeholder="Username" onfocusout="checkUserName();" required/>
+          <!-- Throw this error if you are trying to login with an id that already exists -->
+          <p id="username-warning">Entered username is incorrect</p>
+          <input type="password" name="password" value="" placeholder="Password" required/>
+          <input type="password" name="confirm-password" value="" placeholder="Confirm Password" onfocusout="checkPassword();" required/>
+          <input type="submit" class="btn-blue" value="Sign Up">
+          <!-- Error when passwords dont match-->
+          <p id="password-warning">Passwords dont match</p>
+          <h2 style="text-align : center;">Or</h2>
+            <a href="/signin">
+              <button type="button" class="btn-pink" name="button" id="sign-in-btn">Sign In</button>
+            </a>
+        </form>
+        <!-- End of Sign in form -->
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
+  <script type="text/javascript">
+    let usernames = [];
+    function checkUserName()
+    {
+
+    }
+    function checkPassword()
+    {
+
+    }
+  </script>
 <%- include("partials/footer") %>

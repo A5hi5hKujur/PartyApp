@@ -1,8 +1,42 @@
 <%- include("partials/header") %>
-<h1>This will be login page</h1>
-<form action="/login" method="POST">
-    <input type="text" placeholder="Email" name="username" required>
-    <input type="password" placeholder="Password" name="password">
-    <button>Login</button>
-</form>
+  <body class="sign-in">
+    <header>
+      <a href="/"><div class="logo"><h1>LOGO</h1></div></a>
+    </header>
+    <div class="wrapper">
+      <div class="sign-in-banner"></div>
+      <div class="sign-in-content">
+        <!-- Sign in form -->
+        <form id="signin-form" action="/login" method="post">
+          <h1>Sign In</h1>
+          <!-- Check if the entered username matches with any username -->
+          <input type="text" name="username" value="" placeholder="Username" onfocusout="checkUserName();" required/>
+          <!-- Throw this error if you are inputting a login id that does not exists -->
+          <p id="username-warning">Entered username is incorrect</p>
+          <input type="password" name="password" value="" placeholder="Password" required/>
+          <input type="submit" class="btn-blue" value="Sign In">
+          <!-- When the control is redirected to this page with an error message on the URL parameter,
+               you have entered a wrong username & password combination -->
+          <p id="password-warning">Please Input correct username & password combination.</p>
+          <h2 style="text-align : center;">Or</h2>
+            <a href="/register">
+              <button type="button" class="btn-pink" name="button" id="sign-up-btn">Sign Up</button>
+            </a>
+        </form>
+        <!-- End of Sign in form -->
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
+  <script type="text/javascript">
+    let usernames = [];
+    function checkUserName()
+    {
+
+    }
+    function checkError()
+    {
+
+    }
+  </script>
 <%- include("partials/footer") %>
