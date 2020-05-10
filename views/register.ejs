@@ -1,0 +1,18 @@
+<%- include("partials/header") %>
+<h1>This will be register page</h1>
+<form action="/register" method="POST">
+    <!-- <input type="text" name="user[fname]" placeholder="First Name" required>
+    <input type="text" name="user[lname]" placeholder="Last Name">
+    <br> -->
+    <input type="email" name="username" placeholder="Email" required>
+    <br>
+    <input type="password" name="password" placeholder="Password" required>
+    <br>
+     <!-- confirm password logic will be implemrnted using js file -->
+    <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+    <br>
+    <!-- <input type="text" name="user[mobile_no]" placeholder="Mobile" required>
+    <br> -->
+    <button>Sign Up</button>
+</form>
+<%- include("partials/footer") %>
