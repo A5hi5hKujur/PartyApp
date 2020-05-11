@@ -1,18 +1,31 @@
-var mongoose              = require("mongoose"),
-    passportLocalMongoose = require("passport-local-mongoose");
+const mongoose   = require("mongoose");
+const Party      = require("./party");
 
-var userSchema = new mongoose.Schema({
-    // user: {
-    //     fname: String,
-    //     lname: String,
-    //     email: String,
-    //     mobile_no: String
-    // },
-    username: String,
-    password: String
-    
+const userSchema = new mongoose.Schema({
+    fname: {
+        type: String,
+        required: true
+      },
+    lname:{
+        type: String,
+        required: true
+      },
+    email: {
+        type: String,
+        required: true
+      },
+    password: {
+        type: String,
+        required: true
+      },
+    mobile_no: {
+        type: String,
+        required: true
+    },
+    parties:[{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Party"
+    }]
 });
-
-userSchema.plugin(passportLocalMongoose);
 
 module.exports = mongoose.model("User",userSchema);

@@ -7,19 +7,25 @@
       <div class="sign-up-banner"></div>
       <div class="sign-up-content">
         <!-- Sign in form -->
-        <form id="signup-form" action="/register" method="post">
+        <form id="signup-form" action="/users/register" method="POST">
           <h1>Sign Up</h1>
+          <!-- Enter first name -->
+          <input type="text" name="fname" value="" placeholder="First Name" required/>
+          <!-- Enter last name -->
+          <input type="text" name="lname" value="" placeholder="Last Name" required/>
           <!-- Check if the entered username matches with any username -->
-          <input type="text" name="username" value="" placeholder="Username" required/>
+          <input type="text" name="email" value="" placeholder="Email" required/>
           <!-- Throw this error if you are trying to login with an id that already exists -->
           <p id="username-warning">Username not available</p>
           <input type="password" name="password" value="" placeholder="Password" required/>
-          <input type="password" name="confirm-password" value="" placeholder="Confirm Password" required/>
-          <input type="submit" class="btn-blue" value="Sign Up">
+          <input type="password" name="confirm_password" value="" placeholder="Confirm Password" required/>
           <!-- Error when passwords dont match-->
           <p id="password-warning">Passwords dont match</p>
+          <!-- Enter Mobile Number -->
+          <input type="text" name="mobile_no" value="" placeholder="Mobile" required/>
+          <input type="submit" class="btn-blue" value="Sign Up">
           <h2 style="text-align : center;">Or</h2>
-            <a href="/login">
+            <a href="/users/login">
               <button type="button" class="btn-pink" name="button" id="sign-in-btn">Sign In</button>
             </a>
         </form>
@@ -28,7 +34,7 @@
     </div>
   </body>
   <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
-  <script type="text/javascript">
+  <!-- <script type="text/javascript">
 
     let usernames = ["ravi.mnnit", "ashishxenon", "namank63"];
     $('input[type="text"]').on("input", function() {
@@ -44,5 +50,5 @@
       }
     });
 
-  </script>
+  </script> -->
 <%- include("partials/footer") %>
