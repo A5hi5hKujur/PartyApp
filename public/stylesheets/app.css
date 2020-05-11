@@ -19,8 +19,15 @@ a
   text-decoration: none;
   cursor: pointer;
 }
+hr{
+  border : 1px solid #586076;
+  opacity: .5;
+}
 button, input[type="submit"]{
   cursor: pointer;
+}
+input[type="text"], input[type="password"], input[type="number"], input[type="email"], input[type="date"]{
+  color : white;
 }
 .btn-blue{
   background: #3C80ED;
@@ -33,6 +40,11 @@ button, input[type="submit"]{
   color : white;
   font-weight: bold;
   border : 0px;
+}
+.btn-blue-hollow{
+  background: none;
+  border: 2px solid #3C80ED;
+  color : white;
 }
 /*
 ---------------------------------------------------------------------
@@ -104,7 +116,7 @@ button, input[type="submit"]{
   position: relative;
   padding : 30px 50px;
 }
-.profile header
+.profile header, .party header
 {
   display: flex;
   justify-content: space-between;
@@ -245,4 +257,200 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 .popup form textarea{
   height : 60px;
   padding : 10px;
+}
+/*--------------------------------------------------------------------
+                              Party Dashboard
+----------------------------------------------------------------------*/
+.party{
+  width: 100%;
+  height: 100%;
+  position: relative;
+  padding : 30px 50px;
+}
+.party span{
+  font-weight: 300;
+}
+.party-grid{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.party-grid .column-1{
+  width: 59%;
+}
+.party-grid .column-2{
+  width : 40%;
+}
+.party-grid .column-1 > div, .party-grid .column-2 > div{
+  background: #313A56;
+  padding : 20px 30px;
+  border-radius: 10px;
+  width: 100%;
+  margin-bottom : 10px;
+}
+.card-header{
+  display: flex;
+  justify-content: space-between;
+}
+#party-description{
+  color : white;
+}
+.party-intro .participants{
+  display: flex;
+  justify-content: space-between;
+}
+.party-intro .participants .participant-list{
+  display: flex;
+  flex-direction: row-reverse;
+  width : 300px;
+}
+.party-intro .participants .participant-list>div{
+  width : 50px;
+  height : 50px;
+  border-radius: 100%;
+  background: white;
+  margin-left: 10px;
+}
+.btn-wrapper{
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+.btn-wrapper>button{
+  height : 40px;
+  width : calc(50% - 5px);
+  border-radius: 10px;
+}
+.party-items .item-list{
+  margin-top : 20px;
+}
+.item-list li{
+  width : 100%;
+  height : 100px;
+  margin-bottom: 10px;
+  background: #424B71;
+  border-radius: 10px;
+  display: flex;
+}
+.item-list li .item-icon{
+  height : 100px;
+  width: 100px;
+  border-radius: 10px 0px 0px 10px;
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+.item-list li p{
+  color : white;
+  line-height: 0px;
+  margin-bottom: 25px;
+}
+.item-list li .item-content{
+  padding : 10px;
+  display: flex;
+  width: calc(100% - 100px);
+  justify-content: space-between;
+}
+.item-content .item-ops{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.item-ops .options{
+  margin-top: 5px;
+  height: 10px;
+  width : 35px;
+  cursor : pointer;
+  background-position: center;
+  background-image: url(/media/options.png);
+  background-size: 100% 100%;
+}
+/* Customize the label (the custom-checkbox) */
+.custom-checkbox {
+ display: block;
+ position: relative;
+ padding-left: 35px;
+ margin-bottom: 35px;
+ cursor: pointer;
+ font-size: 22px;
+ -webkit-user-select: none;
+ -moz-user-select: none;
+ -ms-user-select: none;
+ user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.custom-checkbox input {
+ position: absolute;
+ opacity: 0;
+ cursor: pointer;
+ height: 0;
+ top: 0;
+ left: 0;
+ width: 0;
+ height: 28px;
+ width: 28px;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+ position: absolute;
+ top: 0;
+ left: 0;
+ height: 25px;
+ width: 25px;
+ border : 3px solid #586076;
+ border-radius: 5px;
+ background-color: transparent;
+}
+
+
+/* When the checkbox is checked, add a blue background */
+.custom-checkbox input:checked ~ .checkmark {
+ background-color: #2ecc71;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+ content: "";
+ position: absolute;
+ display: none;
+}
+
+/* Show the checkmark when checked */
+.custom-checkbox input:checked ~ .checkmark:after {
+ display: block;
+}
+
+/* Style the checkmark/indicator */
+.custom-checkbox .checkmark:after {
+ left: 9px;
+ top: 5px;
+ width: 5px;
+ height: 10px;
+ border: solid white;
+ border-width: 0 3px 3px 0;
+ -webkit-transform: rotate(45deg);
+ -ms-transform: rotate(45deg);
+ transform: rotate(45deg);
+}
+.add-item{
+  height: 50px;
+  width: 50px;
+  background-image: url(/media/add.png);
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  margin : 20px auto 0px auto;
+  cursor: pointer;
+}
+
+.party-entry{
+  height : 200px;
+  width: 300px;
+  margin : 0px auto;
+  background-image: url(/media/party-entry.png);
+  background-position: center;
+  background-size: 100% 100%;
 }

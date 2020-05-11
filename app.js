@@ -60,6 +60,10 @@ app.use('/', require('./routes/index.js'));
 //routes are : login ->"/users/login", register -> "/users/register" and logout -> "/users/logout"
 app.use('/users', require('./routes/users.js'));
 
+// party dashboard
+app.get('/party/:id', function(req, res){
+  res.render('party');
+});
 //WildCard Route
 app.get("*",function(req,res){
     res.send("Error! 404 Page Not Found");
@@ -70,4 +74,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT,function(){
     console.log("Party App Is Started!");
 });
-
