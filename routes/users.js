@@ -15,6 +15,10 @@ router.get('/register', forwardAuthenticated, (req, res) => res.render('register
 // Register
 router.post('/register', (req, res) => {
   const { fname, lname, email, password, confirm_password,mobile_no } = req.body;
+<<<<<<< HEAD
+=======
+  //all errors are currently handled here but it will be modified later
+>>>>>>> master
   let errors = [];
 
   if (!fname || !email || !password || !confirm_password) {
@@ -85,9 +89,15 @@ router.post('/register', (req, res) => {
 // Login
 router.post('/login', (req, res, next) => {
   passport.authenticate('local', {
+<<<<<<< HEAD
     successRedirect: '/party',
     failureRedirect: '/users/login',
     failureFlash: true
+=======
+    successRedirect: '/dashboard',
+    failureRedirect: '/users/login',
+    // failureFlash: true
+>>>>>>> master
   })(req, res, next);
 });
 
