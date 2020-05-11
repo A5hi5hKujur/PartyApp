@@ -1,115 +1,154 @@
 var express     = require("express"),
-    app         = express(),
     bodyParser  = require("body-parser"),
-    // flash       = require("express-flash"),
-    // methodOverride  = require("method-override"),
+    flash       = require("express-flash"),
     mongoose        = require("mongoose"),
     passport        = require("passport"),
-    LocalStrategy   = require("passport-local"),
-    User            = require("./models/user");
+    User            = require("./models/user"),
+    bcrypt          = require("bcryptjs"),
+    Session         = require("express-session");
     // Party           = require("./models/party"),
     // Item            = require("./models/item"),
     // Participant     = require("./models/participant");
 
+var app = express();
+
+//=================
+//PASSPORT CONFIG
+//=================
+require("./config/passport")(passport);
+
+//=================
+//MONGOOSE CONFIG
+//=================
+
+//DB Config
+const db = require("./config/keys").mongoURI;
+
+//Connect to MongoDB
+mongoose.connect(
+    db,
+    {useNewUrlParser: true,useUnifiedTopology: true,useFindAndModify: false,useCreateIndex: true }
+    )
+    .then(function(){console.log("MongoDB Connected")})
+    .catch(function(err){console.log(err)});
+
+//EJS
 app.set("view engine","ejs");
 app.use(express.static(__dirname+"/public"));
+
+//Express Body Parser
 app.use(bodyParser.urlencoded({extended: true}));
-// app.use(methodOverride("_method"));
-// app.use(flash());
 
-//=================
-//MONGOOSE SETUP
-//=================
-
-mongoose.set("useUnifiedTopology",true);
-mongoose.set('useFindAndModify', false);
-mongoose.set('useCreateIndex', true);
-// mongoose.connect("mongodb://localhost/partyApp",{useNewUrlParser: true});
-mongoose.connect("mongodb+srv://ravi:ravikumar@cluster0-nwcfy.mongodb.net/test?retryWrites=true&w=majority",{useNewUrlParser: true});
-
-//=================
-//PASSPORT SETUP
-//=================
-app.use(require("express-session")({
+//Express Session
+app.use(
+    Session({
     secret: "This is a party app",
     resave: false,
     saveUninitialized: false
-}));
+    })
+);
 
+// Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
-app.use(function(req,res,next){
-    res.locals.currentUser = req.User; //represents Current Logged in User
-    next();
-})
+
+// // Global variables
+// app.use(function(req, res, next) {
+//   res.locals.currentUser = req.User; //represents Current Logged in User
+//   next();
+// });
 
 //=================
 //ROUTES
 //=================
 //Root Route redirect to party page
-app.get("/",function(req,res){
-    res.render("landing");
-});
-
+// app.get("/",function(req,res){
+//     res.render("landing");
+// });
+// Routes
+app.use('/', require('./routes/index.js'));
+app.use('/users', require('./routes/users.js'));
 //=====================
 //PARTY ROUTES
 //=====================
 
 //Party Dashboard Route
-app.get("/party",function(req,res){
-    res.render("index");
-});
+// app.get("/party",isLoggedIn,function(req,res){
+//     res.render("index");
+// });
 
-//Party Show Route
-app.get("/party/:id",isLoggedIn,function(req,res){
-    res.render("show");
-});
+// //Party Show Route
+// app.get("/party/:id",isLoggedIn,function(req,res){
+//     res.render("show");
+// });
 
 //=====================
 //AUTHENTICATION ROUTES(login,register)
 //=====================
 
 //Register Route
-app.get("/register",function(req,res){
-    res.render("register");
-});
+// app.get("/register",function(req,res){
+//     res.render("register");
+// });
 
-//Handling Sign Up Logic
-app.post("/register",function(req,res){
-    var newUser = new User({username: req.body.username});
-    User.register(newUser,req.body.password,function(err,user){
-        if(err){
-            console.log(err);
-            res.redirect("/register");
-        }
-        passport.authenticate("local")(req,res,function(){
-            res.redirect("/party");
-        });
-    });
-});
+// //Handling Sign Up Logic
+// app.post("/register",function(req,res){
+//     const { fname, lname, email, password,confirm_password,mobile_no} = req.body;
+//     User.findOne({email:email},function(err,user){
+//         if(err){
+//             console.log(err);
+//         }else{
+//             if(user){
+//                 console.log("Email already registered");
+//                 res.redirect("/register");
+//             }else{
+//                 const newUser = new User({
+//                     fname,
+//                     lname,
+//                     email,
+//                     password,
+//                     mobile_no
+//                 });
 
-//Login Route
-app.get("/login",function(req,res){
-    res.render("login");
-});
+//                 bcrypt.genSalt(10, function(err,salt){
+//                     bcrypt.hash(newUser.password,salt, function(err,hash){
+//                         if(err) throw err;
+//                         newUser.password = hash;
+//                         newUser
+//                             .save()
+//                             .then(function(user){
+//                                 console.log(user);
+//                                 res.redirect("/login");
+//                             })
+//                             .catch(function(err){
+//                                 console.log(err);
+//                             });
+//                     });
+//                 });
+//             }
+//         }
+//     });
+// });
 
-//Handling Login Logic
-app.post("/login",passport.authenticate("local",
-    {
-        successRedirect:"/party",
-        failureRedirect:"/login"
-    }),
-    function(req,res){
-});
+// //Login Route
+// app.get("/login",function(req,res){
+//     res.render("login");
+// });
 
-//Logout Route
-app.get("/logout",function(req,res){
-    req.logout();
-    res.redirect("/");
-});
+// //Handling Login Logic
+// app.post('/login', (req, res, next) => {
+//     passport.authenticate('local', {
+//       successRedirect: '/party',
+//       failureRedirect: '/login',
+//     })(req, res, next);
+//   });
+
+// //Logout Route
+// app.get("/logout",function(req,res){
+//     req.logout();
+//     // req.flash("success_msg","You are logged out");
+//     res.redirect("/");
+// });
 
 //WildCard Route
 app.get("*",function(req,res){
@@ -117,16 +156,8 @@ app.get("*",function(req,res){
 });
 
 //To start the server
-app.listen(3000,function(){
+const PORT = process.env.PORT || 3000;
+app.listen(PORT,function(){
     console.log("Party App Is Started!");
 });
 
-//=====================
-//MIDDLEWARE
-//=====================
-function isLoggedIn(req,res,next){
-    if(req.isAuthenticated()){
-        return next();
-    }
-    res.redirect("/login");
-}

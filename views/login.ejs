@@ -7,10 +7,10 @@
       <div class="sign-in-banner"></div>
       <div class="sign-in-content">
         <!-- Sign in form -->
-        <form id="signin-form" action="/login" method="post">
+        <form id="signin-form" action="/users/login" method="POST">
           <h1>Sign In</h1>
           <!-- Check if the entered username matches with any username -->
-          <input type="text" name="username" value="" placeholder="Username" required/>
+          <input type="text" name="email" value="" placeholder="Username" required/>
           <!-- Throw this error if you are inputting a login id that does not exists -->
           <p id="username-warning">Username not found</p>
           <input type="password" name="password" value="" placeholder="Password" required/>
@@ -19,7 +19,7 @@
                you have entered a wrong username & password combination -->
           <p id="password-warning">Please Input correct username & password combination.</p>
           <h2 style="text-align : center;">Or</h2>
-            <a href="/register">
+            <a href="/users/register">
               <button type="button" class="btn-pink" name="button" id="sign-up-btn">Sign Up</button>
             </a>
         </form>
@@ -30,19 +30,19 @@
   <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
   <script type="text/javascript">
 
-    let usernames = ["ravi.mnnit", "ashishxenon", "namank63"];
-    $('input[type="text"]').on("input", function() {
-      // Username from sign-in form with no space at start and end
-      var enteredUserName = $('input[type="text"]').val().trim();
-      // Check if username already exists or not
-      for(var i=0; i<usernames.length; i++) {
-        if(enteredUserName === usernames[i] || enteredUserName === "") {
-          $('#username-warning').css("display", "none");
-          break;
-        }
-        $('#username-warning').css("display", "block");
-      }
-    });
+  //   let usernames = ["ravi.mnnit", "ashishxenon", "namank63"];
+  //   $('input[type="text"]').on("input", function() {
+  //     // Username from sign-in form with no space at start and end
+  //     var enteredUserName = $('input[type="text"]').val().trim();
+  //     // Check if username already exists or not
+  //     for(var i=0; i<usernames.length; i++) {
+  //       if(enteredUserName === usernames[i] || enteredUserName === "") {
+  //         $('#username-warning').css("display", "none");
+  //         break;
+  //       }
+  //       $('#username-warning').css("display", "block");
+  //     }
+  //   });
 
-  </script>
+  // </script>
 <%- include("partials/footer") %>
