@@ -10,13 +10,13 @@ const { isLoggedIn } = require('../config/auth');
 
 
 // party dashboard
-app.get('/:id',isLoggedIn,function(req, res){
+router.get('/:id',isLoggedIn,function(req, res){
     res.render('party');
   });
 
 
   // post route to create a new party
-  app.post('/',isLoggedIn,function(req,res){
+  router.post('/',isLoggedIn,function(req,res){
     /*
     find the 'status' of the party based on the inputted date.
     inputed_date format : 2018-07-22 (YYYY-MM-DD)
@@ -60,3 +60,6 @@ app.get('/:id',isLoggedIn,function(req, res){
       res.redirect("/party/"+party._id);
     });
   });
+
+
+  module.exports = router;
