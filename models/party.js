@@ -21,8 +21,8 @@ var partySchema = new mongoose.Schema({
             {
                 name: String,
                 category: String,
-                quantity: String,
-                price: String,
+                quantity: Number,
+                price: Number,
                 priority: Number,
                 purchased: Boolean,
                 essential: Boolean
