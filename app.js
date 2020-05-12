@@ -60,7 +60,7 @@ app.use(function(req, res, next) {
     res.locals.error = req.flash('error');
     next();
   });
-  
+
 
 //=================
 //ROUTES
@@ -73,7 +73,7 @@ app.use('/', require('./routes/index.js'));
 app.use('/users', require('./routes/users.js'));
 
 //Party Routes (present in routes/party.js)
-//routes are : Party show page -> "/party/:id" , Party update -> "/party/:id" 
+//routes are : Party show page -> "/party/:id" , Party update -> "/party/:id"
 // party created in dashboard redirected to as post "/party", it redirects it to "/party/:id"
 app.use("/party",require('./routes/party.js'));
 
