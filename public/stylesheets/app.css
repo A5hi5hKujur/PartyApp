@@ -455,3 +455,44 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
   background-position: center;
   background-size: 100% 100%;
 }
+
+
+/*--------------------------------------------------------------------
+                              Alert Messages
+----------------------------------------------------------------------*/
+
+.alert-warning{
+  padding: 7px;
+  background-color: #ff9800; /* Red */
+  color: white;
+  margin-bottom: 15px;
+}
+
+.alert-success{
+  padding: 10px;
+  background-color: #4CAF50; /* Red */
+  color: white;
+  margin-bottom: 15px;
+}
+
+.alert-danger{
+  padding: 10px;
+  background-color: #f44336; /* Red */
+  color: white;
+  margin-bottom: 15px;
+}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}
