@@ -45,6 +45,7 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
   background: none;
   border: 2px solid #3C80ED;
   color : white;
+  font-weight: bold;
 }
 /*
 ---------------------------------------------------------------------

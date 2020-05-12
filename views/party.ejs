@@ -10,7 +10,7 @@
         <div class="party-intro">
           <div class="card-header">
             <h3>Hosted By, <span>Ashish Kujur</span></h3>
-            <p>Edit Discription</p>
+            <p onclick="popup(3);">Edit Discription</p>
           </div>
           <hr>
           <p id="party-description">
@@ -20,7 +20,7 @@
           </p>
           <!-- Displays latest 4 participants -->
           <div class="participants">
-            <p>Participants</p>
+            <p onclick="popup(2);">Participants</p>
             <div class="participant-list">
               <div class=""></div>
               <div class=""></div>
@@ -36,7 +36,7 @@
           <h1>Contribution : <span>Rs. 5000</span></h1>
           <div class="btn-wrapper">
             <button class="btn-blue-hollow" type="button" name="go-home">Go home</button>
-            <button class="btn-blue" type="button" name="exit-party" onclick="popup(2);">Exit Party</button>  <!-- Popup that asks for exit party confirmation -->
+            <button class="btn-blue" type="button" name="exit-party" onclick="popup(4);">Exit Party</button>  <!-- Popup that asks for exit party confirmation -->
           </div>
         </div>
         <div class="party-items">
@@ -158,6 +158,47 @@
     </div>
   </div>
   <!-- End of Overlay code to add new item -->
+
+  <!-- Overlay to display list of all participants -->
+  <div class="overlay">
+    <div class="popup">
+      <header>
+        <h2>List of participants</h2>
+        <div class="close-icon" onclick="popup(2)"></div>
+      </header>
+      <ul class="participant-list-complete">
+        <li></li>
+      </ul>
+    </div>
+  </div>
+  <!-- End Overlay to display list of all participants -->
+
+  <!-- Overlay to display list of all participants -->
+  <div class="overlay">
+    <div class="popup">
+      <header>
+        <h2>Edit Discription</h2>
+        <div class="close-icon" onclick="popup(3)"></div>
+      </header>
+      <form action="/party/:id" method="put">
+        <label for="description">Description</label>
+        <textarea name="description"></textarea>
+        <input class="btn-blue" type="submit" name="" value="Edit Description">
+      </form>
+    </div>
+  </div>
+  <!-- End Overlay to display list of all participants -->
+
+  <!-- Overlay to Confirm party termination -->
+  <div class="overlay">
+    <div class="popup">
+      <header>
+        <h2>Leaving so soon ?</h2>
+        <div class="close-icon" onclick="popup(4)"></div>
+      </header>
+    </div>
+  </div>
+  <!-- End Overlay to confirm party termination -->
   <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
   <script type="text/javascript">
     function popup(i)
