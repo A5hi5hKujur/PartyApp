@@ -28,6 +28,12 @@ var partySchema = new mongoose.Schema({
                 essential: Boolean
             }
     ],
+    hosts: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }
+    ], 
     description: String,
     status: String
 });
