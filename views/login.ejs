@@ -9,6 +9,7 @@
         <!-- Sign in form -->
         <form id="signin-form" action="/users/login" method="POST">
           <h1>Sign In</h1>
+          <%- include("partials/messages")%>
           <!-- Check if the entered username matches with any username -->
           <input type="text" name="email" value="" placeholder="Username" required/>
           <!-- Throw this error if you are inputting a login id that does not exists -->
@@ -44,5 +45,5 @@
   //     }
   //   });
 
-  // </script>
+</script>
 <%- include("partials/footer") %>
