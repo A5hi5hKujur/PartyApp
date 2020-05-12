@@ -3,7 +3,7 @@ var mongoose = require("mongoose");
 var partySchema = new mongoose.Schema({
     name: String,
     venue: String,
-    date: {type: Date},
+    date: Date,
     participants: [
             {
                 id:{
@@ -18,8 +18,13 @@ var partySchema = new mongoose.Schema({
     totalcontribution: Number,
     items: [
             {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Item"
+                name: String,
+                category: String,
+                quantity: String,
+                price: String,
+                priority: Number,
+                purchased: Boolean,
+                essential: Boolean
             }
     ],
     status: String,
