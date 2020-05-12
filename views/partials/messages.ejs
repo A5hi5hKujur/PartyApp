@@ -1,0 +1,35 @@
+<% if(typeof errors != 'undefined'){ %> <% errors.forEach(function(error) { %>
+    <div class="alert-warning" role="alert">
+      <span class="closebtn">&times;</span> 
+      <%= error.msg %>
+    </div>
+    <% }); %> <% } %> <% if(success_msg != ''){ %>
+    <div class="alert-success" role="alert">
+      <span class="closebtn">&times;</span> 
+      <%= success_msg %>
+    </div>
+    <% } %> <% if(error_msg != ''){ %>
+    <div class="alert-danger" role="alert">
+      <span class="closebtn">&times;</span> 
+      <%= error_msg %>
+    </div>
+    <% } %> <% if(error != ''){ %>
+    <div class="alert-danger" role="alert">
+      <span class="closebtn">&times;</span> 
+      <%= error %>
+    </div>
+    <% } %>
+
+    <!--  Script for closing the message -->
+<script>
+  var close = document.getElementsByClassName("closebtn");
+  var i;
+  for (i = 0; i < close.length; i++) {
+    close[i].onclick = function(){
+      var div = this.parentElement;
+      div.style.opacity = "0";
+      setTimeout(function(){ div.style.display = "none"; }, 600);
+    }
+  }
+  </script>
+    
