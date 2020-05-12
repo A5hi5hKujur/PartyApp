@@ -3,7 +3,7 @@ const router = express.Router();
 
 // Load User model
 const User = require('../models/user');
-const Party = require('../models/user');
+const Party = require('../models/party');
       
 
 //Authentication middleware are now present in : config->auth.js
