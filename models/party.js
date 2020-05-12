@@ -1,7 +1,8 @@
 var mongoose = require("mongoose");
 
 var partySchema = new mongoose.Schema({
-    name: String,
+    party_theme: String,
+    party_name: String,
     venue: String,
     date: Date,
     participants: [
@@ -27,7 +28,8 @@ var partySchema = new mongoose.Schema({
                 essential: Boolean
             }
     ],
-    status: String,
+    description: String,
+    status: String
 });
 
 module.exports = mongoose.model("Party",partySchema);
