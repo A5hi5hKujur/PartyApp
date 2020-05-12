@@ -159,9 +159,9 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
 .filter-party{
   margin: 20px 0px;
 }
-.filter-party .filter-buttons{
+/* .filter-party .filter-buttons{
 
-}
+} */
 .filter-party .filter-buttons button{
   background: none;
   color : #BCBCBC;
@@ -170,12 +170,21 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
   height : 30px;
   border-radius: 100px;
   margin-right : 10px;
+  outline-style: none;
+}
+#sort-section > button:hover{
+  background: #E63E98;
+  color : white;
+  font-weight: bold;
+  border: none;
+  outline-style: none;
 }
 .filter-party .filter-buttons button.active{
   background: #E63E98;
   color : white;
   font-weight: bold;
   border: none;
+  outline-style: none;
 }
 .party-list{
   width : 100%;

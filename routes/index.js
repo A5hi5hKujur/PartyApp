@@ -13,10 +13,31 @@ const { isLoggedIn, forwardAuthenticated } = require('../config/auth');
 router.get('/', forwardAuthenticated, (req, res) => res.render('landing'));
 
 // Dashboard
-router.get('/dashboard', isLoggedIn, (req, res) =>
-  res.render('index', {
-    user: req.user
-  })
-);
+router.get('/dashboard', isLoggedIn, (req, res) => {
+  Party.find({}, (err, parties) => {
+    if (err) {
+      console.log(err);
+      res.redirect('/dashboard');
+    } else {
+      res.render('index',
+      {
+        parties: parties,
+        user: req.user
+      });
+    }
+  });
+});
+
+// Dashboard sort-section route to handle asynchronous toggle
+router.get('/dashboard.json', isLoggedIn, (req, res) => {
+  Party.find({}, (err, parties) => {
+    if (err) {
+      console.log(err);
+      res.redirect('/dashboard');
+    } else {
+      res.json(parties);
+    }
+  });
+});
 
 module.exports = router;
