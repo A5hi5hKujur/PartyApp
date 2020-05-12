@@ -9,20 +9,21 @@
         <!-- Sign in form -->
         <form id="signup-form" action="/users/register" method="POST">
           <h1>Sign Up</h1>
+          <%- include("partials/messages")%>
           <!-- Enter first name -->
-          <input type="text" name="fname" value="" placeholder="First Name" required/>
+          <input type="text" name="fname" value="<%= typeof fname != 'undefined' ? fname : '' %>" placeholder="First Name" required/>
           <!-- Enter last name -->
-          <input type="text" name="lname" value="" placeholder="Last Name" required/>
+          <input type="text" name="lname" value="<%= typeof lname != 'undefined' ? lname : '' %>" placeholder="Last Name" required/>
           <!-- Check if the entered username matches with any username -->
-          <input type="text" name="email" value="" placeholder="Email" required/>
+          <input type="text" name="email" value="<%= typeof email != 'undefined' ? email : '' %>" placeholder="Email" required/>
           <!-- Throw this error if you are trying to login with an id that already exists -->
           <p id="username-warning">Username not available</p>
-          <input type="password" name="password" value="" placeholder="Password" required/>
-          <input type="password" name="confirm_password" value="" placeholder="Confirm Password" required/>
+          <input type="password" name="password" value="<%= typeof password != 'undefined' ? password : '' %>" placeholder="Password" required/>
+          <input type="password" name="confirm_password" value="<%= typeof confirm_password != 'undefined' ? confirm_password : '' %>" placeholder="Confirm Password" required/>
           <!-- Error when passwords dont match-->
           <p id="password-warning">Passwords dont match</p>
           <!-- Enter Mobile Number -->
-          <input type="text" name="mobile_no" value="" placeholder="Mobile" required/>
+          <input type="text" name="mobile_no" value="<%= typeof mobile_no != 'undefined' ? mobile_no : '' %>" placeholder="Mobile" required/>
           <input type="submit" class="btn-blue" value="Sign Up">
           <h2 style="text-align : center;">Or</h2>
             <a href="/users/login">
