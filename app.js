@@ -86,6 +86,14 @@ app.post('/party',function(req,res){
   */
   let inputed_date = req.body.date; //input
   let status; // output
+  let today = new Date();
+  var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+  if(inputed_date == date)
+    status = "ongoing";
+  else if (date < inputed_date)
+    status = "upcomming";
+  else
+    status = "past";
   let newParty = {
     party_theme : req.body.theme,
     party_name : req.body.name,
