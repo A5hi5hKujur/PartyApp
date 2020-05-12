@@ -35,6 +35,7 @@ function generateList(parties) {
           <p class="party-contribution">${parties[i].totalcontribution}</p>
           <p class="party-venue">${parties[i].venue}</p>
         </li>
+        </a>
         `
     }
     $('#parties').html(result);

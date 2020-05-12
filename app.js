@@ -50,7 +50,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-//Flash setup
+//Connect flash
 app.use(flash());
 
 // Global variables
@@ -60,7 +60,10 @@ app.use(function(req, res, next) {
     res.locals.error = req.flash('error');
     next();
   });
+<<<<<<< HEAD
 
+=======
+>>>>>>> 63bcd8660376e6456cbe7472af0c54485e626017
 
 //=================
 //ROUTES
