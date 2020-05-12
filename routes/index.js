@@ -16,7 +16,7 @@ router.get('/dashboard', isLoggedIn, (req, res) => {
       console.log(err);
       res.redirect('/dashboard');
     } else {
-      res.render('index', 
+      res.render('index',
       {
         parties: parties,
         user: req.user
@@ -25,6 +25,7 @@ router.get('/dashboard', isLoggedIn, (req, res) => {
   });
 });
 
+// Dashboard sort-section route to handle asynchronous toggle
 router.get('/dashboard.json', isLoggedIn, (req, res) => {
   Party.find({}, (err, parties) => {
     if (err) {
