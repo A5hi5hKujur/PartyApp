@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+
 // Load User model
 const User = require('../models/user');
 const Party = require('../models/party');
@@ -74,13 +75,15 @@ router.get('/:id',isLoggedIn,function(req, res){
       let new_party = party._id;  // newly created party id
       User.findById(req.user._id, function(err, user)  // find logged in user
       {
-        console.log(req.user._id);
-        console.log(user);
         if(err) console.log(err);
         else
         {
           user.parties.push(new_party);  // push new data to the found user.
-          user.save(); // save
+          user.save(function(err,user){
+            if(err){
+              console.log(err);
+            }
+          });
           res.redirect("/party/"+party._id); // redirect to newly created party.
         }
       });
