@@ -31,5 +31,7 @@ $('#items-form').submit(function(e) {
             `
         );
         $(".overlay").eq(1).toggleClass("active");
+        var total = parseFloat($("#total-cost").text()) + newItem.price;
+        $("#total-cost").text(total);
     });
 });

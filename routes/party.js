@@ -147,7 +147,10 @@ router.get('/:id',isLoggedIn,function(req, res){
       purchased : false,
       essential : false
     };
-    Party.findOneAndUpdate({_id: req.params.id}, { $push: { items : newItem } }, function(err, party) {
+    Party.findOneAndUpdate({_id: req.params.id}, { 
+        $push: { items : newItem },
+        $inc: { totalcost: newItem.price} 
+      }, function(err, party) {
       if(err) {
         console.log(err);
         res.redirect('/party/' + req.params.id);
