@@ -495,7 +495,12 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 .balloons-icon {
   background-image: url(/media/icons/balloons.jpg);
 }
-
+.past-status-display {
+  display: none;
+}
+.ongoing-status-display, .upcoming-status-display {
+  display: block;
+} 
 
 /*--------------------------------------------------------------------
                               Alert Messages
