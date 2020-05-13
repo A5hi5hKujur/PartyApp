@@ -26,6 +26,6 @@ const userSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: "Party"
     }]
-});
+  });
 
 module.exports = mongoose.model("User",userSchema);
