@@ -30,6 +30,6 @@ $('#items-form').submit(function(e) {
               </li>
             `
         );
-        
+        $(".overlay").eq(1).toggleClass("active");
     });
 });
