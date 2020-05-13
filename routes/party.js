@@ -27,14 +27,8 @@ router.get('/:id',isLoggedIn,function(req, res){
 
 
   // post route to create a new party
-  router.post('/',isLoggedIn,function(req,res){
-    /*
-    find the 'status' of the party based on the inputted date.
-    inputed_date format : 2018-07-22 (YYYY-MM-DD)
-    status : ongoing -> if current date == inputted date.
-    status : upcoming -> if current date < inputted date.
-    status : past -> if current date > inputted date.
-    */
+  router.post('/',isLoggedIn,function(req,res)
+  {
     let inputed_date = req.body.date; //input
     let status; // output
     let today = new Date();
@@ -49,7 +43,7 @@ router.get('/:id',isLoggedIn,function(req, res){
     if(inputed_date == date)
       status = "ongoing";
     else if (date < inputed_date)
-      status = "upcomming";
+      status = "upcoming";
     else
       status = "past";
     let newParty = {
@@ -75,7 +69,21 @@ router.get('/:id',isLoggedIn,function(req, res){
         console.log(err);
         res.redirect("/dashboard");
       }
-      res.redirect("/party/"+party._id);
+
+      //approach 2.
+      let new_party = party._id;  // newly created party id
+      User.findById(req.user._id, function(err, user)  // find logged in user
+      {
+        console.log(req.user._id);
+        console.log(user);
+        if(err) console.log(err);
+        else
+        {
+          user.parties.push(new_party);  // push new data to the found user.
+          user.save(); // save
+          res.redirect("/party/"+party._id); // redirect to newly created party.
+        }
+      });
     });
   });
 
