@@ -154,7 +154,21 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
   height : 35px;
   width : 140px;
   border-radius : 10px;
-  background: #3C80ED;
+}
+.join-success{
+  width : 90%;
+  border-radius: 5px;
+  background-color: #2ecc71;
+  color : white;
+  font-weight: bold;
+  padding : 5px 10px;
+  margin: 30px auto 5px auto;
+  display: none;
+}
+.banner-btn-wrapper{
+  width : 300px;
+  display: flex;
+  justify-content: space-between;
 }
 .filter-party{
   margin: 20px 0px;
@@ -456,13 +470,18 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
   cursor: pointer;
 }
 
-.party-entry{
+.party-entry, .party-invite{
   height : 200px;
   width: 300px;
   margin : 0px auto;
   background-image: url(/media/party-entry.png);
   background-position: center;
   background-size: 100% 100%;
+}
+.party-invite{
+    background-image: url(/media/party-invite.png);
+    height : 150px;
+    width: 150px;
 }
 
 

@@ -10,7 +10,7 @@ const Party = require('../models/party');
 const { isLoggedIn } = require('../config/auth');
 
 
-// party dashboard
+//----------------- party dashboard ------------------------------------------
 router.get('/:id',isLoggedIn,function(req, res){
   Party.find({_id : req.params.id}, function(err, party)
   {
@@ -25,9 +25,9 @@ router.get('/:id',isLoggedIn,function(req, res){
     }
   });
 });
+//------------------------------------------------------------------------------
 
-
-  // post route to create a new party
+//---------------------- post route to create a new party ----------------------
   router.post('/',isLoggedIn,function(req,res)
   {
     let inputed_date = req.body.date; //input
@@ -70,8 +70,6 @@ router.get('/:id',isLoggedIn,function(req, res){
         console.log(err);
         res.redirect("/dashboard");
       }
-      
-      //approach 2.
       let new_party = party._id;  // newly created party id
       User.findById(req.user._id, function(err, user)  // find logged in user
       {
@@ -89,8 +87,48 @@ router.get('/:id',isLoggedIn,function(req, res){
       });
     });
   });
+//------------------------------------------------------------------------------
 
-  // POST route to add a new item.
+//----------------------- POST ROUTE TO ADD NEW USER TO PARTY ------------------
+  router.post('/:id/user',isLoggedIn,function(req, res)
+  {
+    User.findById(req.user._id, function(err, user)
+    {
+      if(err) console.log(err);
+      else
+      {
+        user.parties.push(req.params.id);  // parameter id contains the party id that the user wants to join.
+        user.save(function(err,user)
+        {
+          if(err){
+            console.log(err);
+          }
+          Party.findById(req.params.id, function(err, party)  // find party to be joined.
+          {
+            if(err) console.log(err);
+            else
+            {
+              let participant = {
+                id : req.user._id,
+                contribution : 0,
+                host : false
+              }
+              party.participants.push(participant);  // push new user to found party.
+              party.save(function(err,user){
+                if(err){
+                  console.log(err);
+                }
+              });
+              res.redirect("/party/"+req.params.id); // redirect joined party.
+            }
+          });
+        });
+      }
+    });
+  });
+//------------------------------------------------------------------------------
+
+//------------------- POST route to add a new item. (INCOMPLETE) ---------------
   router.post('/:id/item',isLoggedIn,function(req, res)
   {
     let cost = parseFloat(req.body.quantity) * parseFloat(req.body.cost);
@@ -113,5 +151,6 @@ router.get('/:id',isLoggedIn,function(req, res){
         res.redirect('/party/'+req.params.id);
     });
   });
+//------------------------------------------------------------------------------
 
   module.exports = router;

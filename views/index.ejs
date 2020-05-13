@@ -12,7 +12,10 @@
     <div class="banner-content">
       <h3>Create a new party</h3>
       <p>Choose a theme, invite all your friends.</p>
-      <button class="btn-blue" type="button" name="button" onclick="popup(0);">Host Party</button>
+      <div class="banner-btn-wrapper">
+        <button class="btn-blue" type="button" name="button" onclick="popup(0);">Host Party</button>
+        <button class="btn-pink" type="button" name="button" onclick="popup(1);">Join Party</button>
+      </div>
     </div>
   </div>
   <div class="filter-party">
@@ -37,6 +40,7 @@
       <% }) %>
   </ul>
 </body>
+<!-- Overlay to create new party -->
 <div class="overlay">
   <div class="popup">
     <header>
@@ -62,6 +66,51 @@
     </form>
   </div>
 </div>
+<!-- End of overlay to create new party -->
+
+<!-- Overlay to join other party -->
+<div class="overlay">
+  <div class="popup">
+    <header>
+      <h2>Join Party</h2>
+      <div class="close-icon" onclick="popup(1)"></div>
+    </header>
+    <div class="party-invite"></div>
+    <p class="join-success">You have been added to the party list</p>
+    <form class="join-party" action="/party/:id/user" method="post">
+      <label for="theme">Enter Party URL</label>
+      <input type="text" id="url" name="url" placeholder="https://houseparty/party/345336wgwf" value="" required>
+      <input class="btn-pink" type="submit" value="Join">
+    </form>
+  </div>
+</div>
+<!-- End of overlay to join another party -->
 <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" src="/js/ajax.js"></script>
+<script type="text/javascript">
+  $(() => { // jQuery anynomus function
+    const $form = $('.join-party') // select form
+    $form.on('submit', sendData)  // call sendData() upon form submit.
+    function sendData(e){ // function to send data that generates an event 'e'.
+      e.preventDefault()  // prevent default submission event.
+      let input_url = $('#url').val();
+      let party_id = input_url.split('/')[4];
+      let output_url = "/party/"+party_id+"/user";
+      const options = { // Ajax request
+        method: 'post',
+        url: output_url,
+        data: sendData
+      };
+      // control returns here after being redirected from the backend
+      $.ajax(options).done(response => {
+          // show response of party submission here.
+        $(".join-success").css({ "display" : "block" });
+        setTimeout(function()
+        {
+          $(location).attr('href', "/party/"+party_id);
+        },5000); // 2second delay.
+    });
+  }
+});
+</script>
 <%- include("partials/footer") %>
