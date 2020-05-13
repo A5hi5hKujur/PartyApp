@@ -11,6 +11,7 @@ const { isLoggedIn } = require('../config/auth');
 
 // party dashboard
 router.get('/:id',isLoggedIn,function(req, res){
+  
     res.render('party');
   });
 
