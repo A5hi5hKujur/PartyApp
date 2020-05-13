@@ -12,7 +12,7 @@ const { isLoggedIn } = require('../config/auth');
 
 //----------------- party dashboard ------------------------------------------
 router.get('/:id',isLoggedIn,function(req, res){
-  Party.find({_id : req.params.id}, function(err, party)
+  Party.findById(req.params.id, function(err, party)
   {
     if(err)
     {
@@ -21,7 +21,14 @@ router.get('/:id',isLoggedIn,function(req, res){
     }
     else
     {
-      res.render('party',{ party: party[0]});
+      User.findById(party.hosts[0],function(err,user){
+        if(err){
+          console.log(err);
+          res.redirect("/dashboard");
+        }else{
+          res.render('party',{ party: party, hostname: user.fname + user.lname });
+        }
+      });
     }
   });
 });
