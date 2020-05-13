@@ -69,7 +69,7 @@ router.get('/:id',isLoggedIn,function(req, res){
         console.log(err);
         res.redirect("/dashboard");
       }
-
+      
       //approach 2.
       let new_party = party._id;  // newly created party id
       User.findById(req.user._id, function(err, user)  // find logged in user
