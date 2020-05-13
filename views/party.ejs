@@ -45,23 +45,25 @@
           <!-- New items get appended here $(".item-list").innerHTML += <li>...</li> -->
           <ul class="item-list">
             <!-- Item to be populated dynamically with its data -->
-            <li>
-              <div class="item-icon" style="background-image: url(/media/icons/cake.jpg);"></div>
-              <div class="item-content">
-                <div class="item-detail">
-                  <p class="name">Vanilla ice-cream cake</p>
-                  <p class="quantity">Quantity : 1</p>
-                  <p class="cost">Rs. 700</p>
+            <% party.items.forEach(item => { %>
+              <li>
+                <div class="item-icon" style="background-image: url(/media/icons/cake.jpg);"></div>
+                <div class="item-content">
+                  <div class="item-detail">
+                    <p class="name"><%= item.name %> </p>
+                    <p class="quantity">Quantity : <%= item.quantity %> </p>
+                    <p class="cost">Rs. <%= item.price %> </p>
+                  </div>
+                  <div class="item-ops">
+                    <div class="options"></div>
+                    <label class="custom-checkbox">
+                      <input type="checkbox" checked="checked"> <!-- Mark item as purchased -->
+                      <span class="checkmark"></span>
+                    </label>
+                  </div>
                 </div>
-                <div class="item-ops">
-                  <div class="options"></div>
-                  <label class="custom-checkbox">
-                    <input type="checkbox" checked="checked"> <!-- Mark item as purchased -->
-                    <span class="checkmark"></span>
-                  </label>
-                </div>
-              </div>
-            </li>
+              </li>
+            <% }); %>
           </ul>
           <!-- End of item list -->
           <div class="add-item" onclick="popup(1)"></div>
@@ -93,7 +95,7 @@
         <h2>Add New Item</h2>
         <div class="close-icon" onclick="popup(1)"></div>
       </header>
-      <form class="" action="/party/:id/item" method="post">
+      <form id="items-form" class="" action="/party/:id/item" method="post">
         <label for="item-category">Select item category</label>
         <select class="" name="category">
             <option value="cake">cake</option>
@@ -160,10 +162,5 @@
   </div>
   <!-- End Overlay to confirm party termination -->
   <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
-  <script type="text/javascript">
-    function popup(i)
-    {
-      $(".overlay").eq(i).toggleClass("active");
-    }
-  </script>
+  <script type="text/javascript" src="/js/partyAjax.js"></script>
 <%- include("partials/footer") %>

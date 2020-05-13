@@ -128,11 +128,10 @@ router.get('/:id',isLoggedIn,function(req, res){
   });
 //------------------------------------------------------------------------------
 
-//------------------- POST route to add a new item. (INCOMPLETE) ---------------
-  router.post('/:id/item',isLoggedIn,function(req, res)
-  {
+//------------------- POST route to add a new item -----------------------------
+  router.post('/:id/item', isLoggedIn, function(req, res) {
     let cost = parseFloat(req.body.quantity) * parseFloat(req.body.cost);
-    let item = {
+    let newItem = {
       name : req.body.name,
       category : req.body.category,
       quantity : req.body.quantity,
@@ -141,14 +140,17 @@ router.get('/:id',isLoggedIn,function(req, res){
       purchased : false,
       essential : false
     };
-
-    Party.update({_id : req.params.id},{ $push: { items : item } }, function(err, party)
-    {
-      if(err)
-      {
+    Party.findOneAndUpdate({_id: req.params.id}, { $push: { items : newItem } }, function(err, party) {
+      if(err) {
         console.log(err);
+        res.redirect('/party/' + req.params.id);
+      } else {
+        if(req.xhr) {
+          res.json(newItem);
+        } else {
+          res.redirect('/party/' + req.params.id);
+        }
       }
-        res.redirect('/party/'+req.params.id);
     });
   });
 //------------------------------------------------------------------------------
