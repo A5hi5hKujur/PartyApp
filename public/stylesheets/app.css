@@ -155,7 +155,7 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
   width : 140px;
   border-radius : 10px;
 }
-.join-success{
+.join-message{
   width : 90%;
   border-radius: 5px;
   background-color: #2ecc71;

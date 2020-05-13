@@ -76,7 +76,7 @@
       <div class="close-icon" onclick="popup(1)"></div>
     </header>
     <div class="party-invite"></div>
-    <p class="join-success">You have been added to the party list</p>
+    <p class="join-message">You have been added to the party list</p>
     <form class="join-party" action="/party/:id/user" method="post">
       <label for="theme">Enter Party URL</label>
       <input type="text" id="url" name="url" placeholder="https://houseparty/party/345336wgwf" value="" required>
@@ -96,20 +96,38 @@
       let input_url = $('#url').val();
       let party_id = input_url.split('/')[4];
       let output_url = "/party/"+party_id+"/user";
-      const options = { // Ajax request
-        method: 'post',
-        url: output_url,
-        data: sendData
-      };
-      // control returns here after being redirected from the backend
-      $.ajax(options).done(response => {
-          // show response of party submission here.
-        $(".join-success").css({ "display" : "block" });
-        setTimeout(function()
+      // all : contains all parties.
+      let match = 0;
+      for(let i=0; i < all.length; i++)
+      {
+        if(all[i]._id == party_id)
         {
-          $(location).attr('href', "/party/"+party_id);
-        },5000); // 2second delay.
-    });
+          match++;
+          break;
+        }
+      }
+      if(!match)
+      {
+        const options = { // Ajax request
+          method: 'post',
+          url: output_url,
+          data: sendData
+        };
+        // control returns here after being redirected from the backend
+        $.ajax(options).done(response => {
+            // show response of party submission here.
+          $(".join-message").css({ "display" : "block", "background" : "#f39c12" });
+          $(".join-message")[0].innerHTML = "You have been added to the party list !";
+          setTimeout(function()
+          {
+            $(location).attr('href', "/party/"+party_id);
+          },5000); // 2second delay.
+        });
+      }
+      else{
+        $(".join-message").css({ "display" : "block", "background" : "#f39c12" });
+        $(".join-message")[0].innerHTML = "You are already a party member !";
+      }
   }
 });
 </script>
