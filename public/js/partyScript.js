@@ -12,7 +12,7 @@ $('#items-form').submit(function(e) {
         $('.item-list').append(
             `
             <li>
-                <div class="item-icon" style="background-image: url(/media/icons/cake.jpg);"></div>
+                <div class="item-icon ${newItem.category.toLowerCase()}-icon"></div>
                 <div class="item-content">
                   <div class="item-detail">
                     <p class="name">${newItem.name}</p>

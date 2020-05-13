@@ -274,7 +274,7 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
   color : white;
   margin-top: 10px;
 }
-.popup form input[type="text"], .popup form input[type="date"], .popup form select,.popup form textarea
+.popup form input[type="text"], .popup form input[type="number"], .popup form input[type="date"], .popup form select,.popup form textarea
 {
   background: #424B71;
 }
@@ -482,6 +482,18 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
     background-image: url(/media/party-invite.png);
     height : 150px;
     width: 150px;
+}
+.cake-icon {
+  background-image: url(/media/icons/cake.jpg);
+}
+.soda-icon {
+  background-image: url(/media/icons/soda.jpg);
+}
+.pizza-icon {
+  background-image: url(/media/icons/pizza.jpg);
+}
+.balloons-icon {
+  background-image: url(/media/icons/balloons.jpg);
 }
 
 

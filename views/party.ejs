@@ -47,7 +47,7 @@
             <!-- Item to be populated dynamically with its data -->
             <% party.items.forEach(item => { %>
               <li>
-                <div class="item-icon" style="background-image: url(/media/icons/cake.jpg);"></div>
+                <div class="item-icon <%=item.category.toLowerCase()%>-icon"></div>
                 <div class="item-content">
                   <div class="item-detail">
                     <p class="name"><%= item.name %> </p>
@@ -98,10 +98,10 @@
       <form id="items-form" class="" action="/party/:id/item" method="post">
         <label for="item-category">Select item category</label>
         <select class="" name="category">
-            <option value="cake">cake</option>
-            <option value="soda">soda</option>
-            <option value="pizza">pizza</option>
-            <option value="balloon">balloon</option>
+            <option value="cake">Cake</option>
+            <option value="soda">Soda</option>
+            <option value="pizza">Pizza</option>
+            <option value="balloons">Balloons</option>
         </select>
         <label for="item-priority">Select item priority</label>
         <select class="" name="priority">
@@ -112,9 +112,9 @@
         <label for="item-name">Name</label>
         <input type="text" name="name" placeholder="Item name" value="" required>
         <label for="item-cost">Cost</label>
-        <input type="text" name="cost" placeholder="Cost" value="" required>
+        <input type="number" name="cost" placeholder="Cost" value="" required>
         <label for="item-cost">Quantity</label>
-        <input type="text" name="quantity" placeholder="Cost" value="1" required>
+        <input type="number" name="quantity" placeholder="Cost" value="1" required>
         <input class="btn-blue" type="submit" name="" value="Add Item">
       </form>
     </div>
@@ -162,5 +162,5 @@
   </div>
   <!-- End Overlay to confirm party termination -->
   <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
-  <script type="text/javascript" src="/js/partyAjax.js"></script>
+  <script type="text/javascript" src="/js/partyScript.js"></script>
 <%- include("partials/footer") %>
