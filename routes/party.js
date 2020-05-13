@@ -40,14 +40,14 @@ router.get('/:id',isLoggedIn,function(req, res){
       venue : req.body.venue,
       date: req.body.date,
       participants : [{
-        id : user._id,
+        id : req.user._id,
         contribution : 0,
         host : true
       }],
       totalcost : 0,
       totalcontribution : 0,
       items : [],
-      hosts : [user._id],
+      hosts : [req.user._id],
       description : req.body.description,
       status : status
     };
