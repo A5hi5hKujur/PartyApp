@@ -4,7 +4,7 @@
       <a href="/"><div class="logo"><h1>LOGO</h1></div></a>
       <div class="profile-icon"></div>
     </header>
-    <h1>Welcome to, <span>Rahul's Birthday Bash</span></h1>
+    <h1>Welcome to, <span><%= party.party_name %></span></h1>
     <div class="party-grid">
       <div class="column-1">
         <div class="party-intro">
@@ -13,11 +13,7 @@
             <p onclick="popup(3);">Edit Discription</p>
           </div>
           <hr>
-          <p id="party-description">
-            Welcome to Rahul's 20th birthday, lets make this party worth remembering.
-            Feel free to add any party item, Highest contribution gets a lap dance from
-            the birthday boy ;)
-          </p>
+          <p id="party-description"><%= party.description %></p>
           <!-- Displays latest 4 participants -->
           <div class="participants">
             <p onclick="popup(2);">Participants</p>
@@ -33,9 +29,9 @@
       <div class="column-2">
         <div class="party-cta">
           <!-- Total contribution by all members -->
-          <h1>Contribution : <span>Rs. 5000</span></h1>
+          <h1>Contribution : Rs.<span> <%= party.totalcontribution %></span></h1>
           <div class="btn-wrapper">
-            <button class="btn-blue-hollow" type="button" name="go-home">Go home</button>
+            <button class="btn-blue-hollow" onclick="location.href = '/dashboard';" type="button" name="go-home">Go home</button>
             <button class="btn-blue" type="button" name="exit-party" onclick="popup(4);">Exit Party</button>  <!-- Popup that asks for exit party confirmation -->
           </div>
         </div>
@@ -43,7 +39,7 @@
           <div class="card-header">
             <h3>Party Items</h3>
             <!-- total cost o unpurchased item -->
-            <h3>Rs. 2100</h3>
+            <h3>Rs. <span><%= party.totalcost %></span></h3>
           </div>
           <hr>
           <!-- New items get appended here $(".item-list").innerHTML += <li>...</li> -->
@@ -61,42 +57,6 @@
                   <div class="options"></div>
                   <label class="custom-checkbox">
                     <input type="checkbox" checked="checked"> <!-- Mark item as purchased -->
-                    <span class="checkmark"></span>
-                  </label>
-                </div>
-              </div>
-            </li>
-
-            <li>
-              <div class="item-icon" style="background-image: url(/media/icons/soda.jpg);"></div>
-              <div class="item-content">
-                <div class="item-detail">
-                  <p class="name">Vanilla ice-cream cake</p>
-                  <p class="quantity">Quantity : 1</p>
-                  <p class="cost">Rs. 700</p>
-                </div>
-                <div class="item-ops">
-                  <div class="options"></div>
-                  <label class="custom-checkbox">
-                    <input type="checkbox" checked="checked">
-                    <span class="checkmark"></span>
-                  </label>
-                </div>
-              </div>
-            </li>
-
-            <li>
-              <div class="item-icon" style="background-image: url(/media/icons/soda.jpg);"></div>
-              <div class="item-content">
-                <div class="item-detail">
-                  <p class="name">Vanilla ice-cream cake</p>
-                  <p class="quantity">Quantity : 1</p>
-                  <p class="cost">Rs. 700</p>
-                </div>
-                <div class="item-ops">
-                  <div class="options"></div>
-                  <label class="custom-checkbox">
-                    <input type="checkbox" checked="checked">
                     <span class="checkmark"></span>
                   </label>
                 </div>
@@ -135,24 +95,24 @@
       </header>
       <form class="" action="/party/:id/item" method="post">
         <label for="item-category">Select item category</label>
-        <select class="" name="item-category">
-            <option value="">cake</option>
-            <option value="">soda</option>
-            <option value="">pizza</option>
-            <option value="">balloon</option>
+        <select class="" name="category">
+            <option value="cake">cake</option>
+            <option value="soda">soda</option>
+            <option value="pizza">pizza</option>
+            <option value="balloon">balloon</option>
         </select>
         <label for="item-priority">Select item priority</label>
-        <select class="" name="item-priority">
-            <option value="">1</option>
-            <option value="">2</option>
-            <option value="">3</option>
+        <select class="" name="priority">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
         </select>
         <label for="item-name">Name</label>
-        <input type="text" name="item-name" placeholder="Item name" value="" required>
+        <input type="text" name="name" placeholder="Item name" value="" required>
         <label for="item-cost">Cost</label>
-        <input type="text" name="item-cost" placeholder="Cost" value="" required>
+        <input type="text" name="cost" placeholder="Cost" value="" required>
         <label for="item-cost">Quantity</label>
-        <input type="text" name="item-cost" placeholder="Cost" value="1" required>
+        <input type="text" name="quantity" placeholder="Cost" value="1" required>
         <input class="btn-blue" type="submit" name="" value="Add Item">
       </form>
     </div>

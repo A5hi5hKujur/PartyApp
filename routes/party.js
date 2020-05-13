@@ -11,8 +11,19 @@ const { isLoggedIn } = require('../config/auth');
 
 // party dashboard
 router.get('/:id',isLoggedIn,function(req, res){
-    res.render('party');
+  Party.find({_id : req.params.id}, function(err, party)
+  {
+    if(err)
+    {
+      console.log(err);
+      res.redirect('/dashboard');
+    }
+    else
+    {
+      res.render('party',{ party: party[0]});
+    }
   });
+});
 
 
   // post route to create a new party
@@ -27,7 +38,14 @@ router.get('/:id',isLoggedIn,function(req, res){
     let inputed_date = req.body.date; //input
     let status; // output
     let today = new Date();
-    var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    let yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1;
+    if (mm < 10)
+      mm = '0' + mm;
+    let dd = today.getDate();
+    if (dd < 10)
+      dd = '0' + dd;
+    let date = yyyy + '-' + mm + '-' + dd;
     if(inputed_date == date)
       status = "ongoing";
     else if (date < inputed_date)
@@ -40,14 +58,14 @@ router.get('/:id',isLoggedIn,function(req, res){
       venue : req.body.venue,
       date: req.body.date,
       participants : [{
-        id : user._id,
+        id : req.user._id,
         contribution : 0,
         host : true
       }],
       totalcost : 0,
       totalcontribution : 0,
       items : [],
-      hosts : [user._id],
+      hosts : [req.user._id],
       description : req.body.description,
       status : status
     };
@@ -61,5 +79,28 @@ router.get('/:id',isLoggedIn,function(req, res){
     });
   });
 
+  // POST route to add a new item.
+  router.post('/:id/item',isLoggedIn,function(req, res)
+  {
+    let cost = parseFloat(req.body.quantity) * parseFloat(req.body.cost);
+    let item = {
+      name : req.body.name,
+      category : req.body.category,
+      quantity : req.body.quantity,
+      price : cost,
+      priority : req.body.priority,
+      purchased : false,
+      essential : false
+    };
+
+    Party.update({_id : req.params.id},{ $push: { items : item } }, function(err, party)
+    {
+      if(err)
+      {
+        console.log(err);
+      }
+        res.redirect('/party/'+req.params.id);
+    });
+  });
 
   module.exports = router;
