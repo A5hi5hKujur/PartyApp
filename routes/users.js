@@ -56,11 +56,11 @@ router.post('/register', (req, res) => {
         });
       } else {
         const newUser = new User({
-          fname,
-          lname,
-          email,
-          password,
-          mobile_no
+          fname:fname.trim(),
+          lname:lname.trim(),
+          email: email.trim(),
+          password:password,
+          mobile_no:mobile_no.trim()
         });
 
         bcrypt.genSalt(10, (err, salt) => {
