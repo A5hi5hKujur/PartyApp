@@ -21,12 +21,23 @@ router.get('/:id',isLoggedIn,function(req, res){
     }
     else
     {
-      User.findById(party.hosts[0],function(err,user){
-        if(err){
+      //code needs further upgradation because complexity to find contribution by user is of O(n^2)
+      var participants_id =[];
+      party.participants.forEach(function(participant){
+        participants_id.push(participant.id);
+      });
+      var host ={};
+      User.find().where('_id').in(participants_id).exec((err, users) => {
+        if (err) {
           console.log(err);
-          res.redirect("/dashboard");
-        }else{
-          res.render('party',{ party: party, host: user, currentUser: req.user });
+          res.redirect('/dashboard');
+        } else {
+          users.forEach(function(user){
+            if(user._id.equals(party.hosts[0])){
+              host=user;
+            }
+          });
+          res.render('party', {party:party,users: users,host:host,currentUser: req.user});
         }
       });
     }
