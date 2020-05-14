@@ -147,9 +147,9 @@ router.get('/:id',isLoggedIn,function(req, res){
       purchased : false,
       essential : false
     };
-    Party.findOneAndUpdate({_id: req.params.id}, { 
+    Party.findOneAndUpdate({_id: req.params.id}, {
         $push: { items : newItem },
-        $inc: { totalcost: newItem.price} 
+        $inc: { totalcost: newItem.price}
       }, function(err, party) {
       if(err) {
         console.log(err);
@@ -165,4 +165,11 @@ router.get('/:id',isLoggedIn,function(req, res){
   });
 //------------------------------------------------------------------------------
 
+//--------------------------- POST ROUTE TO PURCHASE AN ITEM -------------------
+  /*
+  1. Recieve item id and checked status.
+  2. Update the database of the purchase status.
+  3. Return back the control to the DOM
+  */
+//------------------------------------------------------------------------------
   module.exports = router;
