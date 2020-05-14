@@ -171,5 +171,10 @@ router.get('/:id',isLoggedIn,function(req, res){
   2. Update the database of the purchase status.
   3. Return back the control to the DOM
   */
+  router.post('/:party_id/purchase/:item_id', isLoggedIn, function(req, res)
+  {
+    let party_id = req.params.party_id;
+    let item_id = req.params.item_id;
+  });
 //------------------------------------------------------------------------------
   module.exports = router;
