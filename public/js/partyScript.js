@@ -1,7 +1,10 @@
+// ----------------------------  Overlay  ----------------------------------
 function popup(i) {
     $(".overlay").eq(i).toggleClass("active");
 }
-// Add new Item.
+// -------------------------------------------------------------------------
+
+// ----------------------- Item addition -----------------------------------
 $('#items-form').submit(function(e) {
     e.preventDefault();
     var newItem = $(this).serialize();
@@ -22,7 +25,7 @@ $('#items-form').submit(function(e) {
                   <div class="item-ops">
                     <div class="options"></div>
                     <label class="custom-checkbox">
-                      <input class="checkbox" type="checkbox"> <!-- Mark item as purchased -->
+                      <input type="checkbox">
                       <span class="checkmark"></span>
                     </label>
                   </div>
@@ -35,17 +38,16 @@ $('#items-form').submit(function(e) {
         $("#total-cost").text(total);
     });
 });
+// -----------------------------------------------------------------------
 
-// Mark Items as purchased.
-$( ".checkbox" ).click(function($this) {
-  /*
-    0 load any item after checking if the item.purchased == true or false.
-      mark the item in the UI accordingly.
-    1. Assign an item id to an item in the DOM.
-    2. Find out which item id has been checked for purchase.
-    3. Send the check status along with the item id in the backend.
-    4. Value gets updated in the database, control returns here.
-    5. Deduce the total cost amount ater a checkbox checked.
-       Add the amount of item to the total cost if unchecked.
-  */
-});
+// ----------------------- Back button -----------------------------------
+// Redirecting to dashboard page
+// to be updated if port no. or domain changes
+let dashboardUrl = 'http://localhost:3000/dashboard/'
+window.history.pushState( { page: 1 } , "", "");
+window.onpopstate = function(e) {
+    if (e) {
+        window.location.href = dashboardUrl;
+    }
+}
+// -----------------------------------------------------------------------

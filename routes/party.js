@@ -26,7 +26,7 @@ router.get('/:id',isLoggedIn,function(req, res){
           console.log(err);
           res.redirect("/dashboard");
         }else{
-          res.render('party',{ party: party, hostname: user.fname + user.lname });
+          res.render('party',{ party: party, hostname: user.fname +" "+ user.lname });
         }
       });
     }
