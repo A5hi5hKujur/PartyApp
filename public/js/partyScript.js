@@ -11,19 +11,26 @@ $('#items-form').submit(function(e) {
     var url = window.location.href;
     url = url.split('/');
     var id = url[url.length - 1];
-    $.post('/party/'+ id +'/item', newItem, function(newItem) {
+    $.post('/party/'+ id +'/item', newItem, function(data) {
+      $(".overlay").eq(1).toggleClass("active");
+      var midString = "";
+      if (data.user._id.toString() === data.host.toString()) {
+        midString = "<div class='options delete'></div>";
+      } else {
+        midString = "<div class=''></div>"
+      }
         $('.item-list').append(
             `
-            <li id="item">
-                <div class="item-icon ${newItem.category.toLowerCase()}-icon"></div>
+            <li id="${data.item._id.toString()}">
+                <div class="item-icon ${data.item.category.toLowerCase()}-icon"></div>
                 <div class="item-content">
                   <div class="item-detail">
-                    <p class="name">${newItem.name}</p>
-                    <p class="quantity">Quantity : ${newItem.quantity}</p>
-                    <p class="cost">Rs. ${newItem.price}</p>
+                    <p class="name">${data.item.name}</p>
+                    <p class="quantity">Quantity : <span class="item-quantity">${data.item.quantity}</span></p>
+                    <p class="cost">Rs. <span class="item-cost">${data.item.price}</span></p>
                   </div>
                   <div class="item-ops">
-                    <div class="options"></div>
+                    ` + midString + `
                     <label class="custom-checkbox">
                       <input type="checkbox">
                       <span class="checkmark"></span>
@@ -33,10 +40,43 @@ $('#items-form').submit(function(e) {
               </li>
             `
         );
-        $(".overlay").eq(1).toggleClass("active");
-        var total = parseFloat($("#total-cost").text()) + newItem.price;
+        var total = parseFloat($("#total-cost").text()) + data.item.price;
         $("#total-cost").text(total);
+        $('#items-form')[0].reset();
     });
+});
+// -------------------------------------------------------------------------
+
+// ----------------------- Item deletion -----------------------------------
+$('#items').on('click', '.delete', function(e) {
+  var confirmResponse = confirm('Are you sure?');
+  if(confirmResponse) {
+    var url = window.location.href;
+    url = url.split('/');
+    var id = url[url.length - 1];
+    var itemid = $(this).parents('li').attr('id');
+    var itemCost = $('#'+itemid+' .item-cost').text();
+    var total = parseFloat($("#total-cost").text()) - itemCost;
+    $("#total-cost").text(total);
+    $('#'+itemid).hide();
+    // Some css or animation on removing item
+    // $('#'+itemid).html(
+    //   `
+    //   Item removed
+    //   `
+    // );
+    $.ajax({
+      url: '/party/'+ id +'/item/delete',
+      data: {id: itemid, price: itemCost},
+      type: 'PUT',
+      success: function(updatedParty) {
+        console.log("Item removed successfully");
+        // this is the updated party with removed item
+        // may be used in future
+        // console.log(updatedParty);
+      }
+    });
+  }
 });
 // -----------------------------------------------------------------------
 
@@ -82,6 +122,10 @@ $( ".checkbox" ).click(function($this) {
   // 4. control returns here after being redirected from the backend
   $.ajax(options).done(response => {
       // show response of party submission here.
-    
+
   });
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> 29207395daa29dde8d87f8f44925cb3597de1215
