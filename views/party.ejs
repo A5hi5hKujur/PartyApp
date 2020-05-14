@@ -9,7 +9,7 @@
       <div class="column-1">
         <div class="party-intro">
           <div class="card-header">
-            <h3>Hosted By, <span><%=host.fname%> <%=host.lname%></span></h3>
+            <h3>Hosted By, <span><%= host.fname %> <%= host.lname %></span></h3>
             <p onclick="popup(3);">Edit Discription</p>
           </div>
           <hr>
@@ -132,8 +132,16 @@
         <h2>List of participants</h2>
         <div class="close-icon" onclick="popup(2)"></div>
       </header>
+      <!-- Upgarde css , yet to be worked -->
       <ul class="participant-list-complete">
-        <li></li>
+        <li style="color:white;"><span style="margin-right: 100px;">Name</span><span >Contribution</span></li>
+        <% party.participants.forEach(function(participant){ %>
+           <% users.forEach(function(user){ %>
+             <% if(user._id.equals(participant.id)){ %>
+              <li style="color:white;"><span style="margin-right: 100px;"><%= user.fname %> <%= user.lname %> </span> <span><%= participant.contribution%></span></li>
+             <% } %>
+           <% }); %>
+        <% }); %>
       </ul>
     </div>
   </div>
