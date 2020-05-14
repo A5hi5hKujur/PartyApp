@@ -26,7 +26,7 @@ router.get('/:id',isLoggedIn,function(req, res){
           console.log(err);
           res.redirect("/dashboard");
         }else{
-          res.render('party',{ party: party, hostname: user.fname +" "+ user.lname });
+          res.render('party',{ party: party, host: user, currentUser: req.user });
         }
       });
     }
@@ -150,19 +150,57 @@ router.get('/:id',isLoggedIn,function(req, res){
     Party.findOneAndUpdate({_id: req.params.id}, { 
         $push: { items : newItem },
         $inc: { totalcost: newItem.price} 
-      }, function(err, party) {
+      }, {new: true}, function(err, party) {
       if(err) {
         console.log(err);
         res.redirect('/party/' + req.params.id);
       } else {
         if(req.xhr) {
-          res.json(newItem);
+          res.json({
+            item: party.items[party.items.length - 1],
+            user: req.user,
+            host: party.hosts[0]
+          });
         } else {
           res.redirect('/party/' + req.params.id);
         }
       }
     });
   });
+//------------------------------------------------------------------------------
+
+//------------------- PUT route to update item list ----------------------------
+router.put('/:id/item/delete', isLoggedIn, function(req, res) {
+  var price = parseFloat(req.body.price);
+  Party.findOneAndUpdate({_id: req.params.id}, { 
+      $pull: { items : {_id: req.body.id} },
+      $inc: { totalcost: - price} 
+    }, {new: true}, function(err, party) {
+    if(err) {
+      console.log(err);
+      res.redirect('/party/' + req.params.id);
+    } else {
+      if(req.xhr) {
+        res.json(party);
+      } else {
+        res.redirect('/party/' + req.params.id);
+      }
+    }
+  });
+});
+//------------------------------------------------------------------------------
+
+//--------------------------- POST ROUTE TO PURCHASE AN ITEM -------------------
+  /*
+  1. Recieve item id and checked status.
+  2. Update the database of the purchase status.
+  3. Return back the control to the DOM
+  */
+ router.post('/:party_id/purchase/:item_id', isLoggedIn, function(req, res)
+ {
+   let party_id = req.params.party_id;
+   let item_id = req.params.item_id;
+ });
 //------------------------------------------------------------------------------
 
   module.exports = router;

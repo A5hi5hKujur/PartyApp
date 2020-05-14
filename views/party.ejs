@@ -9,7 +9,7 @@
       <div class="column-1">
         <div class="party-intro">
           <div class="card-header">
-            <h3>Hosted By, <span><%= hostname %></span></h3>
+            <h3>Hosted By, <span><%=host.fname%> <%=host.lname%></span></h3>
             <p onclick="popup(3);">Edit Discription</p>
           </div>
           <hr>
@@ -43,21 +43,25 @@
           </div>
           <hr>
           <!-- New items get appended here $(".item-list").innerHTML += <li>...</li> -->
-          <ul class="item-list">
+          <ul class="item-list" id="items">
             <!-- Item to be populated dynamically with its data -->
             <% party.items.forEach(item => { %>
-              <li>
+              <li id="<%=item._id%>">
                 <div class="item-icon <%=item.category.toLowerCase()%>-icon"></div>
                 <div class="item-content">
                   <div class="item-detail">
                     <p class="name"><%= item.name %> </p>
-                    <p class="quantity">Quantity : <%= item.quantity %> </p>
-                    <p class="cost">Rs. <%= item.price %> </p>
+                    <p class="quantity">Quantity : <span class="item-quantity"><%=item.quantity%></span></p>
+                    <p class="cost">Rs. <span class="item-cost"><%=item.price%></span> </p>
                   </div>
                   <div class="item-ops">
-                    <div class="options"></div>
+                    <% if (currentUser._id.toString() === host._id.toString()) { %>
+                      <div class="options delete"></div>
+                    <% } else { %>
+                      <div class=""></div>
+                    <% } %>
                     <label class="custom-checkbox">
-                      <input type="checkbox" checked="checked"> <!-- Mark item as purchased -->
+                      <input type="checkbox">
                       <span class="checkmark"></span>
                     </label>
                   </div>
