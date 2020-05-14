@@ -1,7 +1,10 @@
+// ----------------------------  Overlay  ----------------------------------
 function popup(i) {
     $(".overlay").eq(i).toggleClass("active");
 }
+// -------------------------------------------------------------------------
 
+// ----------------------- Item addition -----------------------------------
 $('#items-form').submit(function(e) {
     e.preventDefault();
     var newItem = $(this).serialize();
@@ -22,7 +25,7 @@ $('#items-form').submit(function(e) {
                   <div class="item-ops">
                     <div class="options"></div>
                     <label class="custom-checkbox">
-                      <input type="checkbox" checked="checked"> <!-- Mark item as purchased -->
+                      <input type="checkbox" checked="checked">
                       <span class="checkmark"></span>
                     </label>
                   </div>
@@ -35,3 +38,16 @@ $('#items-form').submit(function(e) {
         $("#total-cost").text(total);
     });
 });
+// -----------------------------------------------------------------------
+
+// ----------------------- Back button -----------------------------------
+// Redirecting to dashboard page
+// to be updated if port no. or domain changes
+let dashboardUrl = 'http://localhost:3000/dashboard/'
+window.history.pushState( { page: 1 } , "", "");
+window.onpopstate = function(e) {
+    if (e) {
+        window.location.href = dashboardUrl;
+    }
+}
+// -----------------------------------------------------------------------
