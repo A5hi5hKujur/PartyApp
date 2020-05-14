@@ -9,7 +9,7 @@
       <div class="column-1">
         <div class="party-intro">
           <div class="card-header">
-            <h3>Hosted By, <span><%= hostname %></span></h3>
+            <h3>Hosted By, <span><%= host.fname %> <%= host.lname %></span></h3>
             <p onclick="popup(3);">Edit Discription</p>
           </div>
           <hr>
@@ -43,21 +43,25 @@
           </div>
           <hr>
           <!-- New items get appended here $(".item-list").innerHTML += <li>...</li> -->
-          <ul class="item-list">
+          <ul class="item-list" id="items">
             <!-- Item to be populated dynamically with its data -->
             <% party.items.forEach(item => { %>
-              <li>
+              <li id="<%=item._id%>">
                 <div class="item-icon <%=item.category.toLowerCase()%>-icon"></div>
                 <div class="item-content">
                   <div class="item-detail">
                     <p class="name"><%= item.name %> </p>
-                    <p class="quantity">Quantity : <%= item.quantity %> </p>
-                    <p class="cost">Rs. <%= item.price %> </p>
+                    <p class="quantity">Quantity : <span class="item-quantity"><%=item.quantity%></span></p>
+                    <p class="cost">Rs. <span class="item-cost"><%=item.price%></span> </p>
                   </div>
                   <div class="item-ops">
-                    <div class="options"></div>
+                    <% if (currentUser._id.toString() === host._id.toString()) { %>
+                      <div class="options delete"></div>
+                    <% } else { %>
+                      <div class=""></div>
+                    <% } %>
                     <label class="custom-checkbox">
-                      <input class="checkbox" type="checkbox"> <!-- Mark item as purchased -->
+                      <input type="checkbox">
                       <span class="checkmark"></span>
                     </label>
                   </div>
@@ -128,8 +132,16 @@
         <h2>List of participants</h2>
         <div class="close-icon" onclick="popup(2)"></div>
       </header>
+      <!-- Upgarde css , yet to be worked -->
       <ul class="participant-list-complete">
-        <li></li>
+        <li style="color:white;"><span style="margin-right: 100px;">Name</span><span >Contribution</span></li>
+        <% party.participants.forEach(function(participant){ %>
+           <% users.forEach(function(user){ %>
+             <% if(user._id.equals(participant.id)){ %>
+              <li style="color:white;"><span style="margin-right: 100px;"><%= user.fname %> <%= user.lname %> </span> <span><%= participant.contribution%></span></li>
+             <% } %>
+           <% }); %>
+        <% }); %>
       </ul>
     </div>
   </div>
