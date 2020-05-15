@@ -124,8 +124,4 @@ $( ".checkbox" ).click(function($this) {
       // show response of party submission here.
 
   });
-<<<<<<< HEAD
 });
-=======
-});
->>>>>>> 29207395daa29dde8d87f8f44925cb3597de1215
