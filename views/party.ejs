@@ -63,7 +63,11 @@
                       <div class=""></div>
                     <% } %>
                     <label class="custom-checkbox">
-                      <input type="checkbox">
+                      <% if (item.purchased) { %>
+                        <input type="checkbox" checked="checked">
+                      <% } else { %>
+                        <input type="checkbox">
+                      <% } %>
                       <span class="checkmark"></span>
                     </label>
                   </div>
@@ -136,14 +140,36 @@
       </header>
       <!-- Upgarde css , yet to be worked -->
       <ul class="participant-list-complete">
-        <li style="color:white;"><span style="margin-right: 100px;">Name</span><span >Contribution</span></li>
-        <% party.participants.forEach(function(participant){ %>
+        <li style="color:white;">
+          <span style="margin-right: 50px;">Name</span>
+          <span style="margin-right: 50px;">Contribution</span>
+          <span>Adjustment</span>
+        </li>
+        <!-- <% party.participants.forEach(function(participant){ %>
            <% users.forEach(function(user){ %>
              <% if(user._id.equals(participant.id)){ %>
-              <li style="color:white;"><span style="margin-right: 100px;"><%= user.fname %> <%= user.lname %> </span> <span><%= participant.contribution%></span></li>
+              <li style="color:white;">
+                <span style="margin-right: 50px;"><%=user.fname%> <%=user.lname%></span>
+                <span style="margin-right: 120px;"><%=participant.contribution%></span>
+                <span style="color: greenyellow">+52</span>
+              </li>
              <% } %>
            <% }); %>
-        <% }); %>
+        <% }); %> -->
+        <% for( let i = 0; i < users.length; i++ ) { %>
+          <li class="participants" id="<%=users[i]._id%>" style="color:white;">
+            <span style="margin-right: 50px;"><%=users[i].fname%> <%=users[i].lname%></span>
+            <span style="margin-right: 120px;"><%=party.participants[i].contribution%></span>
+            <% var adjust = party.participants[i].contribution - averageContri %> 
+            <% if (adjust > 0) { %>
+              <span class="adjustment positive-adjust">+<%=adjust%></span>
+            <% } else if (adjust == 0) { %>
+              <span class="adjustment neutral-adjust"><%=adjust%></span>
+            <% } else { %>
+              <span class="adjustment negative-adjust"><%=adjust%></span>
+            <% } %>
+          </li>
+        <% } %>
       </ul>
     </div>
   </div>
