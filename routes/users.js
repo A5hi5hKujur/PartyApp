@@ -14,7 +14,7 @@ router.get('/login', forwardAuthenticated, (req, res) => res.render('login'));
 router.get('/register', forwardAuthenticated, (req, res) => res.render('register'));
 
 // Handling  Register logic 
-router.post('/register', (req, res) => {
+router.post('/register',forwardAuthenticated, (req, res) => {
   const { fname, lname, email, password, confirm_password,mobile_no } = req.body;
   //all errors are currently handled here but it will be modified later
   let errors = [];
@@ -85,7 +85,7 @@ router.post('/register', (req, res) => {
 });
 
 // Handling Login Authentication 
-router.post('/login', (req, res, next) => {
+router.post('/login',forwardAuthenticated, (req, res, next) => {
   passport.authenticate('local', {
     successRedirect: '/dashboard',
     failureRedirect: '/users/login',
