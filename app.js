@@ -80,7 +80,7 @@ app.use("/party",require('./routes/party.js'));
 
 //WildCard Route
 app.get("*",function(req,res){
-    res.send("Error! 404 Page Not Found");
+    res.redirect("/dashboard");
 });
 
 //To start the server
