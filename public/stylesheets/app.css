@@ -501,6 +501,15 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 .ongoing-status-display, .upcoming-status-display {
   display: block;
 } 
+.positive-adjust {
+  color: greenyellow;
+}
+.neutral-adjust {
+  color: slategrey;
+}
+.negative-adjust {
+  color: crimson;
+}
 
 /*--------------------------------------------------------------------
                               Alert Messages

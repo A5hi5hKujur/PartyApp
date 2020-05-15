@@ -21,11 +21,15 @@ router.get('/:id',isLoggedIn,function(req, res){
     }
     else
     {
-      //code needs further upgradation because complexity to find contribution by user is of O(n^2)
       var participants_id =[];
       party.participants.forEach(function(participant){
         participants_id.push(participant.id);
       });
+      var sum = 0;
+      party.items.forEach(function(item) {
+        sum += item.price;
+      });
+      var average = sum/party.participants.length;
       var host ={};
       User.find().where('_id').in(participants_id).exec((err, users) => {
         if (err) {
@@ -37,7 +41,13 @@ router.get('/:id',isLoggedIn,function(req, res){
               host=user;
             }
           });
-          res.render('party', {party:party,users: users,host:host,currentUser: req.user});
+          res.render('party', {
+            party: party,
+            users: users,
+            host: host,
+            currentUser: req.user,
+            averageContri: average
+          });
         }
       });
     }
@@ -169,6 +179,7 @@ router.get('/:id',isLoggedIn,function(req, res){
         if(req.xhr) {
           res.json({
             item: party.items[party.items.length - 1],
+            party: party,
             user: req.user,
             host: party.hosts[0]
           });
