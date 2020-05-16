@@ -20,7 +20,7 @@ router.get('/dashboard', isLoggedIn, (req, res) => {
       console.log(err);
       res.redirect('/dashboard');
     } else {
-      res.render('index', {parties: parties});
+      res.render('index', {parties: parties, user:req.user});
     }
   });
 });

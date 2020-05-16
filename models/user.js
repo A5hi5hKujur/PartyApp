@@ -22,6 +22,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    image: {
+      type: String
+    },
     parties:[{
       type: mongoose.Schema.Types.ObjectId,
       ref: "Party"
