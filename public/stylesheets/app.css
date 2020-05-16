@@ -62,6 +62,7 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
 }
 .sign-in .wrapper, .sign-up .wrapper
 {
+  width : 100%;
   display: flex;
   justify-content: space-between;
 }
@@ -70,7 +71,7 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
   height : 80vh;
   width : 45%;
   background: url(/media/login-banner.jpg);
-  background-size: 100% 100%;
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
@@ -107,7 +108,23 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
 #username-warning, #password-warning{
   display: none;
 }
-
+@media only screen and (max-width: 800px) {
+  .sign-in-banner, .sign-up-banner {
+    display: none;
+  }
+  .sign-in-content, .sign-up-content {
+    width : 100%;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .sign-in, .sign-up
+  {
+    padding : 30px 20px;
+  }
+  #signin-form, #signup-form{
+    width : 100%;
+  }
+}
 /*--------------------------------------------------------------------
                               User Profile
 ----------------------------------------------------------------------*/
@@ -187,26 +204,31 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
   outline-style: none;
 }
 #sort-section > button:hover{
-  background: #E63E98;
-  color : white;
-  font-weight: bold;
-  border: none;
-  outline-style: none;
+    transition : all ease-in .2s;
+  background: rgba(230, 62,152, 1);
 }
 .filter-party .filter-buttons button.active{
   background: #E63E98;
   color : white;
   font-weight: bold;
   border: none;
+  margin-bottom : 20px;
   outline-style: none;
 }
 .party-list{
   width : 100%;
   margin : 40px 0px;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  flex-direction: row;
+
+}
+.party-list>a{
+  flex-grow: 1;
 }
 .party-list li{
-  width : 150px;
+  width : inherit;
   height : 200px;
   padding: 10px;
   border-radius: 10px;
@@ -222,6 +244,14 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
 -moz-box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 }
+@media only screen and (max-width: 600px)
+{
+  .profile
+  {
+    padding : 30px 20px;
+  }
+}
+
 .overlay
 {
   display: none;
@@ -244,6 +274,29 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
   background: #313A56;
   border-radius: 10px;
   padding : 0px 30px;
+}
+@media only screen and (max-width: 400px)
+{
+  .profile
+  {
+    padding : 30px 20px;
+  }
+  .banner-btn-wrapper
+  {
+    flex-wrap: wrap;
+  }
+  .profile-banner .banner-content button{
+    width : 100%;
+    margin-bottom : 10px;
+  }
+  .profile-banner{
+    padding-bottom : 200px;
+  }
+  .overlay .popup{
+    width : 300px;
+    margin-top : 30px;
+    left : calc((100% - 300px)/2);
+  }
 }
 .close-icon{
   margin-top : 25px;
@@ -500,7 +553,7 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 }
 .ongoing-status-display, .upcoming-status-display {
   display: block;
-} 
+}
 .positive-adjust {
   color: greenyellow;
 }
@@ -510,7 +563,36 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 .negative-adjust {
   color: crimson;
 }
-
+@media only screen and (max-width: 1200px)
+{
+  .party-grid .column-1{
+    width: 49%;
+  }
+  .party-grid .column-2{
+    width : 50%;
+  }
+}
+@media only screen and (max-width: 1000px)
+{
+  .party-grid{
+    display: block;
+  }
+  .party-grid .column-1{
+    width: 100%;
+  }
+  .party-grid .column-2{
+    width : 100%;
+  }
+}
+@media only screen and (max-width: 550px)
+{
+  .party{
+    padding : 30px 20px;
+  }
+  .party-grid .column-1 > div, .party-grid .column-2 > div{
+    padding : 20px 20px;
+  }
+}
 /*--------------------------------------------------------------------
                               Alert Messages
 ----------------------------------------------------------------------*/
@@ -520,6 +602,7 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
   background-color: #ff9800; /* Red */
   color: white;
   margin-bottom: 15px;
+  border-radius: 5px;
 }
 
 .alert-success{
@@ -527,6 +610,7 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
   background-color: #4CAF50; /* Red */
   color: white;
   margin-bottom: 15px;
+  border-radius: 5px;
 }
 
 .alert-danger{
@@ -534,6 +618,7 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
   background-color: #f44336; /* Red */
   color: white;
   margin-bottom: 15px;
+  border-radius: 5px;
 }
 
 .closebtn {
