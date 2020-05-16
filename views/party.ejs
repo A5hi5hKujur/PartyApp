@@ -19,7 +19,7 @@
             <p onclick="popup(3);">Edit Discription</p>
           </div>
           <hr>
-          <p id="party-description"><%= party.description %></p>
+          <p id="party-description"><%- party.description.substring(0,150) %></p>
           <!-- Displays latest 4 participants -->
           <div class="participants">
             <p onclick="popup(2);">Participants</p>
@@ -199,9 +199,9 @@
         <h2>Edit Discription</h2>
         <div class="close-icon" onclick="popup(3)"></div>
       </header>
-      <form action="/party/:id" method="put">
+      <form action="/party/:id/description" method="put" id="description-form">
         <label for="description">Description</label>
-        <textarea name="description"></textarea>
+        <textarea name="description" maxlength="150"><%=party.description%></textarea>
         <input class="btn-blue" type="submit" name="" value="Edit Description">
       </form>
     </div>

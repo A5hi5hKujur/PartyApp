@@ -290,4 +290,24 @@ router.put('/:id/item/delete', isLoggedIn, function(req, res) {
  });
 //------------------------------------------------------------------------------
 
+//------------------- PUT route to edit description-----------------------------
+router.put('/:id/description', isLoggedIn, function(req, res) {  
+  req.body.description = req.sanitize(req.body.description);  
+  Party.findOneAndUpdate({_id: req.params.id}, {
+      $set: {description: req.body.description}
+    }, {new: true}, function(err, party) {
+    if(err) {
+      console.log(err);
+      res.redirect('/party/' + req.params.id);
+    } else {
+      if(req.xhr) {
+        res.json(party);
+      } else {
+        res.redirect('/party/' + req.params.id);
+      }
+    }
+  });
+});
+//------------------------------------------------------------------------------
+
 module.exports = router;

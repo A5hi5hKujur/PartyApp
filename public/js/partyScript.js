@@ -185,3 +185,22 @@ $('#contribution-form').submit(function(e) {
 });
 // ------------------------------------------------------------------------------
 
+// ------------------------ Edit Description ------------------------------------
+$('#description-form').submit(function(e) {
+  e.preventDefault();
+  var data = $(this).serialize();
+  var url = window.location.href;
+  url = url.split('/');
+  var id = url[url.length - 1];
+  $.ajax({
+    url: '/party/'+ id +'/description',
+    data: data,
+    type: 'PUT',
+    success: function(party) {
+      $(".overlay").eq(3).toggleClass("active");
+      $('#description-form textarea').text(party.description);
+      $('#party-description').text(party.description);
+    }
+  });
+});
+// ------------------------------------------------------------------------------
