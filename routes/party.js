@@ -109,7 +109,7 @@ router.get('/:id',isLoggedIn,function(req, res){
       totalcontribution : 0,
       items : [],
       hosts : [req.user._id],
-      description : req.body.description,
+      description : req.sanitize(req.body.description),
       status : status
     };
     Party.create(newParty, function(err, party){
