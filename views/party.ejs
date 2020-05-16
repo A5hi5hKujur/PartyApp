@@ -2,7 +2,9 @@
   <body class="party">
     <header>
       <a href="/"><div class="logo"><h1>LOGO</h1></div></a>
-      <div class="profile-icon"></div>
+      <div class="profile-icon">
+        <img class="profile-icon" src="<%= currentUser.image %>" >
+      </div>
     </header>
     <h1>Welcome to, <span><%= party.party_name %></span></h1>
     <div class="party-grid">
@@ -18,9 +20,9 @@
           <div class="participants">
             <p onclick="popup(2);">Participants</p>
             <div class="participant-list">
-              <div class=""></div>
-              <div class=""></div>
-              <div class=""></div>
+              <% users.forEach(function(user){ %>
+                <img class="profile-icon" src="<%= user.image %>" >
+              <% }); %>
             </div>
           </div>
           <!-- End of Display latest 4 participants -->
