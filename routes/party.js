@@ -213,15 +213,24 @@ router.put('/:id/item/delete', isLoggedIn, function(req, res) {
 //------------------------------------------------------------------------------
 
 //--------------------------- POST ROUTE TO PURCHASE AN ITEM -------------------
-  /*
-  1. Recieve item id and checked status.
-  2. Update the database of the purchase status.
-  3. Return back the control to the DOM
-  */
+
  router.post('/:party_id/purchase/:item_id', isLoggedIn, function(req, res)
  {
    let party_id = req.params.party_id;
    let item_id = req.params.item_id;
+   Party.findById(party_id, function(err, party) //call back
+   {
+     if(err) console.log(err);
+     else
+      {
+        party.items[req.body.item_index].purchased = req.body.purchase;  // push new user to found party.
+        party.save(function(err,user)
+        {
+          if(err) console.log(err);
+          else res.redirect("/party/"+party_id); // redirect joined party.
+        });
+      }
+   });
  });
 //------------------------------------------------------------------------------
 
