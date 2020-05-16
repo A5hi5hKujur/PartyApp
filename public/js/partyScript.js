@@ -46,11 +46,9 @@ $('#items-form').submit(function(e) {
         // Update participants adjust
         var average = data.item.price / data.party.participants.length;
         for(var i=0; i<$('.adjustment').length; i++) {
-          $('.adjustment')[i].textContent = parseFloat($('.adjustment')[i].textContent) - average;
+          $('.adjustment')[i].textContent = (parseFloat($('.adjustment')[i].textContent) - average).toFixed(2);
           var updatedAdjust = $('.adjustment')[i].textContent;
-          $($('.adjustment')[i]).removeClass('positive-adjust');
-          $($('.adjustment')[i]).removeClass('neutral-adjust');
-          $($('.adjustment')[i]).removeClass('negative-adjust');
+          $($('.adjustment')[i]).removeClass('positive-adjust neutral-adjust negative-adjust');
           if(updatedAdjust > 0) {
             $($('.adjustment')[i]).addClass('positive-adjust');
             $('.adjustment')[i].textContent = "+" + $('.adjustment')[i].textContent;
@@ -92,11 +90,9 @@ $('#items').on('click', '.delete', function(e) {
         // Update participants "adjustment"
         var average = itemCost / updatedParty.participants.length;
         for(var i=0; i<$('.adjustment').length; i++) {
-          $('.adjustment')[i].textContent = parseFloat($('.adjustment')[i].textContent) + average;
+          $('.adjustment')[i].textContent = (parseFloat($('.adjustment')[i].textContent) + average).toFixed(2);
           var updatedAdjust = $('.adjustment')[i].textContent;
-          $($('.adjustment')[i]).removeClass('positive-adjust');
-          $($('.adjustment')[i]).removeClass('neutral-adjust');
-          $($('.adjustment')[i]).removeClass('negative-adjust');
+          $($('.adjustment')[i]).removeClass('positive-adjust neutral-adjust negative-adjust');
           if(updatedAdjust > 0) {
             $($('.adjustment')[i]).addClass('positive-adjust');
             $('.adjustment')[i].textContent = "+" + $('.adjustment')[i].textContent;
@@ -156,3 +152,36 @@ $( ".checkbox" ).click(function($this) {
       else $("#total-cost").html(total_cost + parseFloat(item_cost));
   });
 });
+// ------------------------------------------------------------------------------
+
+// ----------------------------- Contribution -----------------------------------
+$('#contribution-form').submit(function(e) {
+  e.preventDefault();
+  var contribution = $(this).serialize();
+  var url = window.location.href;
+  url = url.split('/');
+  var id = url[url.length - 1];
+  // some css or animation or gif of success for 1 sec
+  $.post('/party/'+ id +'/contribution', contribution, function(data) {    
+    $(".overlay").eq(0).toggleClass("active");
+    $('#contribution-form')[0].reset();
+    $('#total-contribution').text(data.party.totalcontribution);
+    // Updated Contri of logged in user
+    var updatedContri = parseFloat($('#'+data.user._id+' .user-contribution').text()) + parseFloat(data.contribution);
+    $('#'+data.user._id+' .user-contribution').text(updatedContri);
+    // Updated Adjust of logged in user
+    var updatedAdjust = (parseFloat($('#'+data.user._id+' .adjustment').text()) + parseFloat(data.contribution)).toFixed(2);
+    $('#'+data.user._id+' .adjustment').text(updatedAdjust).removeClass('positive-adjust neutral-adjust negative-adjust');
+    // Checking adjust status
+    if(updatedAdjust > 0) {
+      $('#'+data.user._id+' .adjustment').addClass('positive-adjust');
+      $('#'+data.user._id+' .adjustment').text("+" + updatedAdjust);
+    } else if(updatedAdjust == 0) {
+      $('#'+data.user._id+' .adjustment').addClass('neutral-adjust');
+    } else {
+      $('#'+data.user._id+' .adjustment').addClass('negative-adjust');
+    }
+  });
+});
+// ------------------------------------------------------------------------------
+
