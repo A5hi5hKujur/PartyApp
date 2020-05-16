@@ -3,7 +3,8 @@ var express     = require("express"),
     mongoose        = require("mongoose"),
     passport        = require("passport"),
     flash           = require("express-flash"),
-    Session         = require("express-session");
+    Session         = require("express-session"),
+    expressSanitizer= require("express-sanitizer");
 
 var app = express();
 
@@ -36,6 +37,9 @@ app.use(express.static(__dirname+"/public"));
 
 //Express Body Parser
 app.use(bodyParser.urlencoded({extended: true}));
+
+// Sanitizer
+app.use(expressSanitizer());
 
 //Express Session
 app.use(
