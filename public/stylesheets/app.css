@@ -486,14 +486,44 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 .cake-icon {
   background-image: url(/media/icons/cake.jpg);
 }
-.soda-icon {
-  background-image: url(/media/icons/soda.jpg);
+.decorations-icon {
+  background-image: url(/media/icons/decorations.jpg);
+}
+.party-popper-icon {
+  background-image: url(/media/icons/party-popper.jpg);
 }
 .pizza-icon {
   background-image: url(/media/icons/pizza.jpg);
 }
-.balloons-icon {
-  background-image: url(/media/icons/balloons.jpg);
+.food-icon {
+  background-image: url(/media/icons/food.jpg);
+}
+.fruits-vegetables-icon {
+  background-image: url(/media/icons/fruits-vegetables.jpg);
+}
+.water-icon {
+  background-image: url(/media/icons/water.jpg);
+}
+.soda-icon {
+  background-image: url(/media/icons/soda.jpg);
+}
+.beer-icon {
+  background-image: url(/media/icons/beer.jpg);
+}
+.wine-icon {
+  background-image: url(/media/icons/wine.jpg);
+}
+.cups-icon {
+  background-image: url(/media/icons/cups.jpg);
+}
+.cards-icon {
+  background-image: url(/media/icons/cards.jpg);
+}
+.board-games-icon {
+  background-image: url(/media/icons/board-games.jpg);
+}
+.video-games-icon {
+  background-image: url(/media/icons/video-games.jpg);
 }
 .past-status-display {
   display: none;

@@ -1,5 +1,9 @@
 <%- include("partials/header") %>
+<% if (currentUserContri === 0) { %>
+  <body class="party" onload="popup(0);">
+<% } else { %>
   <body class="party">
+<% } %>
     <header>
       <a href="/"><div class="logo"><h1>LOGO</h1></div></a>
       <div class="profile-icon"></div>
@@ -29,7 +33,7 @@
       <div class="column-2">
         <div class="party-cta">
           <!-- Total contribution by all members -->
-          <h1>Total Contribution : Rs.<span> <%= party.totalcontribution %></span></h1>
+          <h1>Total Contribution : Rs.<span id="total-contribution"> <%= party.totalcontribution %></span></h1>
           <!-- <h3>Your Contribution : Rs.<span> <%= party.totalcontribution %></span></h3> -->
           <div class="btn-wrapper">
             <!-- <button class="btn-blue-hollow" onclick="location.href = '/dashboard';" type="button" name="go-home">Go home</button> -->
@@ -90,7 +94,7 @@
         <div class="close-icon" onclick="popup(0)"></div>
       </header>
       <div class="party-entry"></div>
-      <form class="" action="/party/<%= party._id %>/contribution" method="post">
+      <form class="" id="contribution-form" action="/party/<%= party._id %>/contribution" method="post">
         <label for="contribution">Contribution</label>
         <input type="number" name="contribution_amt" placeholder="Enter Amount" min="0" required>
         <input class="btn-pink" type="submit" name="" value="Pay">
@@ -110,9 +114,19 @@
         <label for="item-category">Select item category</label>
         <select class="" name="category">
             <option value="cake">Cake</option>
-            <option value="soda">Soda</option>
+            <option value="decorations">Decorations</option>
+            <option value="party-popper">Party Popper</option>
             <option value="pizza">Pizza</option>
-            <option value="balloons">Balloons</option>
+            <option value="food">Food & Snacks</option>
+            <option value="fruits-vegetables">Fruits & Vegetables</option>
+            <option value="water">Water</option>
+            <option value="soda">Soda</option>
+            <option value="beer">Beer</option>
+            <option value="wine">Wine</option>
+            <option value="cups">Cups</option>
+            <option value="cards">Cards</option>
+            <option value="board-games">Board Games</option>
+            <option value="video-games">Video Games</option>
         </select>
         <label for="item-priority">Select item priority</label>
         <select class="" name="priority">
@@ -160,8 +174,8 @@
         <% for( let i = 0; i < users.length; i++ ) { %>
           <li class="participants" id="<%=users[i]._id%>" style="color:white;">
             <span style="margin-right: 50px;"><%=users[i].fname%> <%=users[i].lname%></span>
-            <span style="margin-right: 120px;"><%=party.participants[i].contribution%></span>
-            <% var adjust = party.participants[i].contribution - averageContri %> 
+            <span style="margin-right: 120px;" class="user-contribution"><%=party.participants[i].contribution%></span>
+            <% var adjust = (party.participants[i].contribution - averageContri).toFixed(2); %> 
             <% if (adjust > 0) { %>
               <span class="adjustment positive-adjust">+<%=adjust%></span>
             <% } else if (adjust == 0) { %>

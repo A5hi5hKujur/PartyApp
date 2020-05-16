@@ -41,11 +41,31 @@ router.get('/:id',isLoggedIn,function(req, res){
               host=user;
             }
           });
+          // Sort users details by _id (for name)
+          users.sort(function(a, b) {
+            if (a._id > b._id) {
+              return 1;
+            } else {
+              return -1;
+            }
+          });
+          // Sort participants by id (for contribution)
+          party.participants.sort(function(a, b) {
+            if (a.id > b.id) {
+              return 1;
+            } else {
+              return -1;
+            }
+          });
+          var currentPartyUser = party.participants.find(obj => {
+            return obj.id.toString() === req.user._id.toString();
+          });          
           res.render('party', {
             party: party,
             users: users,
             host: host,
             currentUser: req.user,
+            currentUserContri: currentPartyUser.contribution,
             averageContri: average
           });
         }
@@ -250,9 +270,21 @@ router.put('/:id/item/delete', isLoggedIn, function(req, res) {
             }
           });
           party.save(function(err){
-            console.log(err);
+            if(err) {
+              console.log(err);
+            }
           });
-          res.redirect("/party/"+req.params.party_id);
+          if(req.xhr) {
+            console.log(req.user);
+            
+            res.json({
+              party: party,
+              user: req.user,
+              contribution: req.body.contribution_amt
+            });
+          } else {
+            res.redirect("/party/"+req.params.party_id);
+          }
         }
     });
  });
