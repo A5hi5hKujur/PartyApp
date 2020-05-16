@@ -13,6 +13,7 @@ $('#items-form').submit(function(e) {
     var id = url[url.length - 1];
     $.post('/party/'+ id +'/item', newItem, function(data) {
       $(".overlay").eq(1).toggleClass("active");
+      $('#items-form')[0].reset();
       var midString = "";
       if (data.user._id.toString() === data.host.toString()) {
         midString = "<div class='options delete'></div>";
@@ -42,7 +43,23 @@ $('#items-form').submit(function(e) {
         );
         var total = parseFloat($("#total-cost").text()) + data.item.price;
         $("#total-cost").text(total);
-        $('#items-form')[0].reset();
+        // Update participants adjust
+        var average = data.item.price / data.party.participants.length;
+        for(var i=0; i<$('.adjustment').length; i++) {
+          $('.adjustment')[i].textContent = parseFloat($('.adjustment')[i].textContent) - average;
+          var updatedAdjust = $('.adjustment')[i].textContent;
+          $($('.adjustment')[i]).removeClass('positive-adjust');
+          $($('.adjustment')[i]).removeClass('neutral-adjust');
+          $($('.adjustment')[i]).removeClass('negative-adjust');
+          if(updatedAdjust > 0) {
+            $($('.adjustment')[i]).addClass('positive-adjust');
+            $('.adjustment')[i].textContent = "+" + $('.adjustment')[i].textContent;
+          } else if(updatedAdjust == 0) {
+            $($('.adjustment')[i]).addClass('neutral-adjust');
+          } else {
+            $($('.adjustment')[i]).addClass('negative-adjust');
+          }
+        }
     });
 });
 // -------------------------------------------------------------------------
@@ -56,8 +73,10 @@ $('#items').on('click', '.delete', function(e) {
     var id = url[url.length - 1];
     var itemid = $(this).parents('li').attr('id');
     var itemCost = $('#'+itemid+' .item-cost').text();
-    var total = parseFloat($("#total-cost").text()) - itemCost;
-    $("#total-cost").text(total);
+    if($('#'+itemid+' input[type="checkbox"]').prop('checked') == false) {
+      var total = parseFloat($("#total-cost").text()) - itemCost;
+      $("#total-cost").text(total);
+    }
     $('#'+itemid).hide();
     // Some css or animation on removing item
     // $('#'+itemid).html(
@@ -70,10 +89,23 @@ $('#items').on('click', '.delete', function(e) {
       data: {id: itemid, price: itemCost},
       type: 'PUT',
       success: function(updatedParty) {
-        console.log("Item removed successfully");
-        // this is the updated party with removed item
-        // may be used in future
-        // console.log(updatedParty);
+        // Update participants "adjustment"
+        var average = itemCost / updatedParty.participants.length;
+        for(var i=0; i<$('.adjustment').length; i++) {
+          $('.adjustment')[i].textContent = parseFloat($('.adjustment')[i].textContent) + average;
+          var updatedAdjust = $('.adjustment')[i].textContent;
+          $($('.adjustment')[i]).removeClass('positive-adjust');
+          $($('.adjustment')[i]).removeClass('neutral-adjust');
+          $($('.adjustment')[i]).removeClass('negative-adjust');
+          if(updatedAdjust > 0) {
+            $($('.adjustment')[i]).addClass('positive-adjust');
+            $('.adjustment')[i].textContent = "+" + $('.adjustment')[i].textContent;
+          } else if(updatedAdjust == 0) {
+            $($('.adjustment')[i]).addClass('neutral-adjust');
+          } else {
+            $($('.adjustment')[i]).addClass('negative-adjust');
+          }
+        }
       }
     });
   }

@@ -29,10 +29,12 @@
       <div class="column-2">
         <div class="party-cta">
           <!-- Total contribution by all members -->
-          <h1>Contribution : Rs.<span> <%= party.totalcontribution %></span></h1>
+          <h1>Total Contribution : Rs.<span> <%= party.totalcontribution %></span></h1>
+          <!-- <h3>Your Contribution : Rs.<span> <%= party.totalcontribution %></span></h3> -->
           <div class="btn-wrapper">
-            <button class="btn-blue-hollow" onclick="location.href = '/dashboard';" type="button" name="go-home">Go home</button>
-            <button class="btn-blue" type="button" name="exit-party" onclick="popup(4);">Exit Party</button>  <!-- Popup that asks for exit party confirmation -->
+            <!-- <button class="btn-blue-hollow" onclick="location.href = '/dashboard';" type="button" name="go-home">Go home</button> -->
+            <button class="btn-blue" type="button" name="add-contribution" onclick="popup(0);">Add Contribution</button>  <!-- Popup that allows users to contribute in the party -->
+            <button class="btn-pink" type="button" name="exit-party" onclick="popup(4);">Exit Party</button>  <!-- Popup that asks for exit party confirmation -->
           </div>
         </div>
         <div class="party-items">
@@ -61,7 +63,12 @@
                       <div class=""></div>
                     <% } %>
                     <label class="custom-checkbox">
-                      <input class="checkbox" type="checkbox">
+                      <% if (item.purchased) { %>
+                        <input class="checkbox" type="checkbox" checked="checked">
+                      <% } else { %>
+                        <input class="checkbox" type="checkbox">
+                      <% } %>
+
                       <span class="checkmark"></span>
                     </label>
                   </div>
@@ -83,9 +90,9 @@
         <div class="close-icon" onclick="popup(0)"></div>
       </header>
       <div class="party-entry"></div>
-      <form class="" action="/party/:id/contribution" method="post">
+      <form class="" action="/party/<%= party._id %>/contribution" method="post">
         <label for="contribution">Contribution</label>
-        <input type="text" name="contribution" value="0">
+        <input type="number" name="contribution_amt" placeholder="Enter Amount" min="0" required>
         <input class="btn-pink" type="submit" name="" value="Pay">
       </form>
     </div>
@@ -134,14 +141,36 @@
       </header>
       <!-- Upgarde css , yet to be worked -->
       <ul class="participant-list-complete">
-        <li style="color:white;"><span style="margin-right: 100px;">Name</span><span >Contribution</span></li>
-        <% party.participants.forEach(function(participant){ %>
+        <li style="color:white;">
+          <span style="margin-right: 50px;">Name</span>
+          <span style="margin-right: 50px;">Contribution</span>
+          <span>Adjustment</span>
+        </li>
+        <!-- <% party.participants.forEach(function(participant){ %>
            <% users.forEach(function(user){ %>
              <% if(user._id.equals(participant.id)){ %>
-              <li style="color:white;"><span style="margin-right: 100px;"><%= user.fname %> <%= user.lname %> </span> <span><%= participant.contribution%></span></li>
+              <li style="color:white;">
+                <span style="margin-right: 50px;"><%=user.fname%> <%=user.lname%></span>
+                <span style="margin-right: 120px;"><%=participant.contribution%></span>
+                <span style="color: greenyellow">+52</span>
+              </li>
              <% } %>
            <% }); %>
-        <% }); %>
+        <% }); %> -->
+        <% for( let i = 0; i < users.length; i++ ) { %>
+          <li class="participants" id="<%=users[i]._id%>" style="color:white;">
+            <span style="margin-right: 50px;"><%=users[i].fname%> <%=users[i].lname%></span>
+            <span style="margin-right: 120px;"><%=party.participants[i].contribution%></span>
+            <% var adjust = party.participants[i].contribution - averageContri %> 
+            <% if (adjust > 0) { %>
+              <span class="adjustment positive-adjust">+<%=adjust%></span>
+            <% } else if (adjust == 0) { %>
+              <span class="adjustment neutral-adjust"><%=adjust%></span>
+            <% } else { %>
+              <span class="adjustment negative-adjust"><%=adjust%></span>
+            <% } %>
+          </li>
+        <% } %>
       </ul>
     </div>
   </div>
@@ -173,6 +202,7 @@
     </div>
   </div>
   <!-- End Overlay to confirm party termination -->
+
   <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
   <script type="text/javascript" src="/js/partyScript.js"></script>
 <%- include("partials/footer") %>
