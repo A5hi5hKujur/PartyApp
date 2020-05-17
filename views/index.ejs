@@ -61,7 +61,7 @@
       <label for="name">Venue</label>
       <input type="text" name="venue" placeholder="Party Venue" value="" required>
       <label for="name">Time</label>
-      <input type="date" name="date" value="" required>
+      <input type="date" name="date" value="" min="<%= todayDate %>" required>
       <label for="name">Description</label>
       <textarea name="description"></textarea>
       <input class="btn-blue" type="submit" value="Host">
