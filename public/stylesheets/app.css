@@ -47,6 +47,9 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
   color : white;
   font-weight: bold;
 }
+#logout{
+  cursor: pointer;
+}
 /*
 ---------------------------------------------------------------------
                             SIGN IN PAGE, SIGN UP PAGE
@@ -107,23 +110,6 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
 /* DOM Interaction for error Note : display : block*/
 #username-warning, #password-warning{
   display: none;
-}
-@media only screen and (max-width: 800px) {
-  .sign-in-banner, .sign-up-banner {
-    display: none;
-  }
-  .sign-in-content, .sign-up-content {
-    width : 100%;
-  }
-}
-@media only screen and (max-width: 600px) {
-  .sign-in, .sign-up
-  {
-    padding : 30px 20px;
-  }
-  #signin-form, #signup-form{
-    width : 100%;
-  }
 }
 /*--------------------------------------------------------------------
                               User Profile
@@ -199,7 +185,7 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
   width : 100px;
   height : 30px;
   border-radius: 100px;
-  margin-right : 10px;
+  margin : 0px 20px 20px 0px;
   outline-style: none;
 }
 #sort-section > button:hover{
@@ -212,6 +198,7 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
   font-weight: bold;
   border: none;
   margin-bottom : 20px;
+
   outline-style: none;
 }
 .party-list{
@@ -219,12 +206,12 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
   margin : 40px 0px;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
   flex-direction: row;
 
 }
 .party-list>a{
-  flex-grow: 1;
+  width : 250px;
+  margin : 0px 10px;
 }
 .party-list li{
   width : inherit;
@@ -243,14 +230,6 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
 -moz-box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 }
-@media only screen and (max-width: 600px)
-{
-  .profile
-  {
-    padding : 30px 20px;
-  }
-}
-
 .overlay
 {
   display: none;
@@ -259,7 +238,8 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
   position: absolute;
   background: rgba(0,0,0,0.5);
   width: 100%;
-  height : inherit;
+  min-height : 100vh;
+  height: inherit;
 }
 .overlay.active{
   display : block;
@@ -273,29 +253,6 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
   background: #313A56;
   border-radius: 10px;
   padding : 0px 30px;
-}
-@media only screen and (max-width: 400px)
-{
-  .profile
-  {
-    padding : 30px 20px;
-  }
-  .banner-btn-wrapper
-  {
-    flex-wrap: wrap;
-  }
-  .profile-banner .banner-content button{
-    width : 100%;
-    margin-bottom : 10px;
-  }
-  .profile-banner{
-    padding-bottom : 200px;
-  }
-  .overlay .popup{
-    width : 300px;
-    margin-top : 30px;
-    left : calc((100% - 300px)/2);
-  }
 }
 .close-icon{
   margin-top : 25px;
@@ -372,6 +329,11 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 #party-description{
   color : white;
 }
+#show-participants, #edit-description{
+  cursor: pointer;
+  color : #E63E98;
+  opacity: .7;
+}
 .party-intro .participants{
   display: flex;
   justify-content: space-between;
@@ -379,13 +341,12 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 .party-intro .participants .participant-list{
   display: flex;
   flex-direction: row-reverse;
-  width : 300px;
+  align-items: center;
 }
-.party-intro .participants .participant-list>div{
-  width : 50px;
-  height : 50px;
+.party-intro .participants .participant-list>.profile-icon{
+  width : 35px;
+  height : 35px;
   border-radius: 100%;
-  background: white;
   margin-left: 10px;
 }
 .btn-wrapper{
@@ -592,36 +553,7 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 .negative-adjust {
   color: crimson;
 }
-@media only screen and (max-width: 1200px)
-{
-  .party-grid .column-1{
-    width: 49%;
-  }
-  .party-grid .column-2{
-    width : 50%;
-  }
-}
-@media only screen and (max-width: 1000px)
-{
-  .party-grid{
-    display: block;
-  }
-  .party-grid .column-1{
-    width: 100%;
-  }
-  .party-grid .column-2{
-    width : 100%;
-  }
-}
-@media only screen and (max-width: 550px)
-{
-  .party{
-    padding : 30px 20px;
-  }
-  .party-grid .column-1 > div, .party-grid .column-2 > div{
-    padding : 20px 20px;
-  }
-}
+
 /*--------------------------------------------------------------------
                               Alert Messages
 ----------------------------------------------------------------------*/
@@ -664,3 +596,150 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 .closebtn:hover {
   color: black;
 }
+/*
+--------------------------------------------------------------------------------
+                 Participation list complete
+--------------------------------------------------------------------------------
+*/
+.participant-list-header
+{
+  padding : 0px 10px;
+  width : 100%;
+  display: flex;
+  justify-content: space-between;
+  color : #72738d;
+}
+.participant-list-header .name-header{
+  width : 100px;
+}
+.participant-list-complete{
+  width : 100%;
+  margin: 0px 0px 20px 0px;
+  color : white;
+  max-height: 350px;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+}
+.participant-list-complete::-webkit-scrollbar{
+  display: none;
+}
+.participant-list-complete > .participants{
+  display : flex;
+  width : 100%;
+  border-radius: 10px;
+  justify-content: space-between;
+  background: #1F2539;
+  padding: 10px 10px;
+  margin-bottom: 10px;
+}
+.participant-list-complete > .participants > .contribution-details{
+  width : calc(100% - 50px);
+  align-items: center;
+  display : flex;
+  justify-content: space-between;
+  padding-left: 10px;
+}
+ .contribution-details > .user-name
+ {
+   max-width: 70px;
+ }
+ .contribution > .user-contribution{
+   width : 100px;
+   text-align: right;
+ }
+ .contribution > .adjustment{
+   width : 100px;
+   text-align: right;
+ }
+ /*
+--------------------------------------------------------------------------------
+                                MEDIA QUERIES
+--------------------------------------------------------------------------------
+ */
+ @media only screen and (max-width: 1200px)
+ {
+   .party-grid .column-1{
+     width: 49%;
+   }
+   .party-grid .column-2{
+     width : 50%;
+   }
+ }
+ @media only screen and (max-width: 1000px)
+ {
+   .party-grid{
+     display: block;
+   }
+   .party-grid .column-1{
+     width: 100%;
+   }
+   .party-grid .column-2{
+     width : 100%;
+   }
+ }
+ @media only screen and (max-width: 900px)
+ {
+   .party-list{
+     justify-content: space-around;
+   }
+   .party-list>a{
+     width : auto;
+     margin : 0px 0px;;
+     flex-grow: 1;
+   }
+ }
+ @media only screen and (max-width: 800px) {
+   .sign-in-banner, .sign-up-banner {
+     display: none;
+   }
+   .sign-in-content, .sign-up-content {
+     width : 100%;
+   }
+ }
+ @media only screen and (max-width: 600px)
+ {
+   .profile
+   {
+     padding : 30px 20px;
+   }
+   .sign-in, .sign-up
+   {
+     padding : 30px 20px;
+   }
+   #signin-form, #signup-form{
+     width : 100%;
+   }
+ }
+ @media only screen and (max-width: 550px)
+ {
+   .party{
+     padding : 30px 20px;
+   }
+   .party-grid .column-1 > div, .party-grid .column-2 > div{
+     padding : 20px 20px;
+   }
+ }
+ @media only screen and (max-width: 400px)
+ {
+   .profile
+   {
+     padding : 30px 20px;
+   }
+   .banner-btn-wrapper
+   {
+     flex-wrap: wrap;
+   }
+   .profile-banner .banner-content button{
+     width : 100%;
+     margin-bottom : 10px;
+   }
+   .profile-banner{
+     padding-bottom : 200px;
+   }
+   .overlay .popup{
+     width : 98%;
+     margin-top : 30px;
+     left : calc((100% - 98%)/2);
+     padding : 0px 10px;
+   }
+ }

@@ -6,7 +6,7 @@
 <% } %>
     <header>
       <a href="/"><div class="logo"><h1>LOGO</h1></div></a>
-      <div class="profile-icon">
+      <div class="profile-icon" id="logout">
         <img class="profile-icon" src="<%= currentUser.image %>" >
       </div>
     </header>
@@ -16,17 +16,23 @@
         <div class="party-intro">
           <div class="card-header">
             <h3>Hosted By, <span><%= host.fname %> <%= host.lname %></span></h3>
-            <p onclick="popup(3);">Edit Discription</p>
+            <p id="edit-description" onclick="popup(3);">Edit Discription</p>
           </div>
           <hr>
           <p id="party-description"><%- party.description.substring(0,150) %></p>
           <!-- Displays latest 4 participants -->
           <div class="participants">
-            <p onclick="popup(2);">Participants</p>
+            <p id="show-participants" onclick="popup(2);">Participants</p>
             <div class="participant-list">
-              <% users.forEach(function(user){ %>
+              <%
+              let max = 3;
+              let recent_members = users.reverse();
+              recent_members.forEach(function(user, i)
+              {
+                if(i<max)
+                { %>
                 <img class="profile-icon" src="<%= user.image %>" >
-              <% }); %>
+              <% } }); %>
             </div>
           </div>
           <!-- End of Display latest 4 participants -->
@@ -156,28 +162,19 @@
         <div class="close-icon" onclick="popup(2)"></div>
       </header>
       <!-- Upgarde css , yet to be worked -->
+      <div class="participant-list-header">
+        <h4 class="name-header">Name</h4>
+        <h4 class="contribution-header">Contribution</h4>
+        <h4 class="balance-header">Balance</h4>
+      </div>
       <ul class="participant-list-complete">
-        <li style="color:white;">
-          <span style="margin-right: 50px;">Name</span>
-          <span style="margin-right: 50px;">Contribution</span>
-          <span>Adjustment</span>
-        </li>
-        <!-- <% party.participants.forEach(function(participant){ %>
-           <% users.forEach(function(user){ %>
-             <% if(user._id.equals(participant.id)){ %>
-              <li style="color:white;">
-                <span style="margin-right: 50px;"><%=user.fname%> <%=user.lname%></span>
-                <span style="margin-right: 120px;"><%=participant.contribution%></span>
-                <span style="color: greenyellow">+52</span>
-              </li>
-             <% } %>
-           <% }); %>
-        <% }); %> -->
         <% for( let i = 0; i < users.length; i++ ) { %>
-          <li class="participants" id="<%=users[i]._id%>" style="color:white;">
-            <span style="margin-right: 50px;"><%=users[i].fname%> <%=users[i].lname%></span>
-            <span style="margin-right: 120px;" class="user-contribution"><%=party.participants[i].contribution%></span>
-            <% var adjust = (party.participants[i].contribution - averageContri).toFixed(2); %> 
+        <li class="participants" id="<%=users[i]._id%>">
+          <img class="profile-icon" src="<%= users[i].image %>" >
+          <div class="contribution-details">
+            <span class="user-name"><%=users[i].fname%> <%=users[i].lname%></span>
+            <span class="user-contribution"><%=party.participants[i].contribution%></span>
+            <% var adjust = (party.participants[i].contribution - averageContri).toFixed(2); %>
             <% if (adjust > 0) { %>
               <span class="adjustment positive-adjust">+<%=adjust%></span>
             <% } else if (adjust == 0) { %>
@@ -185,7 +182,8 @@
             <% } else { %>
               <span class="adjustment negative-adjust"><%=adjust%></span>
             <% } %>
-          </li>
+          </div>
+        </li>
         <% } %>
       </ul>
     </div>
@@ -221,4 +219,9 @@
 
   <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
   <script type="text/javascript" src="/js/partyScript.js"></script>
+  <script>
+    $("#logout").on( "click", function(){
+      window.location.href = '/users/logout';
+    });
+  </script>
 <%- include("partials/footer") %>

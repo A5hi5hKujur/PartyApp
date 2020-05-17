@@ -6,7 +6,7 @@
         <h1>LOGO</h1>
       </div>
     </a>
-    <div class="profile-icon">
+    <div class="profile-icon" id="logout">
       <img class="profile-icon" src="<%= user.image %>" >
     </div>
   </header>
@@ -90,6 +90,10 @@
 <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" src="/js/indexScript.js"></script>
 <script type="text/javascript">
+$("#logout").on( "click", function(){
+  window.location.href = '/users/logout';
+});
+
   $(() => { // jQuery anynomus function
     const $form = $('.join-party') // select form
     $form.on('submit', sendData)  // call sendData() upon form submit.
