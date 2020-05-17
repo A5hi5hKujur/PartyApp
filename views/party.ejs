@@ -22,7 +22,7 @@
           <p id="party-description"><%- party.description %></p>
           <!-- Displays latest 4 participants -->
           <div class="participants">
-            <p id="show-participants" onclick="popup(2);">Participants</p>
+            <p id="show-participants" onclick="popup(2);"><%= users.length %>  Participants</p>
             <div class="participant-list">
               <%
               let max = 3;
@@ -142,11 +142,11 @@
             <option value="3">3</option>
         </select>
         <label for="item-name">Name</label>
-        <input type="text" name="name" placeholder="Item name" value="" required>
+        <input type="text" name="name" placeholder="Item name" value="" maxlength="15" required>
         <label for="item-cost">Cost</label>
-        <input type="number" name="cost" placeholder="Cost" value="" required>
+        <input type="number" name="cost" placeholder="Cost" min="0" value="" required>
         <label for="item-cost">Quantity</label>
-        <input type="number" name="quantity" placeholder="Cost" value="1" required>
+        <input type="number" name="quantity" placeholder="Cost" value="1" min="0" required>
         <input class="btn-blue" type="submit" name="" value="Add Item">
       </form>
     </div>
