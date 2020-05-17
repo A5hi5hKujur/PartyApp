@@ -96,39 +96,65 @@
     function sendData(e){ // function to send data that generates an event 'e'.
       e.preventDefault()  // prevent default submission event.
       let input_url = $('#url').val();
-      let party_id = input_url.split('/')[4];
-      let output_url = "/party/"+party_id+"/user";
+
       // all : contains all parties.
-      let match = 0;
-      for(let i=0; i < all.length; i++)
-      {
-        if(all[i]._id == party_id)
+      var inputted_Url = input_url;
+
+      //checking that "http://localhost:3000/party/" is present or not in inputted url.
+      var check01 = inputted_Url.includes("http://localhost:3000/party/");
+
+      //checking length of inputted url
+      var temp_Url = inputted_Url.slice(28, inputted_Url.length);
+      var check02 = false;
+      if (temp_Url.length == 24)
+        check02 = true;
+
+      //checking for alphanumeric characters only
+      var check03;
+      if(temp_Url.match(/((^[0-9]+[a-z]+)|(^[a-z]+[0-9]+))+[0-9a-z]+$/i))
+        check03 = true;
+      else
+        check03 = false;
+
+      //if all 3 conditions are true then url is valid
+      if(check01 && check02 && check03) {
+        let party_id = input_url.split('/')[4];
+        let output_url = "/party/"+party_id+"/user";
+        let match = 0;
+        for(let i=0; i < all.length; i++)
         {
-          match++;
-          break;
+          if(all[i]._id == party_id)
+          {
+            match++;
+            break;
+          }
+        }
+        if(!match)
+        {
+          const options = { // Ajax request
+            method: 'post',
+            url: output_url,
+            data: sendData
+          };
+          // control returns here after being redirected from the backend
+          $.ajax(options).done(response => {
+              // show response of party submission here.
+            $(".join-message").css({ "display" : "block", "background" : "#2ecc71" });
+            $(".join-message")[0].innerHTML = "You have been added to the party list !";
+            setTimeout(function()
+            {
+              $(location).attr('href', "/party/"+party_id);
+            },2000); // 2second delay.
+          });
+        }
+        else {
+          $(".join-message").css({ "display" : "block", "background" : "#f39c12" });
+          $(".join-message")[0].innerHTML = "You are already a party member !";
         }
       }
-      if(!match)
-      {
-        const options = { // Ajax request
-          method: 'post',
-          url: output_url,
-          data: sendData
-        };
-        // control returns here after being redirected from the backend
-        $.ajax(options).done(response => {
-            // show response of party submission here.
-          $(".join-message").css({ "display" : "block", "background" : "#f39c12" });
-          $(".join-message")[0].innerHTML = "You have been added to the party list !";
-          setTimeout(function()
-          {
-            $(location).attr('href', "/party/"+party_id);
-          },5000); // 2second delay.
-        });
-      }
-      else{
-        $(".join-message").css({ "display" : "block", "background" : "#f39c12" });
-        $(".join-message")[0].innerHTML = "You are already a party member !";
+      else {
+        $(".join-message").css({ "display" : "block", "background" : "#e74c3c" });
+        $(".join-message")[0].innerHTML = "Please input correct url format!";
       }
   }
 });
