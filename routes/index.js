@@ -15,12 +15,21 @@ router.get('/', forwardAuthenticated, (req, res) => res.render('landing'));
 // Dashboard
 router.get('/dashboard', isLoggedIn, (req, res) => {
   var userParties = req.user.parties;
+  let today = new Date();
+    let yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1;
+    if (mm < 10)
+      mm = '0' + mm;
+    let dd = today.getDate();
+    if (dd < 10)
+      dd = '0' + dd;
+    let date = yyyy + '-' + mm + '-' + dd;
   Party.find().where('_id').in(userParties).exec((err, parties) => {
     if (err) {
       console.log(err);
       res.redirect('/dashboard');
     } else {
-      res.render('index', {parties: parties, user:req.user});
+      res.render('index', {parties: parties, todayDate:date,user:req.user});
     }
   });
 });
