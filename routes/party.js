@@ -44,17 +44,17 @@ router.get('/:id',isLoggedIn,function(req, res){
           // Sort users details by _id (for name)
           users.sort(function(a, b) {
             if (a._id > b._id) {
-              return 1;
-            } else {
               return -1;
+            } else {
+              return 1;
             }
           });
           // Sort participants by id (for contribution)
           party.participants.sort(function(a, b) {
             if (a.id > b.id) {
-              return 1;
-            } else {
               return -1;
+            } else {
+              return 1;
             }
           });
           var currentPartyUser = party.participants.find(obj => {
