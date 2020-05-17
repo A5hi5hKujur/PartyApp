@@ -7,19 +7,25 @@ function popup(i) {
 // ----------------------- Item addition -----------------------------------
 $('#items-form').submit(function(e) {
     e.preventDefault();
+    // serialize form data
     var newItem = $(this).serialize();
+    // get the party id
     var url = window.location.href;
     url = url.split('/');
     var id = url[url.length - 1];
     $.post('/party/'+ id +'/item', newItem, function(data) {
+      // close overlay
       $(".overlay").eq(1).toggleClass("active");
+      // reset form
       $('#items-form')[0].reset();
+      // if host, give delete option
       var midString = "";
       if (data.user._id.toString() === data.host.toString()) {
         midString = "<div class='options delete'></div>";
       } else {
         midString = "<div class=''></div>"
       }
+      // append new item
         $('.item-list').append(
             `
             <li id="${data.item._id.toString()}">
@@ -33,7 +39,7 @@ $('#items-form').submit(function(e) {
                   <div class="item-ops">
                     ` + midString + `
                     <label class="custom-checkbox">
-                      <input type="checkbox">
+                      <input class="checkbox" type="checkbox">
                       <span class="checkmark"></span>
                     </label>
                   </div>
@@ -43,11 +49,12 @@ $('#items-form').submit(function(e) {
         );
         var total = parseFloat($("#total-cost").text()) + data.item.price;
         $("#total-cost").text(total);
-        // Update participants adjust
+        // Update participants balance
         var average = data.item.price / data.party.participants.length;
         for(var i=0; i<$('.adjustment').length; i++) {
           $('.adjustment')[i].textContent = (parseFloat($('.adjustment')[i].textContent) - average).toFixed(2);
           var updatedAdjust = $('.adjustment')[i].textContent;
+          // choose color shade and sign for balance
           $($('.adjustment')[i]).removeClass('positive-adjust neutral-adjust negative-adjust');
           if(updatedAdjust > 0) {
             $($('.adjustment')[i]).addClass('positive-adjust');
@@ -65,12 +72,15 @@ $('#items-form').submit(function(e) {
 // ----------------------- Item deletion -----------------------------------
 $('#items').on('click', '.delete', function(e) {
   var confirmResponse = confirm('Are you sure?');
+  // if confirm, proceed
   if(confirmResponse) {
+    // get the current party id
     var url = window.location.href;
     url = url.split('/');
     var id = url[url.length - 1];
     var itemid = $(this).parents('li').attr('id');
     var itemCost = $('#'+itemid+' .item-cost').text();
+    // if purchased dont reduce the cost in frontend
     if($('#'+itemid+' input[type="checkbox"]').prop('checked') == false) {
       var total = parseFloat($("#total-cost").text()) - itemCost;
       $("#total-cost").text(total);
@@ -87,7 +97,7 @@ $('#items').on('click', '.delete', function(e) {
       data: {id: itemid, price: itemCost},
       type: 'PUT',
       success: function(updatedParty) {
-        // Update participants "adjustment"
+        // Update participants balance
         var average = itemCost / updatedParty.participants.length;
         for(var i=0; i<$('.adjustment').length; i++) {
           $('.adjustment')[i].textContent = (parseFloat($('.adjustment')[i].textContent) + average).toFixed(2);
@@ -122,7 +132,7 @@ window.onpopstate = function(e) {
 
 //--------------------- Mark items as purchased --------------------------
 // Mark Items as purchased.
-$( ".checkbox" ).click(function($this) {
+$( "#items" ).on('click', '.checkbox', function($this) {
   // 2. find the id of the selected item :
   let item_id = $(this).parent().parent().parent().parent().attr("id");
   let index = $('li').index($('#'+item_id));
@@ -136,6 +146,7 @@ $( ".checkbox" ).click(function($this) {
     item : item_id,
     item_index : index,
     purchase : this.checked,
+    item_cost: item_cost
   };
   const options = { // Ajax request
     method: 'post',
@@ -145,7 +156,6 @@ $( ".checkbox" ).click(function($this) {
   console.log(data);
   // 4. control returns here after being redirected from the backend
   $.ajax(options).done(response => {
-    console.log(data);
       // show response of party submission here.
       let total_cost = parseFloat($("#total-cost").html());
       if(this.checked) $("#total-cost").html(total_cost - parseFloat(item_cost));
@@ -188,7 +198,9 @@ $('#contribution-form').submit(function(e) {
 // ------------------------ Edit Description ------------------------------------
 $('#description-form').submit(function(e) {
   e.preventDefault();
+  // serialize form data
   var data = $(this).serialize();
+  // get the party id
   var url = window.location.href;
   url = url.split('/');
   var id = url[url.length - 1];
@@ -197,7 +209,9 @@ $('#description-form').submit(function(e) {
     data: data,
     type: 'PUT',
     success: function(party) {
+      // close form
       $(".overlay").eq(3).toggleClass("active");
+      // update textarea and desc
       $('#description-form textarea').text(party.description);
       $('#party-description').text(party.description);
     }

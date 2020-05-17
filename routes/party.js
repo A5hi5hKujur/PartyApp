@@ -107,6 +107,7 @@ router.get('/:id',isLoggedIn,function(req, res){
       }],
       totalcost : 0,
       totalcontribution : 0,
+      totalpurchased: 0,
       items : [],
       hosts : [req.user._id],
       description : req.sanitize(req.body.description),
@@ -244,6 +245,11 @@ router.put('/:id/item/delete', isLoggedIn, function(req, res) {
      else
       {
         party.items[req.body.item_index].purchased = req.body.purchase;  // push new user to found party.
+        if(req.body.purchase === 'true') {
+          party.totalpurchased += parseFloat(req.body.item_cost);
+        } else {
+          party.totalpurchased -= parseFloat(req.body.item_cost);
+        }
         party.save(function(err,user)
         {
           if(err) console.log(err);

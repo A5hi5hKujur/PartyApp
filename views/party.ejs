@@ -19,7 +19,7 @@
             <p id="edit-description" onclick="popup(3);">Edit Discription</p>
           </div>
           <hr>
-          <p id="party-description"><%- party.description.substring(0,150) %></p>
+          <p id="party-description"><%- party.description %></p>
           <!-- Displays latest 4 participants -->
           <div class="participants">
             <p id="show-participants" onclick="popup(2);">Participants</p>
@@ -53,7 +53,7 @@
           <div class="card-header">
             <h3>Party Items</h3>
             <!-- total cost o unpurchased item -->
-            <h3>Rs. <span id="total-cost"><%= party.totalcost %></span></h3>
+            <h3>Rs. <span id="total-cost"><%= party.totalcost - party.totalpurchased%></span></h3>
           </div>
           <hr>
           <!-- New items get appended here $(".item-list").innerHTML += <li>...</li> -->
