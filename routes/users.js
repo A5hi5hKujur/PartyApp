@@ -19,7 +19,7 @@ router.post('/register',forwardAuthenticated, (req, res) => {
   //all errors are currently handled here but it will be modified later
   let errors = [];
 
-  let random_no= Math.floor(Math.random()*17);
+  let random_no= Math.floor(Math.random()*20);
 
   let image_url= "/media/profile-picture/dp"+ random_no +".jpg";
   
