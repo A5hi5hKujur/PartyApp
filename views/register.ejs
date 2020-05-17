@@ -15,7 +15,7 @@
           <!-- Enter last name -->
           <input type="text" name="lname" value="<%= typeof lname != 'undefined' ? lname : '' %>" placeholder="Last Name" required/>
           <!-- Check if the entered username matches with any username -->
-          <input type="text" name="email" value="<%= typeof email != 'undefined' ? email : '' %>" placeholder="Email" required/>
+          <input type="email" name="email" value="<%= typeof email != 'undefined' ? email : '' %>" placeholder="Email" required/>
           <!-- Throw this error if you are trying to login with an id that already exists -->
           <p id="username-warning">Username not available</p>
           <input type="password" name="password" value="<%= typeof password != 'undefined' ? password : '' %>" placeholder="Password" required/>
