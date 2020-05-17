@@ -23,7 +23,7 @@
           <!-- Error when passwords dont match-->
           <p id="password-warning">Passwords dont match</p>
           <!-- Enter Mobile Number -->
-          <input type="text" name="mobile_no" value="<%= typeof mobile_no != 'undefined' ? mobile_no : '' %>" placeholder="Mobile" required/>
+          <input type="tel" name="mobile_no" value="<%= typeof mobile_no != 'undefined' ? mobile_no : '' %>" placeholder="10 Digit Mobile Number" pattern="[0-9]{10}" required/>
           <input type="submit" class="btn-blue" value="Sign Up">
           <h2 style="text-align : center;">Or</h2>
             <a href="/users/login">
