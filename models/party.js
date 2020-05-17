@@ -17,6 +17,7 @@ var partySchema = new mongoose.Schema({
     ],
     totalcost: Number,
     totalcontribution: Number,
+    totalpurchased: Number,
     items: [
             {
                 name: String,
