@@ -278,7 +278,7 @@ router.put('/:id/item/delete', isLoggedIn, function(req, res) {
 //------------------------------------------------------------------------------
 
 
-//--------------------------- POST ROUTE TO ADD CONTRIBUTION FROM PARTICIPANTS -------------------
+//--------- POST ROUTE TO ADD CONTRIBUTION FROM PARTICIPANTS -------------------
  router.post('/:party_id/contribution', isLoggedIn, function(req, res)
  {
     Party.findById(req.params.party_id,function(err,party){
@@ -342,7 +342,7 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
 
   });
 //------------------------------------------------------------------------------
-//--------------- Delete route to remove consumer to the item -----------------------
+//--------------- Delete route to remove consumer to the item ------------------
   /*
     1. check if the party item is marked as 2 (individual). and if he is already added to the item's consumer list
     2. add the user to the consumer list of that item.
