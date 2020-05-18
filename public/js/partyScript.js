@@ -19,12 +19,7 @@ $('#items-form').submit(function(e) {
       // reset form
       $('#items-form')[0].reset();
       // if host, give delete option
-      var midString = '<div class="option"></div><div class="options"><div class="edit">Edit</div><div class="delete">Delete</div><div class="add-me">Add Me</div><div class="remove-me">Remove Me</div><div class="view">View Consumers</div></div>';
-      // if (data.user._id.toString() === data.host.toString()) {
-      //   midString = "<div class='options delete'></div>";
-      // } else {
-      //   midString = "<div class=''></div>"
-      // }
+      var midString = '<div class="option"></div><div class="options"><div class="edit">Edit</div><div class="delete">Delete</div><div class="remove-me">Remove Me</div><div class="view">View Consumers</div></div>';
       // append new item
         $('.item-list').append(
             `
@@ -50,20 +45,35 @@ $('#items-form').submit(function(e) {
         var total = parseFloat($("#total-cost").text()) + data.item.price;
         $("#total-cost").text(total);
         // Update participants balance
-        var average = data.item.price / data.party.participants.length;
-        for(var i=0; i<$('.adjustment').length; i++) {
-          $('.adjustment')[i].textContent = (parseFloat($('.adjustment')[i].textContent) - average).toFixed(2);
-          var updatedAdjust = $('.adjustment')[i].textContent;
-          // choose color shade and sign for balance
-          $($('.adjustment')[i]).removeClass('positive-adjust neutral-adjust negative-adjust');
-          if(updatedAdjust > 0) {
-            $($('.adjustment')[i]).addClass('positive-adjust');
-            $('.adjustment')[i].textContent = "+" + $('.adjustment')[i].textContent;
-          } else if(updatedAdjust == 0) {
-            $($('.adjustment')[i]).addClass('neutral-adjust');
-          } else {
-            $($('.adjustment')[i]).addClass('negative-adjust');
+        // If item is for all, update balance of each member
+        if(data.item.forall) {
+          var average = data.item.price / data.party.participants.length;
+          for(var i=0; i<$('.adjustment').length; i++) {
+            $('.adjustment')[i].textContent = (parseFloat($('.adjustment')[i].textContent) - average).toFixed(2);
+            var updatedAdjust = $('.adjustment')[i].textContent;
+            // choose color shade and sign for balance
+            $($('.adjustment')[i]).removeClass('positive-adjust neutral-adjust negative-adjust');
+            if(updatedAdjust > 0) {
+              $($('.adjustment')[i]).addClass('positive-adjust');
+              $('.adjustment')[i].textContent = "+" + $('.adjustment')[i].textContent;
+            } else if(updatedAdjust == 0) {
+              $($('.adjustment')[i]).addClass('neutral-adjust');
+            } else {
+              $($('.adjustment')[i]).addClass('negative-adjust');
+            }
           }
+        } else {
+          var adjust = parseFloat($('#'+data.itemAdder+' .adjustment').text()) - data.item.price;
+          $('#'+data.itemAdder+' .adjustment').text(adjust.toFixed(2));
+          $('#'+data.itemAdder+' .adjustment').removeClass('positive-adjust neutral-adjust negative-adjust');
+            if(adjust > 0) {
+              $('#'+data.itemAdder+' .adjustment').addClass('positive-adjust');
+              $('#'+data.itemAdder+' .adjustment').text("+" + $('#'+data.itemAdder+' .adjustment').text());
+            } else if(adjust == 0) {
+              $('#'+data.itemAdder+' .adjustment').addClass('neutral-adjust');
+            } else {
+              $('#'+data.itemAdder+' .adjustment').addClass('negative-adjust');
+            }
         }
     });
 });
@@ -96,21 +106,21 @@ $('#items').on('click', '.delete', function(e) {
       url: '/party/'+ id +'/item/delete',
       data: {id: itemid, price: itemCost},
       type: 'PUT',
-      success: function(updatedParty) {
+      success: function(data) {
         // Update participants balance
-        var average = itemCost / updatedParty.participants.length;
-        for(var i=0; i<$('.adjustment').length; i++) {
-          $('.adjustment')[i].textContent = (parseFloat($('.adjustment')[i].textContent) + average).toFixed(2);
-          var updatedAdjust = $('.adjustment')[i].textContent;
-          $($('.adjustment')[i]).removeClass('positive-adjust neutral-adjust negative-adjust');
-          if(updatedAdjust > 0) {
-            $($('.adjustment')[i]).addClass('positive-adjust');
-            $('.adjustment')[i].textContent = "+" + $('.adjustment')[i].textContent;
-          } else if(updatedAdjust == 0) {
-            $($('.adjustment')[i]).addClass('neutral-adjust');
-          } else {
-            $($('.adjustment')[i]).addClass('negative-adjust');
-          }
+        var adjust;
+        for(var i=0; i<data.consumers.length; i++) {
+          adjust = parseFloat($('#'+data.consumers[i]+' .adjustment').text()) + data.average;
+          $('#'+data.consumers[i]+' .adjustment').text(adjust.toFixed(2));
+          $('#'+data.consumers[i]+' .adjustment').removeClass('positive-adjust neutral-adjust negative-adjust');
+            if(adjust > 0) {
+              $('#'+data.consumers[i]+' .adjustment').addClass('positive-adjust');
+              $('#'+data.consumers[i]+' .adjustment').text("+" + $('#'+data.consumers[i]+' .adjustment').text());
+            } else if(adjust == 0) {
+              $('#'+data.consumers[i]+' .adjustment').addClass('neutral-adjust');
+            } else {
+              $('#'+data.consumers[i]+' .adjustment').addClass('negative-adjust');
+            }
         }
       }
     });
@@ -233,7 +243,83 @@ $(document).click(function(e) // to disable options menu on random clicks
 });
 //------------------------------------------------------------------------------
 
+//----------------------------- Edit Item --------------------------------------
+$("#items").on("click", ".options .edit", function()
+{
+  let item_id = $(this).parent().parent().parent().parent().attr("id");
+  let item_name = $(this).parent().parent().parent().find(".name").html();
+  let item_cost = parseFloat($(this).parent().parent().parent().find(".item-cost").html());
+  let item_quantity = parseFloat($(this).parent().parent().parent().find(".item-quantity").html());
+  let input_url = window.location.href;
+  let party_id = input_url.split('/')[4];
+  let action = "/party/"+party_id+"/item/"+item_id+"/edit";
+
+  // Add these values to the edit form popup.
+  $("#items-form-edit").attr("action", action);
+  $("#items-form-edit").find(".name").val(item_name);
+  $("#items-form-edit").find(".cost").val(item_cost / item_quantity);
+  $("#items-form-edit").find(".quantity").val(item_quantity);
+
+  // Display edit item popup
+  popup(5);
+});
+//------------------------------------------------------------------------------
+
+//--------------------------- Add consumer to item -----------------------------
+  $("#items").on("click", ".options .add-me", function()
+  {
+    let item_id = $(this).parent().parent().parent().parent().attr("id");
+    let item_cost = $(this).parent().parent().parent().find(".item-cost").html();
+    let input_url = window.location.href;
+    let party_id = input_url.split('/')[4];
+    let sendData = {
+      id : item_id,
+      cost : item_cost
+    };
+    let output_url = "/party/"+party_id+"/item/"+item_id+"/add";
+    console.log(output_url);
+    const options = { // Ajax request
+      method: 'post',
+      url: output_url,
+      data: sendData
+    };
+    // control returns here after being redirected from the backend
+    $.ajax(options).done(response => {
+
+    });
+  });
+//------------------------------------------------------------------------------
+
+//--------------------------- Remove consumer to item -----------------------------
+  $("#items").on("click", ".options .remove-me", function()
+  {
+    let item_id = $(this).parent().parent().parent().parent().attr("id");
+    let item_cost = $(this).parent().parent().parent().find(".item-cost").html();
+    let input_url = window.location.href;
+    let party_id = input_url.split('/')[4];
+    let sendData = {
+      id : item_id,
+      cost : item_cost
+    };
+    let output_url = "/party/"+party_id+"/item/"+item_id+"/remove";
+    console.log(output_url);
+    const options = { // Ajax request
+      method: 'post',
+      url: output_url,
+      data: sendData
+    };
+    // control returns here after being redirected from the backend
+    $.ajax(options).done(response => {
+
+    });
+  });
+//------------------------------------------------------------------------------
+
 //----------------------------- Logout -----------------------------------------
+$("header>.profile-icon").on("click", function(){
+  $('.profile-menu').toggleClass("active");   // this would need to change i guess
+});
+
 $("#logout").on( "click", function(){
   window.location.href = '/users/logout';
 });

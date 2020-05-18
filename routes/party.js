@@ -103,7 +103,8 @@ router.get('/:id',isLoggedIn,function(req, res){
       participants : [{
         id : req.user._id,
         contribution : 0,
-        host : true
+        host : true,
+        balance: 0
       }],
       totalcost : 0,
       totalcontribution : 0,
@@ -164,7 +165,8 @@ router.get('/:id',isLoggedIn,function(req, res){
               let participant = {
                 id : req.user._id,
                 contribution : 0,
-                host : false
+                host : false,
+                balance: 0
               }
               party.participants.push(participant);  // push new user to found party.
               party.save(function(err,user){
@@ -192,6 +194,9 @@ router.get('/:id',isLoggedIn,function(req, res){
 */
   router.post('/:id/item', isLoggedIn, function(req, res) {
     let cost = parseFloat(req.body.quantity) * parseFloat(req.body.cost);
+    var forall = req.body.type === '1' ? true : false;
+    // First consumer is the person who adds the item
+    var consumers = [req.user._id];
     let newItem = {
       name : req.body.name,
       category : req.body.category,
@@ -199,22 +204,43 @@ router.get('/:id',isLoggedIn,function(req, res){
       price : cost,
       priority : req.body.priority,
       purchased : false,
-      essential : false
+      essential : false,
+      forall: forall,
+      consumers: consumers
     };
-    Party.findOneAndUpdate({_id: req.params.id}, {
-        $push: { items : newItem },
-        $inc: { totalcost: newItem.price}
-      }, {new: true}, function(err, party) {
+    Party.findOne({_id: req.params.id}, function(err, party) {
       if(err) {
         console.log(err);
         res.redirect('/party/' + req.params.id);
       } else {
         if(req.xhr) {
+          // If the item is general then push all other members
+          // and increse balance of each member
+          if(forall) {
+            var average = newItem.price / party.participants.length;
+            party.participants.forEach(function(participant) {
+              participant.balance -= average;
+              if(!newItem.consumers[0].equals(participant.id)) {
+                newItem.consumers.push(participant.id);
+              }
+            });
+          } else {
+            // Oterwise increase balance of that member only
+            for(var i=0; i<party.participants.length; i++) {
+              if(newItem.consumers[0].equals(party.participants[i].id)) {
+                party.participants[i].balance -= newItem.price;
+              }
+            }
+          }
+          party.items.push(newItem);
+          party.totalcost += parseFloat(newItem.price);
+          party.save();          
           res.json({
             item: party.items[party.items.length - 1],
             party: party,
             user: req.user,
-            host: party.hosts[0]
+            host: party.hosts[0],
+            itemAdder: newItem.consumers[0]
           });
         } else {
           res.redirect('/party/' + req.params.id);
@@ -224,7 +250,7 @@ router.get('/:id',isLoggedIn,function(req, res){
   });
 //------------------------------------------------------------------------------
 
-//------------------- PUT route to update item list ----------------------------
+//------------------- PUT route to delete item  ----------------------------
 /*
   Rework :
   1. if item.type == 1(for all) : only the admin and the person who added the item should be able to remove it (but how would u track that person ?)
@@ -232,16 +258,39 @@ router.get('/:id',isLoggedIn,function(req, res){
 */
 router.put('/:id/item/delete', isLoggedIn, function(req, res) {
   var price = parseFloat(req.body.price);
-  Party.findOneAndUpdate({_id: req.params.id}, {
-      $pull: { items : {_id: req.body.id} },
-      $inc: { totalcost: - price}
-    }, {new: true}, function(err, party) {
+  Party.findOne({_id: req.params.id}, function(err, party) {
     if(err) {
       console.log(err);
       res.redirect('/party/' + req.params.id);
     } else {
       if(req.xhr) {
-        res.json(party);
+        party.totalcost -= price;
+        var itemId = req.body.id;
+        var itemToRemove;
+        for(var i=0; i<party.items.length; i++) {
+          if(itemId.toString() === party.items[i]._id.toString()) {
+            // Copy and remove the party item
+            itemToRemove = party.items[i];
+            party.items.splice(i, 1);
+            break;
+          }
+        }
+        // Refresh participants balance list
+        var average = itemToRemove.price / itemToRemove.consumers.length;
+        for(var i=0; i<itemToRemove.consumers.length; i++) {
+          for(var j=0; j<party.participants.length; j++) {
+            if(itemToRemove.consumers[i].toString() === party.participants[j].id.toString()) {
+              party.participants[j].balance += average;
+              break;
+            }
+          }
+        }
+        party.save();        
+        res.json({
+          party: party,
+          consumers: itemToRemove.consumers,
+          average: average
+        });
       } else {
         res.redirect('/party/' + req.params.id);
       }
@@ -278,7 +327,7 @@ router.put('/:id/item/delete', isLoggedIn, function(req, res) {
 //------------------------------------------------------------------------------
 
 
-//--------------------------- POST ROUTE TO ADD CONTRIBUTION FROM PARTICIPANTS -------------------
+//--------- POST ROUTE TO ADD CONTRIBUTION FROM PARTICIPANTS -------------------
  router.post('/:party_id/contribution', isLoggedIn, function(req, res)
  {
     Party.findById(req.params.party_id,function(err,party){
@@ -289,6 +338,7 @@ router.put('/:id/item/delete', isLoggedIn, function(req, res) {
           party.participants.forEach(function(participant){
             if(participant.id.equals(req.user._id)){
               participant.contribution+=Number(req.body.contribution_amt);
+              participant.balance += Number(req.body.contribution_amt);
               party.totalcontribution+=Number(req.body.contribution_amt);
             }
           });
@@ -298,8 +348,6 @@ router.put('/:id/item/delete', isLoggedIn, function(req, res) {
             }
           });
           if(req.xhr) {
-            console.log(req.user);
-
             res.json({
               party: party,
               user: req.user,
@@ -339,15 +387,53 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
     2. add the user to the consumer list of that item.
   */
   router.post('/:party_id/item/:item_id/add', isLoggedIn, function(req, res) {
-
+    Party.findById(req.params.party_id,function(err,party){
+      if(err){
+        console.log(err);
+        res.redirect("/dashboard");
+      }else{
+        for(var i=0;i<party.items.length;i++){
+          if(party.items[i]._id.equals(req.params.item_id)){
+              if(!party.items[i].forall){
+                  party.items[i].consumers.push(req.user._id);
+                  party.save(function(err){
+                    console.log(err);
+                  });
+                  break;
+              }
+          }
+        }
+        res.redirect("/party/"+req.params.party_id);
+      }
+    });
   });
 //------------------------------------------------------------------------------
-//--------------- Delete route to remove consumer to the item -----------------------
+//--------------- Delete route to remove consumer to the item ------------------
   /*
     1. check if the party item is marked as 2 (individual). and if he is already added to the item's consumer list
-    2. add the user to the consumer list of that item.
+    2. delete the user to the consumer list of that item.
   */
   router.delete('/:party_id/item/:item_id/remove', isLoggedIn, function(req, res) {
+    Party.findById(req.params.party_id,function(err,party){
+      if(err){
+        console.log(err);
+        res.redirect("/dashboard");
+      }else{
+        for(var i=0;i<party.items.length;i++){
+          if(party.items[i]._id.equals(req.params.item_id)){
+              if(!party.items[i].forall){
+                  let index = party.items[i].consumers.indexOf(req.user._id);
+                  party.items[i].consumers.splice(index,1);
+                  party.save(function(err){
+                    console.log(err);
+                  });
+                  break;
+              }
+          }
+        }
+        res.redirect("/party/"+req.params.party_id);
+      }
+    });
 
   });
 //------------------------------------------------------------------------------
