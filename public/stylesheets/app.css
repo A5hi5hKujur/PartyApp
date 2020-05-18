@@ -294,6 +294,10 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
   background-position: center;
   background-size: 100% 100%;
 }
+.popup-message{
+  color : white;
+  margin : 20px auto;
+}
 .popup form{
   width : 100%;
   margin : 20px 0px;
@@ -556,13 +560,25 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 }
 
-.party-entry, .party-invite{
+.party-entry, .party-invite, .add-consumer-image, .remove-consumer-image{
   height : 200px;
   width: 300px;
   margin : 0px auto;
   background-image: url(/media/party-entry.png);
   background-position: center;
   background-size: 100% 100%;
+}
+.add-consumer-image{
+  background-image: url(/media/consumer-add.png);
+  margin : 20px auto;
+  height : 150px;
+  width: 150px;
+}
+.remove-consumer-image{
+  background-image: url(/media/consumer-remove.png);
+  margin : 20px auto;
+  height : 150px;
+  width: 150px;
 }
 .party-invite{
     background-image: url(/media/party-invite.png);

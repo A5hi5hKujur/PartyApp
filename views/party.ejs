@@ -249,6 +249,34 @@
   </div>
   <!-- End of Overlay code to edit existing item -->
 
+  <!-- Overlay code to Confirm consumer addition -->
+  <div class="overlay">
+    <div class="popup">
+      <header>
+        <h2>You Have Been Added</h2>
+        <div class="close-icon" onclick="popup(6)"></div>
+      </header>
+      <div class="add-consumer-image"></div>
+      <p class="popup-message">You are now sharing <span id="shared-item"></span>. Which means the total cost of the item will
+         been shared among all its consumers</p>
+    </div>
+  </div>
+  <!-- End of Overlay code to confirm consumer addition -->
+
+  <!-- Overlay code to Confirm consumer removal -->
+  <div class="overlay">
+    <div class="popup">
+      <header>
+        <h2>You Have Been Removed</h2>
+        <div class="close-icon" onclick="popup(7)"></div>
+      </header>
+      <div class="remove-consumer-image"></div>
+      <p class="popup-message">You are no longer sharing <b><span id="unshared-item"></span></b>. Which means you will no longer have
+      to pay a share for this item.</p>
+    </div>
+  </div>
+  <!-- End of Overlay code to confirm consumer removal -->
+
   <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
   <script type="text/javascript" src="/js/partyScript.js"></script>
 <%- include("partials/footer") %>

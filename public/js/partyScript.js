@@ -270,6 +270,8 @@ $("#items").on("click", ".options .edit", function()
   {
     let item_id = $(this).parent().parent().parent().parent().attr("id");
     let item_cost = $(this).parent().parent().parent().find(".item-cost").html();
+    let item_name = $(this).parent().parent().parent().find(".name").html();
+    $("#shared-item").html(item_name);
     let input_url = window.location.href;
     let party_id = input_url.split('/')[4];
     let sendData = {
@@ -285,7 +287,7 @@ $("#items").on("click", ".options .edit", function()
     };
     // control returns here after being redirected from the backend
     $.ajax(options).done(response => {
-
+      popup(6);
     });
   });
 //------------------------------------------------------------------------------
@@ -295,6 +297,8 @@ $("#items").on("click", ".options .edit", function()
   {
     let item_id = $(this).parent().parent().parent().parent().attr("id");
     let item_cost = $(this).parent().parent().parent().find(".item-cost").html();
+    let item_name = $(this).parent().parent().parent().find(".name").html();
+    $("#unshared-item").html(item_name);
     let input_url = window.location.href;
     let party_id = input_url.split('/')[4];
     let sendData = {
@@ -311,7 +315,7 @@ $("#items").on("click", ".options .edit", function()
     };
     // control returns here after being redirected from the backend
     $.ajax(options).done(response => {
-
+      popup(7);
     });
   });
 //------------------------------------------------------------------------------
