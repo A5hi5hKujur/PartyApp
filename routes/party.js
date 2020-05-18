@@ -422,13 +422,30 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
         for(var i=0;i<party.items.length;i++){
           if(party.items[i]._id.equals(req.params.item_id)){
               if(!party.items[i].forall){
-                  let index = party.items[i].consumers.indexOf(req.user._id);
-                  party.items[i].consumers.splice(index,1);
-                  party.save(function(err){
-                    console.log(err);
-                  });
+                  let index;
+                  let consumerLength=party.items[i].consumers.length;
+                  if(consumerLength<=1){
+                      party.items.splice(i,1);
+                      party.save(function(err){
+                        console.log(err);
+                      });
+                      break;
+                  }else{
+                    for(var j=0;j<consumerLength;j++){
+                      if(party.items[i].consumers[j].equals(req.user._id)){
+                          index=j;
+                          break;
+                      }
+                    }
+                    party.items[i].consumers.splice(index,1);
+                    party.save(function(err){
+                      console.log(err);
+                    });
+                    break;
+                  }
                   break;
               }
+              break;
           }
         }
         res.redirect("/party/"+req.params.party_id);
