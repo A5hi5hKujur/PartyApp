@@ -12,6 +12,7 @@ var partySchema = new mongoose.Schema({
                     ref: "User"
                 },
                 contribution: Number,
+                balance: Number,
                 host: Boolean
             }
     ],

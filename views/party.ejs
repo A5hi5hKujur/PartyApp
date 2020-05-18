@@ -124,7 +124,7 @@
       </header>
       <form id="items-form" class="" action="/party/:id/item" method="post">
         <label for="item-type">Select item type</label>
-        <select class="" name="type">
+        <select class="item-type" name="type">
             <option value="1">For Everyone</option>
             <option value="2">For Me</option>
         </select>
@@ -154,9 +154,9 @@
         <label for="item-name">Name</label>
         <input type="text" name="name" placeholder="Item name" value="" maxlength="15" required>
         <label for="item-cost">Cost</label>
-        <input type="number" name="cost" placeholder="Cost" min="0" value="" required>
+        <input type="number" name="cost" placeholder="Cost" min="1" value="" required>
         <label for="item-cost">Quantity</label>
-        <input type="number" name="quantity" placeholder="Cost" value="1" min="0" required>
+        <input type="number" name="quantity" placeholder="Cost" value="1" min="1" required>
         <input class="btn-blue" type="submit" name="" value="Add Item">
       </form>
     </div>
@@ -183,7 +183,7 @@
           <div class="contribution-details">
             <span class="user-name"><%=users[i].fname%> <%=users[i].lname%></span>
             <span class="user-contribution"><%=party.participants[i].contribution%></span>
-            <% var adjust = (party.participants[i].contribution - averageContri).toFixed(2); %>
+            <% var adjust = party.participants[i].balance.toFixed(2); %>
             <% if (adjust > 0) { %>
               <span class="adjustment positive-adjust">+<%=adjust%></span>
             <% } else if (adjust == 0) { %>
@@ -199,7 +199,7 @@
   </div>
   <!-- End Overlay to display list of all participants -->
 
-  <!-- Overlay to display list of all participants -->
+  <!-- Overlay to display description -->
   <div class="overlay">
     <div class="popup">
       <header>
@@ -213,7 +213,7 @@
       </form>
     </div>
   </div>
-  <!-- End Overlay to display list of all participants -->
+  <!-- End Overlay to display description -->
 
   <!-- Overlay to Confirm party termination -->
   <div class="overlay">
