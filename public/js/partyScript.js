@@ -301,6 +301,7 @@ $("#items").on("click", ".options .edit", function()
       id : item_id,
       cost : item_cost
     };
+    $('#'+item_id).hide();
     let output_url = "/party/"+party_id+"/item/"+item_id+"/remove";
     console.log(output_url);
     const options = { // Ajax request
