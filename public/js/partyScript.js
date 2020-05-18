@@ -263,6 +263,27 @@ $("#items").on("click", ".options .edit", function()
   // Display edit item popup
   popup(5);
 });
+$('#items-form-edit').submit(function(e) {
+  e.preventDefault();
+  // serialize form data
+  var data = $(this).serialize();
+  let url = $(this).attr("action"); // backend url
+  let item_id = url.split("/")[4]; // extract item id from backend url
+  $.ajax({
+    url: url,
+    data: data,
+    type: 'PUT',
+    success: function(item) {
+      // close form
+      popup(5);
+      // update item details
+      $('#'+item_id).find(".name").html(item.name);
+      $('#'+item_id).find(".item-quantity").html(item.quantity);
+      $('#'+item_id).find(".item-cost").html(item.cost);
+    }
+  });
+});
+
 //------------------------------------------------------------------------------
 
 //--------------------------- Add consumer to item -----------------------------
