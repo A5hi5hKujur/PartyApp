@@ -395,11 +395,21 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
         for(var i=0;i<party.items.length;i++){
           if(party.items[i]._id.equals(req.params.item_id)){
               if(!party.items[i].forall){
-                  party.items[i].consumers.push(req.user._id);
-                  party.save(function(err){
-                    console.log(err);
-                  });
-                  break;
+                let flag=0;
+                let consumerLength=party.items[i].consumers.length;
+                  for(var j=0;j<consumerLength;j++){
+                    if(party.items[i].consumers[j].equals(req.user._id)){
+                      flag=1;
+                      break;
+                    }
+                  }
+                  if(flag===0){
+                    party.items[i].consumers.push(req.user._id);
+                    party.save(function(err){
+                      console.log(err);
+                    });
+                    break;
+                  }
               }
           }
         }
@@ -453,6 +463,36 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
     });
 
   });
+//------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------
+//------------------------Edit Item---------------------------------------------
+
+router.put("/:party_id/item/:item_id/edit",isLoggedIn,function(req,res){
+
+  Party.findById(req.params.party_id,function(err,party){
+      if(err){
+        console.log(err);
+        res.redirect("/dashboard");
+      }else{
+        var itemsLength=party.items.length;
+       for(var i=0;i<itemsLength;i++){
+          if(party.items[i]._id.equals(req.params.item_id)){
+            party.items[i].name= req.body.name;
+            party.items[i].price= req.body.cost;
+            party.items[i].quantity= req.body.quantity;
+            party.save(function(err){
+              console.log(err);
+            });
+            break;
+          }
+       }
+       res.redirect("/party/"+req.params.party_id);
+      }
+  });
+});
+
 //------------------------------------------------------------------------------
 
 module.exports = router;
