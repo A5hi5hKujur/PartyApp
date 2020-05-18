@@ -767,4 +767,8 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
      left : calc((100% - 98%)/2);
      padding : 0px 10px;
    }
+   .item-ops .options{
+     left : -70px;
+     top : 25px;
+   }
  }

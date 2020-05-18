@@ -218,3 +218,22 @@ $('#description-form').submit(function(e) {
   });
 });
 // ------------------------------------------------------------------------------
+
+//------------------------ Toggle Item options ---------------------------------
+$(".option").on("click", function(){
+  $(this).siblings().eq(0).toggleClass("active");   // this would need to change i guess
+});
+
+$(document).click(function(e) // to disable options menu on random clicks
+{
+  // Check if click was triggered on or within the item options
+  if( $(e.target).closest(".option").length > 0 ) return false;
+  $(".options").removeClass("active");
+});
+//------------------------------------------------------------------------------
+
+//----------------------------- Logout -----------------------------------------
+$("#logout").on( "click", function(){
+  window.location.href = '/users/logout';
+});
+//------------------------------------------------------------------------------

@@ -59,7 +59,7 @@ router.get('/:id',isLoggedIn,function(req, res){
           });
           var currentPartyUser = party.participants.find(obj => {
             return obj.id.toString() === req.user._id.toString();
-          });          
+          });
           res.render('party', {
             party: party,
             users: users,
@@ -139,6 +139,10 @@ router.get('/:id',isLoggedIn,function(req, res){
 //------------------------------------------------------------------------------
 
 //----------------------- POST ROUTE TO ADD NEW USER TO PARTY ------------------
+/*
+  This route needs to be reworked.
+  Every new user must be added into every COMMON item's consumer list.
+*/
   router.post('/:id/user',isLoggedIn,function(req, res)
   {
     User.findById(req.user._id, function(err, user)
@@ -178,6 +182,14 @@ router.get('/:id',isLoggedIn,function(req, res){
 //------------------------------------------------------------------------------
 
 //------------------- POST route to add a new item -----------------------------
+/*
+  This route needs to be reworked :
+  1. If item.type == 1 : item is for all.
+       and all the participants of the party need to be added on the item's consumer list.
+
+  2. If item.type == 2 : item is for the logged in user :
+      and only he should be added on the item's consumer list.
+*/
   router.post('/:id/item', isLoggedIn, function(req, res) {
     let cost = parseFloat(req.body.quantity) * parseFloat(req.body.cost);
     let newItem = {
@@ -213,6 +225,11 @@ router.get('/:id',isLoggedIn,function(req, res){
 //------------------------------------------------------------------------------
 
 //------------------- PUT route to update item list ----------------------------
+/*
+  Rework :
+  1. if item.type == 1(for all) : only the admin and the person who added the item should be able to remove it (but how would u track that person ?)
+  2. if item.type == 2(for individuals) : users from the consumer list should be able to edit it.
+*/
 router.put('/:id/item/delete', isLoggedIn, function(req, res) {
   var price = parseFloat(req.body.price);
   Party.findOneAndUpdate({_id: req.params.id}, {
@@ -282,7 +299,7 @@ router.put('/:id/item/delete', isLoggedIn, function(req, res) {
           });
           if(req.xhr) {
             console.log(req.user);
-            
+
             res.json({
               party: party,
               user: req.user,
@@ -297,8 +314,8 @@ router.put('/:id/item/delete', isLoggedIn, function(req, res) {
 //------------------------------------------------------------------------------
 
 //------------------- PUT route to edit description-----------------------------
-router.put('/:id/description', isLoggedIn, function(req, res) {  
-  req.body.description = req.sanitize(req.body.description);  
+router.put('/:id/description', isLoggedIn, function(req, res) {
+  req.body.description = req.sanitize(req.body.description);
   Party.findOneAndUpdate({_id: req.params.id}, {
       $set: {description: req.body.description}
     }, {new: true}, function(err, party) {
@@ -314,6 +331,25 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
     }
   });
 });
+//------------------------------------------------------------------------------
+
+//--------------- POST route to add consumer to the item -----------------------
+  /*
+    1. check if the party item is marked as 2 (individual).
+    2. add the user to the consumer list of that item.
+  */
+  router.post('/:party_id/item/:item_id/add', isLoggedIn, function(req, res) {
+
+  });
+//------------------------------------------------------------------------------
+//--------------- Delete route to remove consumer to the item -----------------------
+  /*
+    1. check if the party item is marked as 2 (individual). and if he is already added to the item's consumer list
+    2. add the user to the consumer list of that item.
+  */
+  router.delete('/:party_id/item/:item_id/remove', isLoggedIn, function(req, res) {
+
+  });
 //------------------------------------------------------------------------------
 
 module.exports = router;
