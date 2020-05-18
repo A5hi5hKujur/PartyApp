@@ -232,7 +232,83 @@ $(document).click(function(e) // to disable options menu on random clicks
 });
 //------------------------------------------------------------------------------
 
+//----------------------------- Edit Item --------------------------------------
+$("#items").on("click", ".options .edit", function()
+{
+  let item_id = $(this).parent().parent().parent().parent().attr("id");
+  let item_name = $(this).parent().parent().parent().find(".name").html();
+  let item_cost = parseFloat($(this).parent().parent().parent().find(".item-cost").html());
+  let item_quantity = parseFloat($(this).parent().parent().parent().find(".item-quantity").html());
+  let input_url = window.location.href;
+  let party_id = input_url.split('/')[4];
+  let action = "/party/"+party_id+"/item/"+item_id+"/edit";
+
+  // Add these values to the edit form popup.
+  $("#items-form-edit").attr("action", action);
+  $("#items-form-edit").find(".name").val(item_name);
+  $("#items-form-edit").find(".cost").val(item_cost / item_quantity);
+  $("#items-form-edit").find(".quantity").val(item_quantity);
+
+  // Display edit item popup
+  popup(5);
+});
+//------------------------------------------------------------------------------
+
+//--------------------------- Add consumer to item -----------------------------
+  $("#items").on("click", ".options .add-me", function()
+  {
+    let item_id = $(this).parent().parent().parent().parent().attr("id");
+    let item_cost = $(this).parent().parent().parent().find(".item-cost").html();
+    let input_url = window.location.href;
+    let party_id = input_url.split('/')[4];
+    let sendData = {
+      id : item_id,
+      cost : item_cost
+    };
+    let output_url = "/party/"+party_id+"/item/"+item_id+"/add";
+    console.log(output_url);
+    const options = { // Ajax request
+      method: 'post',
+      url: output_url,
+      data: sendData
+    };
+    // control returns here after being redirected from the backend
+    $.ajax(options).done(response => {
+
+    });
+  });
+//------------------------------------------------------------------------------
+
+//--------------------------- Remove consumer to item -----------------------------
+  $("#items").on("click", ".options .remove-me", function()
+  {
+    let item_id = $(this).parent().parent().parent().parent().attr("id");
+    let item_cost = $(this).parent().parent().parent().find(".item-cost").html();
+    let input_url = window.location.href;
+    let party_id = input_url.split('/')[4];
+    let sendData = {
+      id : item_id,
+      cost : item_cost
+    };
+    let output_url = "/party/"+party_id+"/item/"+item_id+"/remove";
+    console.log(output_url);
+    const options = { // Ajax request
+      method: 'post',
+      url: output_url,
+      data: sendData
+    };
+    // control returns here after being redirected from the backend
+    $.ajax(options).done(response => {
+
+    });
+  });
+//------------------------------------------------------------------------------
+
 //----------------------------- Logout -----------------------------------------
+$("header>.profile-icon").on("click", function(){
+  $('.profile-menu').toggleClass("active");   // this would need to change i guess
+});
+
 $("#logout").on( "click", function(){
   window.location.href = '/users/logout';
 });
