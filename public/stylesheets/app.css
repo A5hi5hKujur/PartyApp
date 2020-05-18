@@ -34,12 +34,20 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
   color : white;
   font-weight: bold;
   border: 0px;
+  transition : .2s all ease-in;
+}
+.btn-blue:hover{
+  background: #2a6cd5;
 }
 .btn-pink{
   background: #E63E98;
   color : white;
   font-weight: bold;
   border : 0px;
+  transition : .2s all ease-in;
+}
+.btn-pink:hover{
+  background: #c82e81;
 }
 .btn-blue-hollow{
   background: none;
@@ -191,6 +199,8 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
 #sort-section > button:hover{
     transition : all ease-in .2s;
   background: rgba(230, 62,152, 1);
+  border : 2px solid #E63E98;
+  color : white;
 }
 .filter-party .filter-buttons button.active{
   background: #E63E98;
@@ -334,7 +344,11 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 #show-participants, #edit-description{
   cursor: pointer;
   color : #E63E98;
+  transition: all ease-in .2s;
   opacity: .7;
+}
+#show-participants:hover, #edit-description:hover{
+  opacity: 1;
 }
 .party-intro .participants{
   display: flex;
@@ -403,8 +417,13 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
   width : 35px;
   cursor : pointer;
   background-position: center;
+  transition : all ease-in .2s;
   background-image: url(/media/options.png);
+  opacity: .7;
   background-size: 100% 100%;
+}
+.item-ops .option:hover{
+  opacity : 1;
 }
 .item-ops .options{
   width : 150px;
@@ -464,7 +483,11 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
  width: 25px;
  border : 3px solid #586076;
  border-radius: 5px;
+ transition: all .2s ease-in;
  background-color: transparent;
+}
+.checkmark:hover {
+  border : 3px solid #ccc;
 }
 
 
@@ -500,12 +523,20 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 .add-item{
   height: 50px;
   width: 50px;
+  border-radius: 100%;
   background-image: url(/media/add.png);
   background-position: center;
   background-size: 100% 100%;
   background-repeat: no-repeat;
   margin : 20px auto 0px auto;
   cursor: pointer;
+  transition: all ease-in .2s;
+}
+.add-item:hover{
+  transform: translateY(-5px);
+  -webkit-box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
+-moz-box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
+box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 }
 
 .party-entry, .party-invite{
