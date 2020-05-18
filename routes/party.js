@@ -395,11 +395,21 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
         for(var i=0;i<party.items.length;i++){
           if(party.items[i]._id.equals(req.params.item_id)){
               if(!party.items[i].forall){
-                  party.items[i].consumers.push(req.user._id);
-                  party.save(function(err){
-                    console.log(err);
-                  });
-                  break;
+                let flag=0;
+                let consumerLength=party.items[i].consumers.length;
+                  for(var j=0;j<consumerLength;j++){
+                    if(party.items[i].consumers[j].equals(req.user._id)){
+                      flag=1;
+                      break;
+                    }
+                  }
+                  if(flag===0){
+                    party.items[i].consumers.push(req.user._id);
+                    party.save(function(err){
+                      console.log(err);
+                    });
+                    break;
+                  }
               }
           }
         }
@@ -459,7 +469,7 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
 //------------------------------------------------------------------------------
 //------------------------Edit Item---------------------------------------------
 
-router.put("/party/:party_id/item/:item_id/edit",isLoggedIn,function(req,res){
+router.put("/:party_id/item/:item_id/edit",isLoggedIn,function(req,res){
 
   Party.findById(req.params.party_id,function(err,party){
       if(err){
