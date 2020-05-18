@@ -220,7 +220,7 @@ $('#description-form').submit(function(e) {
 // ------------------------------------------------------------------------------
 
 //------------------------ Toggle Item options ---------------------------------
-$(".option").on("click", function(){
+$("#items").on("click", ".option", function(){
   $(this).siblings().eq(0).toggleClass("active");   // this would need to change i guess
 });
 
