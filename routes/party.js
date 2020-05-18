@@ -339,7 +339,7 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
     2. add the user to the consumer list of that item.
   */
   router.post('/:party_id/item/:item_id/add', isLoggedIn, function(req, res) {
-
+    
   });
 //------------------------------------------------------------------------------
 //--------------- Delete route to remove consumer to the item -----------------------
