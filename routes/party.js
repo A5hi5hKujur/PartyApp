@@ -327,7 +327,7 @@ router.put('/:id/item/delete', isLoggedIn, function(req, res) {
 //------------------------------------------------------------------------------
 
 
-//--------------------------- POST ROUTE TO ADD CONTRIBUTION FROM PARTICIPANTS -------------------
+//--------- POST ROUTE TO ADD CONTRIBUTION FROM PARTICIPANTS -------------------
  router.post('/:party_id/contribution', isLoggedIn, function(req, res)
  {
     Party.findById(req.params.party_id,function(err,party){
@@ -387,15 +387,53 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
     2. add the user to the consumer list of that item.
   */
   router.post('/:party_id/item/:item_id/add', isLoggedIn, function(req, res) {
-
+    Party.findById(req.params.party_id,function(err,party){
+      if(err){
+        console.log(err);
+        res.redirect("/dashboard");
+      }else{
+        for(var i=0;i<party.items.length;i++){
+          if(party.items[i]._id.equals(req.params.item_id)){
+              if(!party.items[i].forall){
+                  party.items[i].consumers.push(req.user._id);
+                  party.save(function(err){
+                    console.log(err);
+                  });
+                  break;
+              }
+          }
+        }
+        res.redirect("/party/"+req.params.party_id);
+      }
+    });
   });
 //------------------------------------------------------------------------------
-//--------------- Delete route to remove consumer to the item -----------------------
+//--------------- Delete route to remove consumer to the item ------------------
   /*
     1. check if the party item is marked as 2 (individual). and if he is already added to the item's consumer list
-    2. add the user to the consumer list of that item.
+    2. delete the user to the consumer list of that item.
   */
   router.delete('/:party_id/item/:item_id/remove', isLoggedIn, function(req, res) {
+    Party.findById(req.params.party_id,function(err,party){
+      if(err){
+        console.log(err);
+        res.redirect("/dashboard");
+      }else{
+        for(var i=0;i<party.items.length;i++){
+          if(party.items[i]._id.equals(req.params.item_id)){
+              if(!party.items[i].forall){
+                  let index = party.items[i].consumers.indexOf(req.user._id);
+                  party.items[i].consumers.splice(index,1);
+                  party.save(function(err){
+                    console.log(err);
+                  });
+                  break;
+              }
+          }
+        }
+        res.redirect("/party/"+req.params.party_id);
+      }
+    });
 
   });
 //------------------------------------------------------------------------------

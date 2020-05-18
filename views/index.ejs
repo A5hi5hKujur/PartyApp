@@ -1,13 +1,12 @@
 <%- include("partials/header") %>
 <body class="profile">
   <header>
-    <a href="/">
-      <div class="logo">
-        <h1>Contri</h1>
-      </div>
-    </a>
-    <div class="profile-icon" id="logout">
+    <a href="/"><div class="logo"><h1>Contri</h1></div></a>
+    <div class="profile-icon">
       <img class="profile-icon" src="<%= user.image %>" >
+      <div class="profile-menu">
+        <div id="logout">Logout</div>
+      </div>
     </div>
   </header>
   <div class="profile-banner">

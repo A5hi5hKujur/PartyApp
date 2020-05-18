@@ -6,8 +6,11 @@
 <% } %>
     <header>
       <a href="/"><div class="logo"><h1>Contri</h1></div></a>
-      <div class="profile-icon" id="logout">
+      <div class="profile-icon">
         <img class="profile-icon" src="<%= currentUser.image %>" >
+        <div class="profile-menu">
+          <div id="logout">Logout</div>
+        </div>
       </div>
     </header>
     <h1>Welcome to, <span><%= party.party_name %></span></h1>
@@ -151,11 +154,11 @@
             <option value="2">Medium</option>
             <option value="3">Low</option>
         </select>
-        <label for="item-name">Name</label>
+        <label for="name">Name</label>
         <input type="text" name="name" placeholder="Item name" value="" maxlength="15" required>
-        <label for="item-cost">Cost</label>
+        <label for="cost">Cost</label>
         <input type="number" name="cost" placeholder="Cost" min="1" value="" required>
-        <label for="item-cost">Quantity</label>
+        <label for="quantity">Quantity</label>
         <input type="number" name="quantity" placeholder="Cost" value="1" min="1" required>
         <input class="btn-blue" type="submit" name="" value="Add Item">
       </form>
@@ -225,6 +228,26 @@
     </div>
   </div>
   <!-- End Overlay to confirm party termination -->
+
+  <!-- Overlay code to Edit existing item -->
+  <div class="overlay">
+    <div class="popup">
+      <header>
+        <h2>Edit Item</h2>
+        <div class="close-icon" onclick="popup(5)"></div>
+      </header>
+      <form id="items-form-edit" class="" action="/party/:party_id/item/:item_id/edit" method="put">
+        <label for="name">Name</label>
+        <input type="text" class="name" name="name" placeholder="Item name" value="" maxlength="15" required>
+        <label for="cost">Cost</label>
+        <input type="number" class="cost" name="cost" placeholder="Cost" min="0" value="" required>
+        <label for="quantity">Quantity</label>
+        <input type="number" class="quantity" name="quantity" placeholder="Cost" value="1" min="0" required>
+        <input class="btn-blue" type="submit" name="" value="Edit Item">
+      </form>
+    </div>
+  </div>
+  <!-- End of Overlay code to edit existing item -->
 
   <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
   <script type="text/javascript" src="/js/partyScript.js"></script>
