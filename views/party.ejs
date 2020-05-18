@@ -5,7 +5,7 @@
   <body class="party">
 <% } %>
     <header>
-      <a href="/"><div class="logo"><h1>LOGO</h1></div></a>
+      <a href="/"><div class="logo"><h1>Contri</h1></div></a>
       <div class="profile-icon" id="logout">
         <img class="profile-icon" src="<%= currentUser.image %>" >
       </div>
@@ -68,11 +68,16 @@
                     <p class="cost">Rs. <span class="item-cost"><%=item.price%></span> </p>
                   </div>
                   <div class="item-ops">
-                    <% if (currentUser._id.toString() === host._id.toString()) { %>
-                      <div class="options delete"></div>
-                    <% } else { %>
-                      <div class=""></div>
-                    <% } %>
+                    <div class="option"></div>
+                    <div class="options">
+                      <!-- If item is common only admin and the user adding this item has the privilage to access this options -->
+                      <div class="edit">Edit</div>
+                      <div class="delete">Delete</div>
+                      <!-- If item is individual, admin and the consumers have the option to access these -->
+                      <div class="add-me">Add Me</div>
+                      <div class="remove-me">Remove Me</div>
+                      <div class="view">View Consumers</div>
+                    </div>
                     <label class="custom-checkbox">
                       <% if (item.purchased) { %>
                         <input class="checkbox" type="checkbox" checked="checked">
@@ -118,6 +123,11 @@
         <div class="close-icon" onclick="popup(1)"></div>
       </header>
       <form id="items-form" class="" action="/party/:id/item" method="post">
+        <label for="item-type">Select item type</label>
+        <select class="" name="type">
+            <option value="1">For Everyone</option>
+            <option value="2">For Me</option>
+        </select>
         <label for="item-category">Select item category</label>
         <select class="" name="category">
             <option value="cake">Cake</option>
@@ -137,9 +147,9 @@
         </select>
         <label for="item-priority">Select item priority</label>
         <select class="" name="priority">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
+            <option value="1">High</option>
+            <option value="2">Medium</option>
+            <option value="3">Low</option>
         </select>
         <label for="item-name">Name</label>
         <input type="text" name="name" placeholder="Item name" value="" maxlength="15" required>
@@ -218,9 +228,4 @@
 
   <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
   <script type="text/javascript" src="/js/partyScript.js"></script>
-  <script>
-    $("#logout").on( "click", function(){
-      window.location.href = '/users/logout';
-    });
-  </script>
 <%- include("partials/footer") %>
