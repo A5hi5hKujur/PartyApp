@@ -455,4 +455,34 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
   });
 //------------------------------------------------------------------------------
 
+
+//------------------------------------------------------------------------------
+//------------------------Edit Item---------------------------------------------
+
+router.put("/party/:party_id/item/:item_id/edit",isLoggedIn,function(req,res){
+
+  Party.findById(req.params.party_id,function(err,party){
+      if(err){
+        console.log(err);
+        res.redirect("/dashboard");
+      }else{
+        var itemsLength=party.items.length;
+       for(var i=0;i<itemsLength;i++){
+          if(party.items[i]._id.equals(req.params.item_id)){
+            party.items[i].name= req.body.name;
+            party.items[i].price= req.body.cost;
+            party.items[i].quantity= req.body.quantity;
+            party.save(function(err){
+              console.log(err);
+            });
+            break;
+          }
+       }
+       res.redirect("/party/"+req.params.party_id);
+      }
+  });
+});
+
+//------------------------------------------------------------------------------
+
 module.exports = router;
