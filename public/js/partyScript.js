@@ -19,12 +19,12 @@ $('#items-form').submit(function(e) {
       // reset form
       $('#items-form')[0].reset();
       // if host, give delete option
-      var midString = "";
-      if (data.user._id.toString() === data.host.toString()) {
-        midString = "<div class='options delete'></div>";
-      } else {
-        midString = "<div class=''></div>"
-      }
+      var midString = '<div class="option"></div><div class="options"><div class="edit">Edit</div><div class="delete">Delete</div><div class="add-me">Add Me</div><div class="remove-me">Remove Me</div><div class="view">View Consumers</div></div>';
+      // if (data.user._id.toString() === data.host.toString()) {
+      //   midString = "<div class='options delete'></div>";
+      // } else {
+      //   midString = "<div class=''></div>"
+      // }
       // append new item
         $('.item-list').append(
             `
@@ -172,7 +172,7 @@ $('#contribution-form').submit(function(e) {
   url = url.split('/');
   var id = url[url.length - 1];
   // some css or animation or gif of success for 1 sec
-  $.post('/party/'+ id +'/contribution', contribution, function(data) {    
+  $.post('/party/'+ id +'/contribution', contribution, function(data) {
     $(".overlay").eq(0).toggleClass("active");
     $('#contribution-form')[0].reset();
     $('#total-contribution').text(data.party.totalcontribution);
