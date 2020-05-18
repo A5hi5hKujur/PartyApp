@@ -234,7 +234,7 @@ router.get('/:id',isLoggedIn,function(req, res){
           }
           party.items.push(newItem);
           party.totalcost += parseFloat(newItem.price);
-          party.save();          
+          party.save();
           res.json({
             item: party.items[party.items.length - 1],
             party: party,
@@ -285,7 +285,7 @@ router.put('/:id/item/delete', isLoggedIn, function(req, res) {
             }
           }
         }
-        party.save();        
+        party.save();
         res.json({
           party: party,
           consumers: itemToRemove.consumers,
@@ -476,19 +476,30 @@ router.put("/:party_id/item/:item_id/edit",isLoggedIn,function(req,res){
         console.log(err);
         res.redirect("/dashboard");
       }else{
+        console.log(req.body);
         var itemsLength=party.items.length;
-       for(var i=0;i<itemsLength;i++){
-          if(party.items[i]._id.equals(req.params.item_id)){
-            party.items[i].name= req.body.name;
-            party.items[i].price= req.body.cost;
+        let item;
+       for(var i=0;i<itemsLength;i++)
+       {
+          if(party.items[i]._id.equals(req.params.item_id))
+          {
+            let cost = parseFloat(req.body.cost) * parseFloat(req.body.quantity);
+            party.items[i].name = req.body.name;
+            party.items[i].price = cost;
             party.items[i].quantity= req.body.quantity;
+            item = {
+              name : req.body.name,
+              price : req.body.cost,
+              quantity : req.body.quantity
+            };
             party.save(function(err){
               console.log(err);
             });
             break;
           }
        }
-       res.redirect("/party/"+req.params.party_id);
+       if(req.xhr) res.json(item);
+       else res.redirect('/party/' + req.params.party_id);
       }
   });
 });

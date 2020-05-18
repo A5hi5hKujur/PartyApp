@@ -272,14 +272,15 @@ $('#items-form-edit').submit(function(e) {
   $.ajax({
     url: url,
     data: data,
-    type: 'PUT',
+    type: 'put',
     success: function(item) {
       // close form
       popup(5);
       // update item details
+      let cost = parseFloat(item.price) * parseFloat(item.quantity);
       $('#'+item_id).find(".name").html(item.name);
       $('#'+item_id).find(".item-quantity").html(item.quantity);
-      $('#'+item_id).find(".item-cost").html(item.cost);
+      $('#'+item_id).find(".item-cost").html(cost);
     }
   });
 });
