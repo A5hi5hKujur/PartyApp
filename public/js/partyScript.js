@@ -19,7 +19,7 @@ $('#items-form').submit(function(e) {
       // reset form
       $('#items-form')[0].reset();
       // if host, give delete option
-      var midString = '<div class="option"></div><div class="options"><div class="edit">Edit</div><div class="delete">Delete</div><div class="remove-me">Remove Me</div><div class="view">View Consumers</div></div>';
+      var midString = '<div class="option"></div><div class="options"><div class="edit">Edit</div><div class="delete">Delete</div><div class="add-me">Add Me</div><div class="remove-me">Remove Me</div><div class="view">View Consumers</div></div>';
       // append new item
         $('.item-list').append(
             `
