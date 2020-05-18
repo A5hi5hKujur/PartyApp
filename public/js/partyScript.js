@@ -304,7 +304,7 @@ $("#items").on("click", ".options .edit", function()
     let output_url = "/party/"+party_id+"/item/"+item_id+"/remove";
     console.log(output_url);
     const options = { // Ajax request
-      method: 'post',
+      method: 'delete',
       url: output_url,
       data: sendData
     };
