@@ -72,12 +72,35 @@
                     <div class="option"></div>
                     <div class="options">
                       <!-- If item is common only admin and the user adding this item has the privilage to access this options -->
+                      <% if( !item.purchased && (toString(item.consumers[0]) == toString(currentUser._id) || toString(party.hosts[0]._id) == toString(currentUser._id))){ %>
                       <div class="edit">Edit</div>
                       <div class="delete">Delete</div>
+                      <% } %>
                       <!-- If item is individual, admin and the consumers have the option to access these -->
-                      <div class="add-me">Add Me</div>
-                      <div class="remove-me">Remove Me</div>
+                      <% if(!item.forall)
+                      {
+                        let match = 0;
+                        for(let i=0; i < item.consumers.length; i++)
+                        {
+                          if(toString(item.consumers[i]) == toString(currentUser._id))
+                          {
+                            match = 1;
+                            break;
+                          }
+                      }
+                      if(!item.purchased)
+                      {
+                        if(!match)
+                        { %>
+                          <div class="add-me">Add Me</div>
+                     <% }
+                        else
+                        { %>
+                          <div class="remove-me">Remove Me</div>
+                    <%  }
+                    }%>
                       <div class="view">View Consumers</div>
+                      <% } %>
                     </div>
                     <label class="custom-checkbox">
                       <% if (item.purchased) { %>

@@ -19,7 +19,10 @@ $('#items-form').submit(function(e) {
       // reset form
       $('#items-form')[0].reset();
       // if host, give delete option
-      var midString = '<div class="option"></div><div class="options"><div class="edit">Edit</div><div class="delete">Delete</div><div class="add-me">Add Me</div><div class="remove-me">Remove Me</div><div class="view">View Consumers</div></div>';
+      let midString = '';
+      if(!data.item.forall){
+        midString2 = '<div class="remove-me">Remove Me</div><div class="view">View Consumers</div>'
+      }
       // append new item
         $('.item-list').append(
             `
@@ -32,7 +35,12 @@ $('#items-form').submit(function(e) {
                     <p class="cost">Rs. <span class="item-cost">${data.item.price}</span></p>
                   </div>
                   <div class="item-ops">
-                    ` + midString + `
+                    <div class="option"></div>
+                      <div class="options">
+                        <div class="edit">Edit</div>
+                        <div class="delete">Delete</div>
+                        ` + midString + `
+                      </div>
                     <label class="custom-checkbox">
                       <input class="checkbox" type="checkbox">
                       <span class="checkmark"></span>
