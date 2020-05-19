@@ -43,12 +43,12 @@ router.get('/:id',isLoggedIn,function(req, res){
           });
           // Filter User array based on party.participants
           let filteredUsers = [];
-          for(var i=0; i<party.participants.length; i++) {            
-            index = users.map(function(e) { return e._id.toString(); }).indexOf(party.participants[i].id.toString());            
-            if(index != -1) {              
+          for(var i=0; i<party.participants.length; i++) {
+            index = users.map(function(e) { return e._id.toString(); }).indexOf(party.participants[i].id.toString());
+            if(index != -1) {
               filteredUsers.push(users[index]);
             }
-          } 
+          }
           var currentPartyUser = party.participants.find(obj => {
             return obj.id.toString() === req.user._id.toString();
           });
@@ -274,7 +274,7 @@ router.put('/:id/item/delete', isLoggedIn, function(req, res) {
           if(index != -1) {
             party.participants[index].balance += average;
           }
-        } 
+        }
         party.save();
         res.json({
           party: party,
@@ -309,6 +309,12 @@ router.put('/:id/item/delete', isLoggedIn, function(req, res) {
         party.save(function(err,user)
         {
           if(err) console.log(err);
+          if(req.xhr) {
+            res.json({
+              purchase_state : req.body.purchase,
+              forall : party.items[req.body.item_index].forall
+            });
+          }
           else res.redirect("/party/"+party_id); // redirect joined party.
         });
       }
@@ -407,7 +413,7 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
                           party.participants[index].balance += changeForOld;
                         }
                       }
-                    } 
+                    }
                     party.save(function(err){
                       if(err) console.log(err);
                     });
@@ -420,7 +426,7 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
           res.json(party.participants);
         } else {
           res.redirect("/party/"+req.params.party_id);
-        }       
+        }
       }
     });
   });
@@ -510,9 +516,9 @@ router.put("/:party_id/item/:item_id/edit",isLoggedIn,function(req,res){
               oldPrice = party.items[i].price;
               party.items[i].price = cost;
               party.items[i].quantity= req.body.quantity;
-              item = party.items[i];  
+              item = party.items[i];
               // Update totalcost += (newPrice - oldPrice)
-              party.totalcost += (cost - oldPrice);            
+              party.totalcost += (cost - oldPrice);
               party.save(function(err){
                 if(err) {
                   console.log(err);
@@ -529,12 +535,12 @@ router.put("/:party_id/item/:item_id/edit",isLoggedIn,function(req,res){
           if(index != -1) {
             party.participants[index].balance += change;
           }
-        }        
+        }
         res.json({
           item: item,
           change: change,
           totalcost: party.totalcost
-        }); 
+        });
       }
        else res.redirect('/party/' + req.params.party_id);
       };

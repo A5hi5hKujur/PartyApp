@@ -178,6 +178,14 @@ $( "#items" ).on('click', '.checkbox', function($this) {
       let total_cost = parseFloat($("#total-cost").html());
       if(this.checked) $("#total-cost").html(total_cost - parseFloat(item_cost));
       else $("#total-cost").html(total_cost + parseFloat(item_cost));
+
+      // remove backout options for the user ones the items are marked purchased.
+      if(response.purchase_state == true && !response.forall){
+          $(".item-list").find("#"+item_id).find(".options").html('<div class="view">View Consumers</div>');
+      }
+      if(response.purchase_state == true && response.forall){
+        $(".item-list").find("#"+item_id).find(".options").html(' ');
+      }
   });
 });
 // ------------------------------------------------------------------------------
