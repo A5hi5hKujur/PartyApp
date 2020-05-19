@@ -273,14 +273,30 @@ $('#items-form-edit').submit(function(e) {
     url: url,
     data: data,
     type: 'put',
-    success: function(item) {
+    success: function(data) {
       // close form
       popup(5);
       // update item details
-      let cost = parseFloat(item.price) * parseFloat(item.quantity);
-      $('#'+item_id).find(".name").html(item.name);
-      $('#'+item_id).find(".item-quantity").html(item.quantity);
-      $('#'+item_id).find(".item-cost").html(cost);
+      $('#'+item_id).find(".name").html(data.item.name);
+      $('#'+item_id).find(".item-quantity").html(data.item.quantity);
+      $('#'+item_id).find(".item-cost").html(data.item.price);
+      // Update total cost
+      $("#total-cost").text(data.totalcost);
+      var adjust;
+      // Update user balance
+      for(var i=0; i<data.item.consumers.length; i++) {
+        adjust = parseFloat($('#'+data.item.consumers[i]+' .adjustment').text()) + data.change;
+        $('#'+data.item.consumers[i]+' .adjustment').text(adjust.toFixed(2));
+        $('#'+data.item.consumers[i]+' .adjustment').removeClass('positive-adjust neutral-adjust negative-adjust');
+          if(adjust > 0) {
+            $('#'+data.item.consumers[i]+' .adjustment').addClass('positive-adjust');
+            $('#'+data.item.consumers[i]+' .adjustment').text("+" + $('#'+data.item.consumers[i]+' .adjustment').text());
+          } else if(adjust == 0) {
+            $('#'+data.item.consumers[i]+' .adjustment').addClass('neutral-adjust');
+          } else {
+            $('#'+data.item.consumers[i]+' .adjustment').addClass('negative-adjust');
+          }
+      }
     }
   });
 });

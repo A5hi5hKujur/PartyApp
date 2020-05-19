@@ -465,10 +465,7 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
   });
 //------------------------------------------------------------------------------
 
-
-//------------------------------------------------------------------------------
 //------------------------Edit Item---------------------------------------------
-
 router.put("/:party_id/item/:item_id/edit",isLoggedIn,function(req,res){
 
   Party.findById(req.params.party_id,function(err,party){
@@ -476,31 +473,48 @@ router.put("/:party_id/item/:item_id/edit",isLoggedIn,function(req,res){
         console.log(err);
         res.redirect("/dashboard");
       }else{
-        console.log(req.body);
-        var itemsLength=party.items.length;
-        let item;
-       for(var i=0;i<itemsLength;i++)
-       {
-          if(party.items[i]._id.equals(req.params.item_id))
-          {
-            let cost = parseFloat(req.body.cost) * parseFloat(req.body.quantity);
-            party.items[i].name = req.body.name;
-            party.items[i].price = cost;
-            party.items[i].quantity= req.body.quantity;
-            item = {
-              name : req.body.name,
-              price : req.body.cost,
-              quantity : req.body.quantity
-            };
-            party.save(function(err){
-              console.log(err);
-            });
-            break;
+        if(req.xhr) {
+          var itemsLength=party.items.length;
+          let item;
+          let oldPrice;
+          // Update items
+        for(var i=0;i<itemsLength;i++)
+        {
+            if(party.items[i]._id.equals(req.params.item_id))
+            {
+              let cost = parseFloat(req.body.cost) * parseFloat(req.body.quantity);
+              party.items[i].name = req.body.name;
+              oldPrice = party.items[i].price;
+              party.items[i].price = cost;
+              party.items[i].quantity= req.body.quantity;
+              item = party.items[i];  
+              // Update totalcost += (newPrice - oldPrice)
+              party.totalcost += (cost - oldPrice);            
+              party.save(function(err){
+                if(err) {
+                  console.log(err);
+                }
+              });
+              break;
+            }
+        }
+        // Change in balance would be the difference divided by the no of consumers
+        var change = (oldPrice - item.price ) / item.consumers.length;
+        var index;
+        for(var i=0; i<item.consumers.length; i++) {
+          index = party.participants.map(function(e) { return e.id; }).indexOf(item.consumers[i]);
+          if(index != -1) {
+            party.participants[index].balance += change;
           }
-       }
-       if(req.xhr) res.json(item);
-       else res.redirect('/party/' + req.params.party_id);
+        }        
+        res.json({
+          item: item,
+          change: change,
+          totalcost: party.totalcost
+        }); 
       }
+       else res.redirect('/party/' + req.params.party_id);
+      };
   });
 });
 
