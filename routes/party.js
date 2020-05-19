@@ -41,28 +41,20 @@ router.get('/:id',isLoggedIn,function(req, res){
               host=user;
             }
           });
-          // Sort users details by _id (for name)
-          users.sort(function(a, b) {
-            if (a._id > b._id) {
-              return -1;
-            } else {
-              return 1;
+          // Filter User array based on party.participants
+          let filteredUsers = [];
+          for(var i=0; i<party.participants.length; i++) {            
+            index = users.map(function(e) { return e._id.toString(); }).indexOf(party.participants[i].id.toString());            
+            if(index != -1) {              
+              filteredUsers.push(users[index]);
             }
-          });
-          // Sort participants by id (for contribution)
-          party.participants.sort(function(a, b) {
-            if (a.id > b.id) {
-              return -1;
-            } else {
-              return 1;
-            }
-          });
+          } 
           var currentPartyUser = party.participants.find(obj => {
             return obj.id.toString() === req.user._id.toString();
           });
           res.render('party', {
             party: party,
-            users: users,
+            users: filteredUsers,
             host: host,
             currentUser: req.user,
             currentUserContri: currentPartyUser.contribution,
@@ -278,13 +270,11 @@ router.put('/:id/item/delete', isLoggedIn, function(req, res) {
         // Refresh participants balance list
         var average = itemToRemove.price / itemToRemove.consumers.length;
         for(var i=0; i<itemToRemove.consumers.length; i++) {
-          for(var j=0; j<party.participants.length; j++) {
-            if(itemToRemove.consumers[i].toString() === party.participants[j].id.toString()) {
-              party.participants[j].balance += average;
-              break;
-            }
+          index = party.participants.map(function(e) { return e.id; }).indexOf(itemToRemove.consumers[i]);
+          if(index != -1) {
+            party.participants[index].balance += average;
           }
-        }
+        } 
         party.save();
         res.json({
           party: party,

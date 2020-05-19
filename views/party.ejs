@@ -23,21 +23,19 @@
           </div>
           <hr>
           <p id="party-description"><%- party.description %></p>
-          <!-- Displays latest 4 participants -->
+          <!-- Displays latest 3 participants -->
           <div class="participants">
             <p id="show-participants" onclick="popup(2);"><%= users.length %>  Participants</p>
             <div class="participant-list">
               <%
               let max = 3;
-              users.forEach(function(user, i)
-              {
-                if(i<max)
-                { %>
-                <img class="profile-icon" src="<%= user.image %>" >
-              <% } }); %>
+              if(users.length < max) max = users.length;
+              for(var i = users.length - max; i <= users.length - 1; i++) { %>
+                <img class="profile-icon" src="<%= users[i].image %>" >
+              <% } %>
             </div>
           </div>
-          <!-- End of Display latest 4 participants -->
+          <!-- End of Display latest 3 participants -->
         </div>
       </div>
       <div class="column-2">
@@ -180,7 +178,7 @@
         <h4 class="balance-header">Balance</h4>
       </div>
       <ul class="participant-list-complete">
-        <% for( let i = 0; i < users.length; i++ ) { %>
+        <% for( let i = users.length - 1; i >= 0; i-- ) { %>
         <li class="participants" id="<%=users[i]._id%>">
           <img class="profile-icon" src="<%= users[i].image %>" >
           <div class="contribution-details">
