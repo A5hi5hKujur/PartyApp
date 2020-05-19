@@ -21,7 +21,7 @@ $('#items-form').submit(function(e) {
       // if host, give delete option
       let midString = '';
       if(!data.item.forall){
-        midString2 = '<div class="remove-me">Remove Me</div><div class="view">View Consumers</div>'
+        midString = '<div class="remove-me">Remove Me</div><div class="view">View Consumers</div>'
       }
       // append new item
         $('.item-list').append(
@@ -174,13 +174,33 @@ $( "#items" ).on('click', '.checkbox', function($this) {
       let total_cost = parseFloat($("#total-cost").html());
       if(this.checked) $("#total-cost").html(total_cost - parseFloat(item_cost));
       else $("#total-cost").html(total_cost + parseFloat(item_cost));
-
+      console.log(response);
       // remove backout options for the user ones the items are marked purchased.
-      if(response.purchase_state == true && !response.forall){
+      if(response.purchase_state == "true")
+      {
+        if(!response.forall)
           $(".item-list").find("#"+item_id).find(".options").html('<div class="view">View Consumers</div>');
+        else
+          $(".item-list").find("#"+item_id).find(".options").html('<div></div>');
       }
-      if(response.purchase_state == true && response.forall){
-        $(".item-list").find("#"+item_id).find(".options").html(' ');
+      if(response.purchase_state == "false")
+      {
+        if(!response.forall && response.is_consumer)
+        {
+          $(".item-list").find("#"+item_id).find(".options").html('<div class="edit">Edit</div><div class="delete">Delete</div><div class="remove-me">Remove Me</div><div class="view">View Consumers</div>');
+        }
+        if(!response.forall && !response.is_consumer)
+        {
+          $(".item-list").find("#"+item_id).find(".options").html('<div class="add-me">Add Me</div><div class="view">View Consumers</div>');
+        }
+        if(response.forall && response.host.toString() === response.user._id.toString())
+        {
+          $(".item-list").find("#"+item_id).find(".options").html('<div class="edit">Edit</div><div class="delete">Delete</div>');
+        }
+        if(response.forall && response.host.toString() !== response.user._id.toString())
+        {
+          $(".item-list").find("#"+item_id).find(".options").html('<div></div>');
+        }
       }
   });
 });
@@ -351,6 +371,9 @@ $('#items-form-edit').submit(function(e) {
           } else {
             $('#'+participants[i].id+' .adjustment').addClass('negative-adjust');
           }
+
+      // AJAX response to 'add consumer' on options :
+      $(".item-list").find("#"+item_id).find(".options").find(".add-me").html("<div class='remove-me'>Remove Me</div>");
       }
     });
   });
@@ -382,7 +405,7 @@ $('#items-form-edit').submit(function(e) {
       popup(7);
       console.log(data);
       // If only consumer choose to remove, delete item
-      if(data.consumerLength <= 1) $('#'+item_id).hide();  
+      if(data.consumerLength <= 1) $('#'+item_id).hide();
       // Update totalcost if item is deleted
       $("#total-cost").text(data.totalcost - data.totalpurchased);
       // Update balance and show
@@ -398,6 +421,8 @@ $('#items-form-edit').submit(function(e) {
             $('#'+data.participants[i].id+' .adjustment').addClass('negative-adjust');
           }
       }
+      // AJAX response to 'remove consumer' on options :
+      $(".item-list").find("#"+item_id).find(".options").find(".remove-me").html("<div class='add-me'>Add Me</div>");
     });
   });
 //------------------------------------------------------------------------------

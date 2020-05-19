@@ -308,13 +308,21 @@ router.put('/:id/item/delete', isLoggedIn, function(req, res) {
         } else {
           party.totalpurchased -= parseFloat(req.body.item_cost);
         }
+        // find if the person purchasing the item a consumer of the item or not.
+        let is_consumer = false;
+        party.items[req.body.item_index].consumers.forEach((consumer) => {
+          if(consumer._id == req.user) is_consumer = true;
+        });
         party.save(function(err,user)
         {
           if(err) console.log(err);
           if(req.xhr) {
             res.json({
               purchase_state : req.body.purchase,
-              forall : party.items[req.body.item_index].forall
+              forall : party.items[req.body.item_index].forall,
+              is_consumer : is_consumer,
+              host : party.hosts[0],
+              user : req.user
             });
           }
           else res.redirect("/party/"+party_id); // redirect joined party.
@@ -389,7 +397,7 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
     1. check if the party item is marked as 2 (individual).
     2. add the user to the consumer list of that item.
   */
-  router.post('/:party_id/item/:item_id/add', isLoggedIn, function(req, res) {    
+  router.post('/:party_id/item/:item_id/add', isLoggedIn, function(req, res) {
     Party.findById(req.params.party_id,function(err,party){
       if(err){
         console.log(err);
