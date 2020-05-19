@@ -754,6 +754,52 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
    text-align: right;
  }
  /*
+
+
+ /*
+--------------------------------------------------------------------------------
+                 Consumer list complete
+--------------------------------------------------------------------------------
+*/
+.consumer-list-header
+{
+  padding : 0px 10px;
+  width : 100%;
+  display: flex;
+  justify-content: space-between;
+  color : #72738d;
+}
+.consumer-list-header .name-header{
+  width : 100px;
+}
+.consumer-list-complete{
+  width : 100%;
+  margin: 0px 0px 20px 0px;
+  color : white;
+  max-height: 350px;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+}
+.consumer-list-complete::-webkit-scrollbar{
+  display: none;
+}
+.consumer-list-complete > .consumers{
+  display : flex;
+  width : 100%;
+  border-radius: 10px;
+  justify-content: space-between;
+  background: #1F2539;
+  padding: 10px 10px;
+  margin-bottom: 10px;
+}
+.consumer-list-complete > .consumers > .contribution-details{
+  width : calc(100% - 50px);
+  align-items: center;
+  display : flex;
+  justify-content: space-between;
+  padding-left: 10px;
+}
+ /*
 --------------------------------------------------------------------------------
                                 MEDIA QUERIES
 --------------------------------------------------------------------------------

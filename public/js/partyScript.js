@@ -440,7 +440,7 @@ $("#items").on("click", ".options .view", function()
       var list = "";
       for( let i = consumers.length - 1; i >= 0; i-- ) {
         list += `
-        <li class="participants">
+        <li class="consumers">
           <img class="profile-icon" src="${consumers[i].image}" >
           <div class="contribution-details">
             <span class="user-name">${consumers[i].fname} ${consumers[i].lname}</span>
@@ -448,7 +448,7 @@ $("#items").on("click", ".options .view", function()
         </li>
         `
         }
-      $(".participant-list-complete").html(list);
+      $(".consumer-list-complete").html(list);
     });
   });
 //------------------------------------------------------------------------------
