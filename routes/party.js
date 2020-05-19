@@ -566,4 +566,32 @@ router.put("/:party_id/item/:item_id/edit",isLoggedIn,function(req,res){
 
 //------------------------------------------------------------------------------
 
+//------------------------Show Consumers---------------------------------------------
+router.get("/:party_id/item/:item_id/view",isLoggedIn,function(req,res){
+  Party.findById(req.params.party_id,function(err,party){
+    if(err){
+      console.log(err);
+      res.redirect("/dashboard");
+    }else{
+        var itemsLength = party.items.length;
+        for(var i=0;i<itemsLength;i++){
+          if(party.items[i]._id.equals(req.params.item_id)){
+            User.find().where('_id').in( party.items[i].consumers).exec((err, consumers) => {
+              if (err) {
+                console.log(err);
+                res.redirect('/dashboard');
+              } else {
+                  if(req.xhr){
+                    res.json(consumers);
+                  }else{
+                    res.redirect("/party/"+req.params.party_id+"/item/"+req.params.item_id);
+                  }
+              }
+            });
+          }
+        }
+    }
+  })
+});
+
 module.exports = router;
