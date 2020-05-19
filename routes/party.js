@@ -271,7 +271,7 @@ router.put('/:id/item/delete', isLoggedIn, function(req, res) {
           // Refresh participants balance list
           var average = itemToRemove.price / itemToRemove.consumers.length;
           for(var i=0; i<itemToRemove.consumers.length; i++) {
-            index = party.participants.map(function(e) { return e.id; }).indexOf(itemToRemove.consumers[i]);
+            index = party.participants.map(function(e) { return e.id.toString(); }).indexOf(itemToRemove.consumers[i].toString());
             if(index != -1) {
               party.participants[index].balance += average;
             }
