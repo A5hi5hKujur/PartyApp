@@ -12,6 +12,7 @@ var partySchema = new mongoose.Schema({
                     ref: "User"
                 },
                 contribution: Number,
+                balance: Number,
                 host: Boolean
             }
     ],
@@ -26,7 +27,14 @@ var partySchema = new mongoose.Schema({
                 price: Number,
                 priority: Number,
                 purchased: Boolean,
-                essential: Boolean
+                essential: Boolean,
+                consumers: [
+                    {
+                        type: mongoose.Schema.Types.ObjectId,
+                        ref: "User"
+                    }
+                ],
+                forall: Boolean
             }
     ],
     hosts: [

@@ -61,3 +61,12 @@ $('#sort-section > button').on('click', function() {
 function popup(i) {
   $(".overlay").eq(i).toggleClass("active");
 }
+//----------------------------- Logout -----------------------------------------
+$("header>.profile-icon").on("click", function(){
+  $('.profile-menu').toggleClass("active");   // this would need to change i guess
+});
+
+$("#logout").on( "click", function(){
+  window.location.href = '/users/logout';
+});
+//------------------------------------------------------------------------------

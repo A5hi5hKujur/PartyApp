@@ -28,7 +28,16 @@ router.get('/dashboard', isLoggedIn, (req, res) => {
     if (err) {
       console.log(err);
       res.redirect('/dashboard');
-    } else {
+    } else { //Updating party status
+      parties.forEach(function(party){
+        let status=partyStatus(party.date);
+        if(!(party.status===status)){
+          party.status = status;
+          party.save(function(err){
+            console.log(err);
+          });
+        }
+      });
       res.render('index', {parties: parties, todayDate:date,user:req.user});
     }
   });
@@ -50,5 +59,46 @@ router.get('/dashboard.json', isLoggedIn, (req, res) => {
     }
   });
 });
+
+
+//------------------------------------------------------------------------------
+
+//----------------------Party Status Function-----------------------------------
+function partyStatus(partyDate){
+  let today = new Date();
+    let yyyy = Number(today.getFullYear());
+    let mm = Number(today.getMonth()) + 1;
+    let dd = Number(today.getDate());
+    let p_yyyy = Number(partyDate.getFullYear());
+    let p_mm = Number(partyDate.getMonth()) + 1;
+    let p_dd = Number(partyDate.getDate());
+  let status;
+  if(yyyy>p_yyyy){
+    status="past";
+  }
+  else if(yyyy<p_yyyy){
+    status="upcoming";
+  }
+  else{
+    if(mm>p_mm){
+      status="past";
+    }
+    else if(mm<p_mm){
+      status="upcoming";
+    }
+    else{
+      if(dd>p_dd){
+        status="past";
+      }
+      else if(dd<p_dd){
+        status="upcoming";
+      }
+      else{
+        status="ongoing";
+      }
+    }
+  }
+  return status;
+}
 
 module.exports = router;

@@ -5,9 +5,12 @@
   <body class="party">
 <% } %>
     <header>
-      <a href="/"><div class="logo"><h1>LOGO</h1></div></a>
-      <div class="profile-icon" id="logout">
+      <a href="/"><div class="logo"><img src="/media/logo.png" alt="logo" class="profile-icon logo-icon"></div></a>
+      <div class="profile-icon">
         <img class="profile-icon" src="<%= currentUser.image %>" >
+        <div class="profile-menu">
+          <div id="logout">Logout</div>
+        </div>
       </div>
     </header>
     <h1>Welcome to, <span><%= party.party_name %></span></h1>
@@ -20,21 +23,19 @@
           </div>
           <hr>
           <p id="party-description"><%- party.description %></p>
-          <!-- Displays latest 4 participants -->
+          <!-- Displays latest 3 participants -->
           <div class="participants">
             <p id="show-participants" onclick="popup(2);"><%= users.length %>  Participants</p>
             <div class="participant-list">
               <%
               let max = 3;
-              users.forEach(function(user, i)
-              {
-                if(i<max)
-                { %>
-                <img class="profile-icon" src="<%= user.image %>" >
-              <% } }); %>
+              if(users.length < max) max = users.length;
+              for(var i = users.length - max; i <= users.length - 1; i++) { %>
+                <img class="profile-icon" src="<%= users[i].image %>" >
+              <% } %>
             </div>
           </div>
-          <!-- End of Display latest 4 participants -->
+          <!-- End of Display latest 3 participants -->
         </div>
       </div>
       <div class="column-2">
@@ -68,11 +69,39 @@
                     <p class="cost">Rs. <span class="item-cost"><%=item.price%></span> </p>
                   </div>
                   <div class="item-ops">
-                    <% if (currentUser._id.toString() === host._id.toString()) { %>
-                      <div class="options delete"></div>
-                    <% } else { %>
-                      <div class=""></div>
-                    <% } %>
+                    <div class="option"></div>
+                    <div class="options">
+                      <!-- If item is common only admin and the user adding this item has the privilage to access this options -->
+                      <% if( !item.purchased && (toString(item.consumers[0]) == toString(currentUser._id) || toString(party.hosts[0]._id) == toString(currentUser._id))){ %>
+                      <div class="edit">Edit</div>
+                      <div class="delete">Delete</div>
+                      <% } %>
+                      <!-- If item is individual, admin and the consumers have the option to access these -->
+                      <% if(!item.forall)
+                      {
+                        match = 0;
+                        for(let i=0; i < item.consumers.length; i++)
+                        {
+                          if(item.consumers[i].toString() === currentUser._id.toString())
+                          {
+                            match = 1;
+                            break;
+                          }
+                      }
+                      if(!item.purchased)
+                      {
+                        if(match == 0)
+                        { %>
+                          <div class="add-me">Add Me</div>
+                     <% }
+                        else
+                        { %>
+                          <div class="remove-me">Remove Me</div>
+                    <%  }
+                    }%>
+                      <div class="view">View Consumers</div>
+                      <% } %>
+                    </div>
                     <label class="custom-checkbox">
                       <% if (item.purchased) { %>
                         <input class="checkbox" type="checkbox" checked="checked">
@@ -118,6 +147,11 @@
         <div class="close-icon" onclick="popup(1)"></div>
       </header>
       <form id="items-form" class="" action="/party/:id/item" method="post">
+        <label for="item-type">Select item type</label>
+        <select class="item-type" name="type">
+            <option value="1">For Everyone</option>
+            <option value="2">For Me</option>
+        </select>
         <label for="item-category">Select item category</label>
         <select class="" name="category">
             <option value="cake">Cake</option>
@@ -137,16 +171,16 @@
         </select>
         <label for="item-priority">Select item priority</label>
         <select class="" name="priority">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
+            <option value="1">High</option>
+            <option value="2">Medium</option>
+            <option value="3">Low</option>
         </select>
-        <label for="item-name">Name</label>
+        <label for="name">Name</label>
         <input type="text" name="name" placeholder="Item name" value="" maxlength="15" required>
-        <label for="item-cost">Cost</label>
-        <input type="number" name="cost" placeholder="Cost" min="0" value="" required>
-        <label for="item-cost">Quantity</label>
-        <input type="number" name="quantity" placeholder="Cost" value="1" min="0" required>
+        <label for="cost">Cost</label>
+        <input type="number" name="cost" placeholder="Cost" min="1" value="" required>
+        <label for="quantity">Quantity</label>
+        <input type="number" name="quantity" placeholder="Cost" value="1" min="1" required>
         <input class="btn-blue" type="submit" name="" value="Add Item">
       </form>
     </div>
@@ -167,13 +201,13 @@
         <h4 class="balance-header">Balance</h4>
       </div>
       <ul class="participant-list-complete">
-        <% for( let i = 0; i < users.length; i++ ) { %>
+        <% for( let i = users.length - 1; i >= 0; i-- ) { %>
         <li class="participants" id="<%=users[i]._id%>">
           <img class="profile-icon" src="<%= users[i].image %>" >
           <div class="contribution-details">
             <span class="user-name"><%=users[i].fname%> <%=users[i].lname%></span>
             <span class="user-contribution"><%=party.participants[i].contribution%></span>
-            <% var adjust = (party.participants[i].contribution - averageContri).toFixed(2); %>
+            <% var adjust = party.participants[i].balance.toFixed(2); %>
             <% if (adjust > 0) { %>
               <span class="adjustment positive-adjust">+<%=adjust%></span>
             <% } else if (adjust == 0) { %>
@@ -189,7 +223,7 @@
   </div>
   <!-- End Overlay to display list of all participants -->
 
-  <!-- Overlay to display list of all participants -->
+  <!-- Overlay to display description -->
   <div class="overlay">
     <div class="popup">
       <header>
@@ -203,7 +237,7 @@
       </form>
     </div>
   </div>
-  <!-- End Overlay to display list of all participants -->
+  <!-- End Overlay to display description -->
 
   <!-- Overlay to Confirm party termination -->
   <div class="overlay">
@@ -216,11 +250,68 @@
   </div>
   <!-- End Overlay to confirm party termination -->
 
+  <!-- Overlay code to Edit existing item -->
+  <div class="overlay">
+    <div class="popup">
+      <header>
+        <h2>Edit Item</h2>
+        <div class="close-icon" onclick="popup(5)"></div>
+      </header>
+      <form id="items-form-edit" class="" action="/party/:party_id/item/:item_id/edit" method="put">
+        <label for="name">Name</label>
+        <input type="text" class="name" name="name" placeholder="Item name" value="" maxlength="15" required>
+        <label for="cost">Cost</label>
+        <input type="number" class="cost" name="cost" placeholder="Cost" min="0" value="" required>
+        <label for="quantity">Quantity</label>
+        <input type="number" class="quantity" name="quantity" placeholder="Cost" value="1" min="0" required>
+        <input class="btn-blue" type="submit" name="" value="Edit Item">
+      </form>
+    </div>
+  </div>
+  <!-- End of Overlay code to edit existing item -->
+
+  <!-- Overlay code to Confirm consumer addition -->
+  <div class="overlay">
+    <div class="popup">
+      <header>
+        <h2>You Have Been Added</h2>
+        <div class="close-icon" onclick="popup(6)"></div>
+      </header>
+      <div class="add-consumer-image"></div>
+      <p class="popup-message">You are now sharing <span id="shared-item"></span>. Which means the total cost of the item will
+         been shared among all its consumers</p>
+    </div>
+  </div>
+  <!-- End of Overlay code to confirm consumer addition -->
+
+  <!-- Overlay code to Confirm consumer removal -->
+  <div class="overlay">
+    <div class="popup">
+      <header>
+        <h2>You Have Been Removed</h2>
+        <div class="close-icon" onclick="popup(7)"></div>
+      </header>
+      <div class="remove-consumer-image"></div>
+      <p class="popup-message">You are no longer sharing <b><span id="unshared-item"></span></b>. Which means you will no longer have
+      to pay a share for this item.</p>
+    </div>
+  </div>
+  <!-- End of Overlay code to confirm consumer removal -->
+  <!-- Overlay code to show consumer list -->
+  <div class="overlay">
+    <div class="popup">
+      <header>
+        <h2>List of consumers</h2>
+        <div class="close-icon" onclick="popup(8)"></div>
+      </header>
+      <ul class="consumer-list-complete">
+        
+      </ul>
+    </div>
+  </div>
+
+  <!-- End of Overlay code to show consumer list -->
+
   <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
   <script type="text/javascript" src="/js/partyScript.js"></script>
-  <script>
-    $("#logout").on( "click", function(){
-      window.location.href = '/users/logout';
-    });
-  </script>
 <%- include("partials/footer") %>
