@@ -96,9 +96,12 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
 .sign-up-banner{
   background: url(/media/signup-banner.jpg);
 }
-.sign-in-content, .sign-up-content{
+.sign-in-content {
   width : 50%;
   padding : 40px 0px;
+}
+.sign-up-content {
+  width : 50%;
 }
 #signin-form, #signup-form{
   width : 90%;
@@ -120,6 +123,9 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
   background: #424B71;
   padding: 0px 20px;
   margin : 20px 0px;
+}
+#signup-form h1 {
+  margin-bottom: 30px;
 }
 
 /* DOM Interaction for error Note : display : block*/

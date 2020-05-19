@@ -90,6 +90,9 @@ button{
     background-image: url("/media/landing-pictures/lp4.jpg");
     animation-delay: 40s; 
   }
+  #landing-logo {
+    height: 50px;
+  }
 
   @keyframes imageAnimation { 
     0% { 
