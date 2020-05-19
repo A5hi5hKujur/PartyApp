@@ -389,13 +389,13 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
     1. check if the party item is marked as 2 (individual).
     2. add the user to the consumer list of that item.
   */
-  router.post('/:party_id/item/:item_id/add', isLoggedIn, function(req, res) {
+  router.post('/:party_id/item/:item_id/add', isLoggedIn, function(req, res) {    
     Party.findById(req.params.party_id,function(err,party){
       if(err){
         console.log(err);
         res.redirect("/dashboard");
       }else{
-        if(!req.body.purchased) {
+        if(req.body.purchased.toString() === 'false') {
           for(var i=0;i<party.items.length;i++){
             if(party.items[i]._id.equals(req.params.item_id)){
                 if(!party.items[i].forall){
@@ -451,7 +451,7 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
         console.log(err);
         res.redirect("/dashboard");
       }else{
-        if(!req.body.purchased) {
+        if(req.body.purchased.toString() === 'false') {
           let consumerLength;
           for(var i=0;i<party.items.length;i++){
             if(party.items[i]._id.equals(req.params.item_id)){
@@ -514,7 +514,7 @@ router.put("/:party_id/item/:item_id/edit",isLoggedIn,function(req,res){
         console.log(err);
         res.redirect("/dashboard");
       }else{
-        if(req.body.purchased !== 'true') {
+        if(req.body.purchased.toString() === 'false') {
           if(req.xhr) {
             var itemsLength=party.items.length;
             let item;
