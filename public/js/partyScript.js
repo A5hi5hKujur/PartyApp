@@ -98,11 +98,7 @@ $('#items').on('click', '.delete', function(e) {
     var id = url[url.length - 1];
     var itemid = $(this).parents('li').attr('id');
     var itemCost = $('#'+itemid+' .item-cost').text();
-    // if purchased dont reduce the cost in frontend
-    if($('#'+itemid+' input[type="checkbox"]').prop('checked') == false) {
-      var total = parseFloat($("#total-cost").text()) - itemCost;
-      $("#total-cost").text(total);
-    }
+    var purchased = $('#'+itemid+' input[type="checkbox"]').prop('checked');
     $('#'+itemid).hide();
     // Some css or animation on removing item
     // $('#'+itemid).html(
@@ -112,7 +108,7 @@ $('#items').on('click', '.delete', function(e) {
     // );
     $.ajax({
       url: '/party/'+ id +'/item/delete',
-      data: {id: itemid, price: itemCost},
+      data: {id: itemid, price: itemCost, purchased: purchased},
       type: 'PUT',
       success: function(data) {
         // Update participants balance
@@ -285,9 +281,10 @@ $('#items-form-edit').submit(function(e) {
   var data = $(this).serialize();
   let url = $(this).attr("action"); // backend url
   let item_id = url.split("/")[4]; // extract item id from backend url
+  let purchased = $('#'+item_id+' input[type="checkbox"]').prop('checked');
   $.ajax({
     url: url,
-    data: data,
+    data: data + "&purchased=" + purchased,
     type: 'put',
     success: function(data) {
       // close form
@@ -328,9 +325,11 @@ $('#items-form-edit').submit(function(e) {
     $("#shared-item").html(item_name);
     let input_url = window.location.href;
     let party_id = input_url.split('/')[4];
+    let purchased = $('#'+item_id+' input[type="checkbox"]').prop('checked');
     let sendData = {
       id : item_id,
-      cost : item_cost
+      cost : item_cost,
+      purchased: purchased
     };
     let output_url = "/party/"+party_id+"/item/"+item_id+"/add";
     const options = { // Ajax request
@@ -366,9 +365,11 @@ $('#items-form-edit').submit(function(e) {
     $("#unshared-item").html(item_name);
     let input_url = window.location.href;
     let party_id = input_url.split('/')[4];
+    let purchased = $('#'+item_id+' input[type="checkbox"]').prop('checked');
     let sendData = {
       id : item_id,
-      cost : item_cost
+      cost : item_cost,
+      purchased: purchased
     };
     let output_url = "/party/"+party_id+"/item/"+item_id+"/remove";
     const options = { // Ajax request
@@ -382,8 +383,8 @@ $('#items-form-edit').submit(function(e) {
       // If only consumer choose to remove, delete item
       if(data.consumerLength <= 1) $('#'+item_id).hide();
       // Update totalcost if item is deleted
-      $("#total-cost").text(data.totalcost);
-      // Update balance and show
+      $("#total-cost").text(data.totalcost - party.totalpurchased);
+      // Update balance and show      
       for(var i=0; i<data.participants.length; i++) {
         $('#'+data.participants[i].id+' .adjustment').text(data.participants[i].balance.toFixed(2));
         $('#'+data.participants[i].id+' .adjustment').removeClass('positive-adjust neutral-adjust negative-adjust');
