@@ -402,6 +402,33 @@ $('#items-form-edit').submit(function(e) {
   });
 //------------------------------------------------------------------------------
 
+//---------------------------  View Consumer list -------------------------------
+$("#items").on("click", ".options .view", function()
+  {
+    let item_id = $(this).parent().parent().parent().parent().attr("id");
+    let input_url = window.location.href;
+    let party_id = input_url.split('/')[4];
+    let output_url = "/party/"+party_id+"/item/"+item_id+"/view";
+    // control returns here after being redirected from the backend
+    $.get(output_url, function(consumers) {
+      popup(8);
+      var list = "";
+      for( let i = consumers.length - 1; i >= 0; i-- ) {
+        list += `
+        <li class="participants">
+          <img class="profile-icon" src="${consumers[i].image}" >
+          <div class="contribution-details">
+            <span class="user-name">${consumers[i].fname} ${consumers[i].lname}</span>
+          </div>
+        </li>
+        `
+        }
+      $(".consumers-list").html(list);
+    });
+  });
+//------------------------------------------------------------------------------
+
+
 //----------------------------- Logout -----------------------------------------
 $("header>.profile-icon").on("click", function(){
   $('.profile-menu').toggleClass("active");   // this would need to change i guess
