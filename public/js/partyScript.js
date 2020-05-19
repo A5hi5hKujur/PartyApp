@@ -317,15 +317,26 @@ $('#items-form-edit').submit(function(e) {
       cost : item_cost
     };
     let output_url = "/party/"+party_id+"/item/"+item_id+"/add";
-    console.log(output_url);
     const options = { // Ajax request
       method: 'post',
       url: output_url,
       data: sendData
     };
     // control returns here after being redirected from the backend
-    $.ajax(options).done(response => {
+    $.ajax(options).done(participants => {
       popup(6);
+      for(var i=0; i<participants.length; i++) {
+        $('#'+participants[i].id+' .adjustment').text(participants[i].balance.toFixed(2));
+        $('#'+participants[i].id+' .adjustment').removeClass('positive-adjust neutral-adjust negative-adjust');
+          if(participants[i].balance > 0) {
+            $('#'+participants[i].id+' .adjustment').addClass('positive-adjust');
+            $('#'+participants[i].id+' .adjustment').text("+" + $('#'+participants[i].id+' .adjustment').text());
+          } else if(participants[i].balance == 0) {
+            $('#'+participants[i].id+' .adjustment').addClass('neutral-adjust');
+          } else {
+            $('#'+participants[i].id+' .adjustment').addClass('negative-adjust');
+          }
+      }
     });
   });
 //------------------------------------------------------------------------------
@@ -343,17 +354,32 @@ $('#items-form-edit').submit(function(e) {
       id : item_id,
       cost : item_cost
     };
-    $('#'+item_id).hide();
     let output_url = "/party/"+party_id+"/item/"+item_id+"/remove";
-    console.log(output_url);
     const options = { // Ajax request
       method: 'delete',
       url: output_url,
       data: sendData
     };
     // control returns here after being redirected from the backend
-    $.ajax(options).done(response => {
+    $.ajax(options).done(data => {
       popup(7);
+      // If only consumer choose to remove, delete item
+      if(data.consumerLength <= 1) $('#'+item_id).hide();
+      // Update totalcost if item is deleted
+      $("#total-cost").text(data.totalcost);
+      // Update balance and show
+      for(var i=0; i<data.participants.length; i++) {
+        $('#'+data.participants[i].id+' .adjustment').text(data.participants[i].balance.toFixed(2));
+        $('#'+data.participants[i].id+' .adjustment').removeClass('positive-adjust neutral-adjust negative-adjust');
+          if(data.participants[i].balance > 0) {
+            $('#'+data.participants[i].id+' .adjustment').addClass('positive-adjust');
+            $('#'+data.participants[i].id+' .adjustment').text("+" + $('#'+data.participants[i].id+' .adjustment').text());
+          } else if(data.participants[i].balance == 0) {
+            $('#'+data.participants[i].id+' .adjustment').addClass('neutral-adjust');
+          } else {
+            $('#'+data.participants[i].id+' .adjustment').addClass('negative-adjust');
+          }
+      }
     });
   });
 //------------------------------------------------------------------------------

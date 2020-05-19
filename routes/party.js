@@ -395,15 +395,32 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
                   }
                   if(flag===0){
                     party.items[i].consumers.push(req.user._id);
+                    // Calculate change in balance for existing consumers and new consumer
+                    let changeForOld = (req.body.cost / consumerLength) - (req.body.cost / (consumerLength + 1));
+                    let changeForNew = (req.body.cost / (consumerLength + 1));
+                    for(var j=0; j<consumerLength+1; j++) {
+                      index = party.participants.map(function(e) { return e.id; }).indexOf(party.items[i].consumers[j]);
+                      if(index != -1 ) {
+                        if(party.items[i].consumers[j].equals(req.user._id)) {
+                          party.participants[index].balance -= changeForNew;
+                        } else {
+                          party.participants[index].balance += changeForOld;
+                        }
+                      }
+                    } 
                     party.save(function(err){
-                      console.log(err);
+                      if(err) console.log(err);
                     });
                     break;
                   }
               }
           }
         }
-        res.redirect("/party/"+req.params.party_id);
+        if(req.xhr) {
+          res.json(party.participants);
+        } else {
+          res.redirect("/party/"+req.params.party_id);
+        }       
       }
     });
   });
@@ -419,36 +436,52 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
         console.log(err);
         res.redirect("/dashboard");
       }else{
+        let consumerLength;
         for(var i=0;i<party.items.length;i++){
           if(party.items[i]._id.equals(req.params.item_id)){
               if(!party.items[i].forall){
                   let index;
-                  let consumerLength=party.items[i].consumers.length;
+                  consumerLength = party.items[i].consumers.length;
                   if(consumerLength<=1){
+                    // If only consumer removes, delete item
                       party.items.splice(i,1);
+                      // update balance
+                      index = party.participants.map(function(e) { return e.id; }).indexOf(req.user._id);
+                      party.participants[index].balance += Number(req.body.cost);
+                      // Update totalcost because item is removed now
+                      party.totalcost -= Number(req.body.cost);
                       party.save(function(err){
-                        console.log(err);
+                        if(err) console.log(err);
                       });
                       break;
-                  }else{
-                    for(var j=0;j<consumerLength;j++){
-                      if(party.items[i].consumers[j].equals(req.user._id)){
-                          index=j;
-                          break;
+                  } else {
+                    for(var j=0; j<consumerLength; j++) {
+                      index = party.participants.map(function(e) { return e.id; }).indexOf(party.items[i].consumers[j]);
+                      if(index != -1 ) {
+                        if(party.items[i].consumers[j].equals(req.user._id)) {
+                          party.participants[index].balance += (req.body.cost / consumerLength);
+                          currUserIndex = index;
+                        } else {
+                          party.participants[index].balance += (req.body.cost / consumerLength) - (req.body.cost / (consumerLength-1));
+                        }
                       }
                     }
-                    party.items[i].consumers.splice(index,1);
+                    // Remove the user from the consumer list
+                    party.items[i].consumers.splice(currUserIndex, 1);
                     party.save(function(err){
-                      console.log(err);
+                      if(err) console.log(err);
                     });
                     break;
                   }
-                  break;
               }
-              break;
           }
         }
-        res.redirect("/party/"+req.params.party_id);
+        if(req.xhr) res.json({
+          participants: party.participants,
+          consumerLength: consumerLength,
+          totalcost: party.totalcost
+        });
+        else res.redirect("/party/"+req.params.party_id);
       }
     });
 
