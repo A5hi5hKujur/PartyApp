@@ -5,7 +5,7 @@
   <body class="party">
 <% } %>
     <header>
-      <a href="/"><div class="logo"><h1>Contri</h1></div></a>
+      <a href="/"><div class="logo"><img src="/media/logo.png" alt="logo" class="profile-icon logo-icon"></div></a>
       <div class="profile-icon">
         <img class="profile-icon" src="<%= currentUser.image %>" >
         <div class="profile-menu">
@@ -297,6 +297,20 @@
     </div>
   </div>
   <!-- End of Overlay code to confirm consumer removal -->
+  <!-- Overlay code to show consumer list -->
+  <div class="overlay">
+    <div class="popup">
+      <header>
+        <h2>List of consumers</h2>
+        <div class="close-icon" onclick="popup(8)"></div>
+      </header>
+      <ul class="participant-list-complete">
+        
+      </ul>
+    </div>
+  </div>
+
+  <!-- End of Overlay code to show consumer list -->
 
   <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
   <script type="text/javascript" src="/js/partyScript.js"></script>

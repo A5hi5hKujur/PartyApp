@@ -58,6 +58,13 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
 #logout{
   cursor: pointer;
 }
+.logo-icon {
+  display: block;
+  font-size: 2em;
+  margin-block-end: 0.67em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
 /*
 ---------------------------------------------------------------------
                             SIGN IN PAGE, SIGN UP PAGE
