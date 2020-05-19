@@ -79,10 +79,10 @@
                       <!-- If item is individual, admin and the consumers have the option to access these -->
                       <% if(!item.forall)
                       {
-                        let match = 0;
+                        match = 0;
                         for(let i=0; i < item.consumers.length; i++)
                         {
-                          if(toString(item.consumers[i]) == toString(currentUser._id))
+                          if(item.consumers[i].toString() === currentUser._id.toString())
                           {
                             match = 1;
                             break;
