@@ -423,7 +423,7 @@ $("#items").on("click", ".options .view", function()
         </li>
         `
         }
-      $(".consumers-list").html(list);
+      $(".participant-list-complete").html(list);
     });
   });
 //------------------------------------------------------------------------------
