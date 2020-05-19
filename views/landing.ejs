@@ -1,3 +1,26 @@
-<%- include("partials/header") %>
-<h1>This will be landing page</h1>
-<%- include("partials/footer") %>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Party App v1.0</title>
+      <link rel="stylesheet" type="text/css" href="/stylesheets/landing.css">
+    </head>
+    <body>
+        <div class="landing-header">
+            <h1>Welcome To The Party</h1>
+            <div class="">
+                <button class="btn-blue" type="button" name="button" onclick="document.location = '/users/login'">Sign In</button>
+                <button class="btn-pink" type="button" name="button" onclick="document.location = '/users/register'">Sign Up</button>
+            </div>
+       </div>
+       
+       <ul class="slideshow">
+         <li></li>
+         <li></li>
+         <li></li>
+         <li></li>
+         <li></li>
+       </ul>
+    </body>
+</html>
