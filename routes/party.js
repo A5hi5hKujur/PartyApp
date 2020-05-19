@@ -255,7 +255,7 @@ router.put('/:id/item/delete', isLoggedIn, function(req, res) {
       console.log(err);
       res.redirect('/party/' + req.params.id);
     } else {
-      if(!req.body.purchased) {
+      if(req.body.purchased.toString() === 'false') {
         if(req.xhr) {
           party.totalcost -= price;
           var itemId = req.body.id;
