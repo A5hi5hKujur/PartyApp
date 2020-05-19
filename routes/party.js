@@ -413,7 +413,7 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
                       let changeForOld = (req.body.cost / consumerLength) - (req.body.cost / (consumerLength + 1));
                       let changeForNew = (req.body.cost / (consumerLength + 1));
                       for(var j=0; j<consumerLength+1; j++) {
-                        index = party.participants.map(function(e) { return e.id; }).indexOf(party.items[i].consumers[j]);
+                        index = party.participants.map(function(e) { return e.id.toString(); }).indexOf(party.items[i].consumers[j].toString());
                         if(index != -1 ) {
                           if(party.items[i].consumers[j].equals(req.user._id)) {
                             party.participants[index].balance -= changeForNew;
@@ -455,13 +455,13 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
           let consumerLength;
           for(var i=0;i<party.items.length;i++){
             if(party.items[i]._id.equals(req.params.item_id)){
-                if(!party.items[i].forall){
+                if(party.items[i].forall.toString() === 'false'){
                     let index;
                     consumerLength = party.items[i].consumers.length;
                     if(consumerLength<=1){
                       // If only consumer removes, delete item
                         // update balance
-                        index = party.participants.map(function(e) { return e.id; }).indexOf(req.user._id);
+                        index = party.participants.map(function(e) { return e.id.toString(); }).indexOf(req.user._id.toString());
                         party.participants[index].balance += Number(req.body.cost);
                         // Update totalcost because item is removed now
                         party.totalcost -= Number(req.body.cost);
@@ -473,7 +473,7 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
                         break;
                     } else {
                       for(var j=0; j<consumerLength; j++) {
-                        index = party.participants.map(function(e) { return e.id; }).indexOf(party.items[i].consumers[j]);
+                        index = party.participants.map(function(e) { return e.id.toString(); }).indexOf(party.items[i].consumers[j].toString());
                         if(index != -1 ) {
                           if(party.items[i].consumers[j].equals(req.user._id)) {
                             party.participants[index].balance += (req.body.cost / consumerLength);
