@@ -380,10 +380,11 @@ $('#items-form-edit').submit(function(e) {
     // control returns here after being redirected from the backend
     $.ajax(options).done(data => {
       popup(7);
+      console.log(data);
       // If only consumer choose to remove, delete item
-      if(data.consumerLength <= 1) $('#'+item_id).hide();
+      if(data.consumerLength <= 1) $('#'+item_id).hide();  
       // Update totalcost if item is deleted
-      $("#total-cost").text(data.totalcost - party.totalpurchased);
+      $("#total-cost").text(data.totalcost - data.totalpurchased);
       // Update balance and show
       for(var i=0; i<data.participants.length; i++) {
         $('#'+data.participants[i].id+' .adjustment').text(data.participants[i].balance.toFixed(2));

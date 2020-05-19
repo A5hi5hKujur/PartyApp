@@ -493,13 +493,16 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
                 }
             }
           }
-          if(req.xhr) res.json({
+          if(req.xhr) {
+            res.json({
             participants: party.participants,
             consumerLength: consumerLength,
             totalcost: party.totalcost,
             totalpurchased: party.totalpurchased
-          });
-          else res.redirect("/party/"+req.params.party_id);
+            });
+          } else {
+            res.redirect("/party/"+req.params.party_id);
+          }
         }
       }
     });
