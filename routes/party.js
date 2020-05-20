@@ -480,6 +480,7 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
                         });
                         break;
                     } else {
+                      let currUserIndex;
                       for(var j=0; j<consumerLength; j++) {
                         index = party.participants.map(function(e) { return e.id.toString(); }).indexOf(party.items[i].consumers[j].toString());
                         if(index != -1 ) {
