@@ -492,13 +492,14 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
                         }
                       }
                       for(var j=0; j<consumerLength; j++) {
-                        party.items[i].consumers[j].equals(req.user._id);
-                        // Remove the user from the consumer list
+                        if(party.items[i].consumers[j].equals(req.user._id)){
+                          // Remove the user from the consumer list
                         party.items[i].consumers.splice(j, 1);
                         party.save(function(err){
                           if(err) console.log(err);
                         });
                         break;
+                        };
                       }
                     }
                 }
