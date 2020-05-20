@@ -486,18 +486,20 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
                         if(index != -1 ) {
                           if(party.items[i].consumers[j].equals(req.user._id)) {
                             party.participants[index].balance += (req.body.cost / consumerLength);
-                            currUserIndex = index;
                           } else {
                             party.participants[index].balance += (req.body.cost / consumerLength) - (req.body.cost / (consumerLength-1));
                           }
                         }
                       }
-                      // Remove the user from the consumer list
-                      party.items[i].consumers.splice(currUserIndex, 1);
-                      party.save(function(err){
-                        if(err) console.log(err);
-                      });
-                      break;
+                      for(var j=0; j<consumerLength; j++) {
+                        party.items[i].consumers[j].equals(req.user._id);
+                        // Remove the user from the consumer list
+                        party.items[i].consumers.splice(j, 1);
+                        party.save(function(err){
+                          if(err) console.log(err);
+                        });
+                        break;
+                      }
                     }
                 }
             }
