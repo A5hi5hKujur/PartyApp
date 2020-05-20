@@ -372,9 +372,9 @@ $('#items-form-edit').submit(function(e) {
             $('#'+participants[i].id+' .adjustment').addClass('negative-adjust');
           }
 
-      // AJAX response to 'add consumer' on options :
-      $(".item-list").find("#"+item_id).find(".options").find(".add-me").html("<div class='remove-me'>Remove Me</div>");
       }
+      // AJAX response to 'add consumer' on options :
+      $(".item-list").find("#"+item_id).find(".options").find(".add-me").removeClass("add-me").addClass("remove-me").html("Remove Me");
     });
   });
 //------------------------------------------------------------------------------
@@ -422,7 +422,7 @@ $('#items-form-edit').submit(function(e) {
           }
       }
       // AJAX response to 'remove consumer' on options :
-      $(".item-list").find("#"+item_id).find(".options").find(".remove-me").html("<div class='add-me'>Add Me</div>");
+      $(".item-list").find("#"+item_id).find(".options").find(".remove-me").removeClass("remove-me").addClass("add-me").html("Add Me");
     });
   });
 //------------------------------------------------------------------------------
