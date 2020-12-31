@@ -246,6 +246,13 @@
         <h2>Leaving so soon ?</h2>
         <div class="close-icon" onclick="popup(4)"></div>
       </header>
+      <!-- If host then show end party else show exit -->
+      <% if (currentUser._id.toString() === party.hosts[0].toString()) { %>
+        <button class="exit">End Party!!</button>
+      <% } else { %>
+        <button class="exit">Exit!!</button>
+      <% } %>
+      
     </div>
   </div>
   <!-- End Overlay to confirm party termination -->

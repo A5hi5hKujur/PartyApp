@@ -606,4 +606,165 @@ router.get("/:party_id/item/:item_id/view",isLoggedIn,function(req,res){
   })
 });
 
+//------------------------------------------------------------------------------
+
+
+//----------------- Delete Route to exit/delete party --------------------------
+router.delete('/:id', isLoggedIn, function(req, res) {
+
+  // find the party by id
+  Party.findById(req.params.id, function(err, party) {
+    if(err) {
+      console.log(err);
+      res.redirect("/dashboard");
+    } else {
+
+      // if the user is host, just delete the party
+      if(req.user._id.equals(party.hosts[0])) {
+
+        // firstly remove this party from each user's parties array
+        // find all participants one by one
+        party.participants.forEach(participant => {
+          User.findById(participant.id, function(err, user) {
+            if(err) {
+              console.log(err);
+              res.redirect("/dashboard");
+            } else {
+
+              // remove the party from user's parties list
+              var index = user.parties.indexOf(req.params.id);
+              if(index > -1) {
+                user.parties.splice(index, 1);
+              }
+              user.save(function(err) {
+                if(err) console.log(err);
+              });
+
+              // finally remove the party
+              party.remove(function(err) {
+                if(err) console.log(err);
+              });
+            }
+          });
+        });
+        res.json("deleted");
+        // if the user isn't host
+      } else {
+
+        // if the party status is "past"
+        // remove the party from user's parties list only ******** Consult *********
+        if(party.status == "past") {
+          User.findById(req.user._id, function(err, user) {
+
+            // remove the party from user's parties list
+            var index = user.parties.indexOf(req.params.id);
+            if(index > -1) {
+              user.parties.splice(index, 1);
+            }
+            user.save(function(err) {
+              if(err) console.log(err);
+            });
+  
+          });
+          // if party status is ongoing or upcoming
+          // do these 3 steps
+          // 1. remove user from participants list
+          //    1a. remove his contribution from total contribution
+          //    1b. remove participant
+          // 2. remove user from every eligible item
+          //    2a. remove user from every individual item,
+          //      2ai.  if he was the only consumer, delete the item also
+          //      2aii. else update balance of all remaining consumers
+          //    2b. find total cost of all forall items and update balance
+          //        of all participants (as no. of participants reduced by 1)
+          // 3. remove party from user's parties list
+        } else {
+          
+          // 1
+          var index;
+          for(var i=0; i<party.participants.length; i++) {
+            if(req.user._id.equals(party.participants[i].id)) {
+              
+              // remove his contribution as well
+              party.totalcontribution -= party.participants[i].contribution;
+              index = i;
+              break;
+            }
+          } 
+          party.participants.splice(index, 1);
+
+          // 2
+          var totalForallCost = 0;
+          party.items.forEach(function(item, i, object) {
+            
+            // sum all forall items cost
+            if(item.forall) {
+              totalForallCost += item.price;
+            }
+            // check all individual items
+            else {
+
+              // remove from consumer list
+              var ind = item.consumers.indexOf(req.user._id);
+              if(ind > -1) {
+                item.consumers.splice(ind, 1);
+              }
+
+              // if no consumers left for item, 
+              // remove the item
+              if(item.consumers.length === 0) {
+
+                // remove its cost
+                party.totalcost -= item.price;
+
+                if(item.purchased) {
+                  party.totalpurchased -= itemm.price;
+                }
+                // finally remove item
+                object.splice(i, 1);
+              } else {
+                // if there are few consumers left
+                // update their balance in participants list
+                for(var i=0; i<item.consumers.length; i++) {
+                  var ind = party.participants.map(function(e) { return e.id.toString(); }).indexOf(item.consumers[i].toString());
+                  if(ind != -1 ) {
+                    party.participants[ind].balance += ( item.price / (item.consumers.length + 1) ) - (item.price / item.consumers.length);
+                  }
+                }
+
+              }
+            }
+          });
+
+          // update balance of remaining participants (w.r.t. total forall cost)
+          party.participants.forEach(participant => {
+            participant.balance += (totalForallCost / (party.participants.length + 1)) - (totalForallCost / party.participants.length);
+
+          });
+
+          party.save(function(err) {
+            if(err) console.log(err);
+          });
+          
+          // 3
+          User.findById(req.user._id, function(err, user) {
+
+            // remove the party from user's parties list
+            var index = user.parties.indexOf(req.params.id);
+            if(index > -1) {
+              user.parties.splice(index, 1);
+            }
+            user.save(function(err) {
+              if(err) console.log(err);
+            });
+          });
+        }
+        res.json("removed");
+      }
+    }
+  });
+});
+//------------------------------------------------------------------------------
+
+
 module.exports = router;

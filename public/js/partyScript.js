@@ -135,11 +135,11 @@ $('#items').on('click', '.delete', function(e) {
 // ----------------------- Back button -----------------------------------
 // Redirecting to dashboard page
 // to be updated if port no. or domain changes
-let dashboardUrl = 'http://localhost:3000/dashboard/'
+// let dashboardUrl = 'http://localhost:3000/dashboard/'
 window.history.pushState( { page: 1 } , "", "");
 window.onpopstate = function(e) {
     if (e) {
-        window.location.href = dashboardUrl;
+        window.location.href = "/dashboard";
     }
 }
 // -----------------------------------------------------------------------
@@ -153,7 +153,8 @@ $( "#items" ).on('click', '.checkbox', function($this) {
   let item_cost = $(this).parent().parent().siblings().eq(0).find(".item-cost").html();
   //3. send item id and party id to the backend :
   let input_url = window.location.href;
-  let party_id = input_url.split('/')[4];
+  input_url = input_url.split('/');
+  let party_id = input_url[input_url.length - 1];
   let output_url = "/party/"+party_id+"/purchase/"+item_id;
   let data = {
     party : party_id,
@@ -283,7 +284,8 @@ $("#items").on("click", ".options .edit", function()
   let item_cost = parseFloat($(this).parent().parent().parent().find(".item-cost").html());
   let item_quantity = parseFloat($(this).parent().parent().parent().find(".item-quantity").html());
   let input_url = window.location.href;
-  let party_id = input_url.split('/')[4];
+  input_url = input_url.split('/');
+  let party_id = input_url[input_url.length - 1];
   let action = "/party/"+party_id+"/item/"+item_id+"/edit";
 
   // Add these values to the edit form popup.
@@ -344,7 +346,8 @@ $('#items-form-edit').submit(function(e) {
     let item_name = $(this).parent().parent().parent().find(".name").html();
     $("#shared-item").html(item_name);
     let input_url = window.location.href;
-    let party_id = input_url.split('/')[4];
+    input_url = input_url.split('/');
+    let party_id = input_url[input_url.length - 1];
     let purchased = $('#'+item_id+' input[type="checkbox"]').prop('checked');
     let sendData = {
       id : item_id,
@@ -387,7 +390,8 @@ $('#items-form-edit').submit(function(e) {
     let item_name = $(this).parent().parent().parent().find(".name").html();
     $("#unshared-item").html(item_name);
     let input_url = window.location.href;
-    let party_id = input_url.split('/')[4];
+    input_url = input_url.split('/');
+    let party_id = input_url[input_url.length - 1];
     let purchased = $('#'+item_id+' input[type="checkbox"]').prop('checked');
     let sendData = {
       id : item_id,
@@ -403,7 +407,7 @@ $('#items-form-edit').submit(function(e) {
     // control returns here after being redirected from the backend
     $.ajax(options).done(data => {
       popup(7);
-      console.log(data);
+      // console.log(data);
       // If only consumer choose to remove, delete item
       if(data.consumerLength <= 1) $('#'+item_id).hide();
       // Update totalcost if item is deleted
@@ -432,7 +436,8 @@ $("#items").on("click", ".options .view", function()
   {
     let item_id = $(this).parent().parent().parent().parent().attr("id");
     let input_url = window.location.href;
-    let party_id = input_url.split('/')[4];
+    input_url = input_url.split('/');
+    let party_id = input_url[input_url.length - 1];
     let output_url = "/party/"+party_id+"/item/"+item_id+"/view";
     // control returns here after being redirected from the backend
     $.get(output_url, function(consumers) {
@@ -451,6 +456,36 @@ $("#items").on("click", ".options .view", function()
       $(".consumer-list-complete").html(list);
     });
   });
+//------------------------------------------------------------------------------
+
+//------------------------------- Exit Party -----------------------------------
+
+$(".exit").on("click", function() {
+
+  // get the party id
+  var input_url = window.location.href;
+  input_url = input_url.split('/');
+  var id = input_url[input_url.length - 1];
+  
+  var output_url = "/party/" + id;
+
+  var options = {
+    method: 'DELETE',
+    url: output_url
+    // async: false
+    // data: sendData
+  }
+
+  // send control to backend
+  $.ajax(options).done( data => {
+    console.log(data);
+
+    // redirect to dashboard after exit
+    window.location.href = "/";
+  });
+
+});
+
 //------------------------------------------------------------------------------
 
 
