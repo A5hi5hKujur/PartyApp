@@ -12,6 +12,16 @@ const { isLoggedIn, forwardAuthenticated } = require('../config/auth');
 // Welcome Page
 router.get('/', forwardAuthenticated, (req, res) => res.render('landing'));
 
+// function to sort parties according to date (descending order)
+function compareDate(party1, party2) {
+  if(party1.date < party2.date) 
+    return 1;
+  else if(party1.date > party2.date)
+    return -1;
+  else 
+    return 0; 
+}
+
 // Dashboard
 router.get('/dashboard', isLoggedIn, (req, res) => {
   var userParties = req.user.parties;
@@ -38,6 +48,9 @@ router.get('/dashboard', isLoggedIn, (req, res) => {
           });
         }
       });
+      // sort parties according to date
+      parties.sort(compareDate);
+
       res.render('index', {parties: parties, todayDate:date,user:req.user});
     }
   });
@@ -51,6 +64,10 @@ router.get('/dashboard.json', isLoggedIn, (req, res) => {
       console.log(err);
       res.redirect('/dashboard');
     } else {
+
+      // sort parties according to date
+      parties.sort(compareDate);
+
       if(req.xhr) {
         res.json(parties);
       } else {

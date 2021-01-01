@@ -132,10 +132,6 @@ router.get('/:id',isLoggedIn,function(req, res){
 //------------------------------------------------------------------------------
 
 //----------------------- POST ROUTE TO ADD NEW USER TO PARTY ------------------
-/*
-  This route needs to be reworked.
-  Every new user must be added into every COMMON item's consumer list.
-*/
   router.post('/:id/user',isLoggedIn,function(req, res)
   {
     User.findById(req.user._id, function(err, user)
@@ -154,14 +150,40 @@ router.get('/:id',isLoggedIn,function(req, res){
             if(err) console.log(err);
             else
             {
-              let participant = {
+              let new_participant = {
                 id : req.user._id,
                 contribution : 0,
                 host : false,
                 balance: 0
               }
-              party.participants.push(participant);  // push new user to found party.
-              party.save(function(err,user){
+
+              // add person to all forall item
+              var totalForallCost = 0;
+              party.items.forEach(item => {  
+
+                // if a forall item found
+                if(item.forall) {
+
+                  // sum its cost
+                  totalForallCost += item.price;
+                  // add user to consumers list
+                  item.consumers.push(req.user._id);
+                }
+              });
+
+              // update new participant balance
+              new_participant.balance -= (totalForallCost / (party.participants.length + 1));
+
+              // update existing participants balance
+              party.participants.forEach(participant => {
+                participant.balance += (totalForallCost / party.participants.length) - (totalForallCost / (party.participants.length + 1));
+              });
+
+              // add new participant to the list
+              party.participants.push(new_participant);
+
+              // save party
+              party.save(function(err){
                 if(err){
                   console.log(err);
                 }

@@ -478,6 +478,9 @@ $(".exit").on("click", function() {
 
   // send control to backend
   $.ajax(options).done( data => {
+
+    // data = "deleted" if party deleted (in case of a host exiting party)
+    // data = "removed" if party removed (in case of a non-host exiting party)
     console.log(data);
 
     // redirect to dashboard after exit

@@ -5,6 +5,7 @@
     <div class="profile-icon">
       <img class="profile-icon" src="<%= user.image %>" >
       <div class="profile-menu">
+        <!-- <div class="profile-name"><%= user.fname %> <%= user.lname %></div> -->
         <div id="logout">Logout</div>
       </div>
     </div>
@@ -148,7 +149,7 @@ $("#logout").on( "click", function(){
             setTimeout(function()
             {
               $(location).attr('href', "/party/"+party_id);
-            },2000); // 2second delay.
+            },1000); // 1second delay.
           });
         }
         else {
