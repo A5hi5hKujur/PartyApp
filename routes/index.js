@@ -48,8 +48,18 @@ router.get('/dashboard', isLoggedIn, (req, res) => {
           });
         }
       });
+
       // sort parties according to date
       parties.sort(compareDate);
+
+      // push ongoing parties to front
+      for(var i=0; i<parties.length; i++) {
+        if(parties[i].status === "ongoing") {
+          var temp_party = parties[i];
+          parties.splice(i, 1);
+          parties.unshift(temp_party);
+        }
+      }
 
       res.render('index', {parties: parties, todayDate:date,user:req.user});
     }
@@ -58,23 +68,30 @@ router.get('/dashboard', isLoggedIn, (req, res) => {
 
 // Dashboard sort-section route to handle asynchronous toggle
 router.get('/dashboard.json', isLoggedIn, (req, res) => {
-  var userParties = req.user.parties;
-  Party.find().where('_id').in(userParties).exec((err, parties) => {
-    if (err) {
-      console.log(err);
-      res.redirect('/dashboard');
-    } else {
-
-      // sort parties according to date
-      parties.sort(compareDate);
-
-      if(req.xhr) {
-        res.json(parties);
+  if(req.xhr) {
+    var userParties = req.user.parties;
+    Party.find().where('_id').in(userParties).exec((err, parties) => {
+      if (err) {
+        console.log(err);
+        res.redirect('/dashboard');
       } else {
-        res.render('index', {parties: parties});
+
+        // sort parties according to date
+        parties.sort(compareDate);
+
+        // push ongoing parties to front
+        for(var i=0; i<parties.length; i++) {
+          if(parties[i].status === "ongoing") {
+            var temp_party = parties[i];
+            parties.splice(i, 1);
+            parties.unshift(temp_party);
+          }
+        }
+        res.json(parties);
       }
-    }
-  });
+    });
+  } else res.redirect("/dashboard");
+  
 });
 
 

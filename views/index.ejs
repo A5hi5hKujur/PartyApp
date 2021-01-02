@@ -143,13 +143,20 @@ $("#logout").on( "click", function(){
           };
           // control returns here after being redirected from the backend
           $.ajax(options).done(response => {
-              // show response of party submission here.
-            $(".join-message").css({ "display" : "block", "background" : "#2ecc71" });
-            $(".join-message")[0].innerHTML = "You have been added to the party list !";
-            setTimeout(function()
-            {
-              $(location).attr('href', "/party/"+party_id);
-            },1000); // 1second delay.
+            
+            // show response of party submission here.
+            if(response === "past-party") {
+              $(".join-message").css({ "display" : "block", "background" : "#f39c12" });
+              $(".join-message")[0].innerHTML = "Sorry, The party is over !";
+            } else {
+              $(".join-message").css({ "display" : "block", "background" : "#2ecc71" });
+              $(".join-message")[0].innerHTML = "You have been added to the party list !";
+              setTimeout(function()
+              {
+                $(location).attr('href', "/party/"+party_id);
+              },1000); // 1second delay.
+            }
+            
           });
         }
         else {

@@ -111,6 +111,8 @@ $('#items').on('click', '.delete', function(e) {
       data: {id: itemid, price: itemCost, purchased: purchased},
       type: 'PUT',
       success: function(data) {
+        var total = parseFloat($("#total-cost").text()) - itemCost;
+        $("#total-cost").text(total);
         // Update participants balance
         var adjust;
         for(var i=0; i<data.consumers.length; i++) {
@@ -168,14 +170,14 @@ $( "#items" ).on('click', '.checkbox', function($this) {
     url: output_url,
     data: data
   };
-  console.log(data);
+  // console.log(data);
   // 4. control returns here after being redirected from the backend
   $.ajax(options).done(response => {
       // show response of party submission here.
       let total_cost = parseFloat($("#total-cost").html());
       if(this.checked) $("#total-cost").html(total_cost - parseFloat(item_cost));
       else $("#total-cost").html(total_cost + parseFloat(item_cost));
-      console.log(response);
+      // console.log(response);
       // remove backout options for the user ones the items are marked purchased.
       if(response.purchase_state == "true")
       {

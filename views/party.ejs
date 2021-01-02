@@ -20,7 +20,9 @@
         <div class="party-intro">
           <div class="card-header">
             <h3>Hosted By, <span><%= host.fname %> <%= host.lname %></span></h3>
-            <p id="edit-description" onclick="popup(3);">Edit Discription</p>
+            <% if(currentUser._id.equals(party.hosts[0])) { %> 
+              <p id="edit-description" onclick="popup(3);">Edit Discription</p>
+            <% } %> 
           </div>
           <hr>
           <p id="party-description"><%- party.description %></p>
