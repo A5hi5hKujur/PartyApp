@@ -20,9 +20,9 @@
         <div class="party-intro">
           <div class="card-header">
             <h3>Hosted By, <span><%= host.fname %> <%= host.lname %></span></h3>
-            <% if(currentUser._id.equals(party.hosts[0])) { %> 
+            <% if(currentUser._id.equals(party.hosts[0])) { %>
               <p id="edit-description" onclick="popup(3);">Edit Discription</p>
-            <% } %> 
+            <% } %>
           </div>
           <hr>
           <p id="party-description"><%- party.description %></p>
@@ -39,6 +39,10 @@
             </div>
           </div>
           <!-- End of Display latest 3 participants -->
+        </div>
+
+        <div class="party-banner <%= party.party_theme%>-banner">
+
         </div>
       </div>
       <div class="column-2">
@@ -255,7 +259,7 @@
       <% } else { %>
         <button class="exit">Exit!!</button>
       <% } %>
-      
+
     </div>
   </div>
   <!-- End Overlay to confirm party termination -->
@@ -315,7 +319,7 @@
         <div class="close-icon" onclick="popup(8)"></div>
       </header>
       <ul class="consumer-list-complete">
-        
+
       </ul>
     </div>
   </div>

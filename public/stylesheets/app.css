@@ -243,6 +243,7 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
 }
 .party-list{
   width : 100%;
+  justify-content: space-around;
   margin : 40px 0px;
   display: flex;
   flex-wrap: wrap;
@@ -250,12 +251,14 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
 
 }
 .party-list>a{
-  width : 250px;
-  margin : 0px 10px;
+  width : auto;
+  flex-grow: .2;
+  min-width : 250px;
+  /* margin : 0px; */
 }
 .party-list li{
-  width : inherit;
-  height : 200px;
+  min-width : inherit;
+  min-height : 200px;
   padding: 10px;
   border-radius: 10px;
   background: #424B71;
@@ -269,6 +272,95 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
   -webkit-box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 -moz-box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
+}
+.party-thumb
+{
+  width : 100%;
+  height : 150px;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 5px;
+}
+.party-thumb > span{
+  float : right;
+  margin-top: 5px;
+  margin-right : 5px;
+  padding : 5px 10px;
+  border-radius: 30px;
+  text-transform: capitalize;
+}
+.party-thumb.formal{
+  background-image: url('/media/theme-picture/formal-thumb.png');
+}
+.party-thumb.anniversery{
+  background-image: url('/media/theme-picture/anniversery-thumb.png');
+}
+.party-thumb.casual{
+  background-image: url('/media/theme-picture/casual-thumb.png');
+}
+.party-thumb.birthday{
+  background-image: url('/media/theme-picture/birthday-thumb.png');
+}
+.party-info > .party-name{
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+.party-info > .party-date-venue{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color : #ffffffa3;
+}
+.party-info > .party-date-venue p:first-child{
+  margin : 0px 10px 10px 0px;
+}
+.party-info > .party-date-venue p:last-child{
+  margin : 0px 0px 10px 10px;
+}
+.party-thumb > .past-tag, .party-thumb > .upcoming-tag{
+  .display : none;
+}
+.party-thumb > .ongoing-tag
+{
+  background: rgba(27, 154, 41, 0.8);
+}
+.party-thumb > .past-tag
+{
+  background: rgba(179, 32, 32, 0.6);
+}
+.party-thumb > .upcoming-tag
+{
+  background: rgba(163, 0, 255, 0.7);
+}
+.empty-placeholder{
+  width : 100%;
+}
+.empty-placeholder > .placeholder-icon
+{
+  margin : 0px auto;
+  height : 300px;
+  max-width : 500px;
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-image: url('/media/lost.png');
+}
+.empty-placeholder > .placeholder-heading{
+  text-align: center;
+  font-family: fantasy;
+  font-size: 30px;
+  margin: 5px 0px;
+  letter-spacing: 2px;
+  color : #ffffff;
+}
+.empty-placeholder > .placeholder-text{
+  text-align: center;
+  font-size: 20px;
+  color : #ffffffc5;
+  margin: 0px;
+  font-weight: 100;
 }
 .overlay
 {
@@ -398,6 +490,28 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
   height : 35px;
   border-radius: 100%;
   margin-left: 10px;
+}
+.column-1 > .party-banner{
+  width : 100%;
+  height: 400px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.column-1 > .party-banner.casual-banner{
+  background-image: url('/media/theme-picture/casual-banner.png');
+  background-size: cover;
+}
+.column-1 > .party-banner.birthday-banner{
+  background-image: url('/media/theme-picture/birthday-banner.webp');
+  background-size: cover;
+}
+.column-1 > .party-banner.anniversery-banner{
+  background-image: url('/media/theme-picture/anniversery-banner.png');
+  background-size: cover;
+}
+.column-1 > .party-banner.formal-banner{
+  background-image: url('/media/theme-picture/formal-banner.png');
+  background-size: cover;
 }
 .btn-wrapper{
   display: flex;

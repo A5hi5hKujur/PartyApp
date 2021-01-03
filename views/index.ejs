@@ -33,10 +33,16 @@
     <% parties.forEach(party => { %>
         <a href="/party/<%= party._id %> ">
           <li>
-            <p class="party-name"><%= party.party_name %> </p>
-            <p class="party-date"><%= party.date.toDateString() %> </p>
-            <p class="party-contribution"><%= party.totalcontribution %> </p>
-            <p class="party-venue"><%= party.venue %> </p>
+            <div class="party-thumb <%= party.party_theme %>">
+              <span class="<%= party.status %>-tag"><%= party.status %></span>
+            </div>
+            <div class="party-info">
+              <p class="party-name"><%= party.party_name %> </p>
+              <div class="party-date-venue">
+                <p><%= party.date.toDateString() %> </p>
+                <p><%= party.venue %> </p>
+              </div>
+            </div>
           </li>
         </a>
       <% }) %>
@@ -143,7 +149,7 @@ $("#logout").on( "click", function(){
           };
           // control returns here after being redirected from the backend
           $.ajax(options).done(response => {
-            
+
             // show response of party submission here.
             if(response === "past-party") {
               $(".join-message").css({ "display" : "block", "background" : "#f39c12" });
@@ -156,7 +162,7 @@ $("#logout").on( "click", function(){
                 $(location).attr('href', "/party/"+party_id);
               },1000); // 1second delay.
             }
-            
+
           });
         }
         else {

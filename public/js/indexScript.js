@@ -27,18 +27,33 @@ function generateList(parties) {
     var result = "";
     for (var i = 0; i < parties.length; i++) {
     result +=
-      `
-        <a href="/party/${parties[i]._id}">
-        <li>
-          <p class="party-name">${parties[i].party_name}</p>
-          <p class="party-date">${parties[i].date}</p>
-          <p class="party-contribution">${parties[i].totalcontribution}</p>
-          <p class="party-venue">${parties[i].venue}</p>
-        </li>
+      ` <a href="/party/${parties[i]._id}">
+          <li>
+            <div class="party-thumb ${parties[i].party_theme}">
+              <span class="${parties[i].status}-tag">${parties[i].status}</span>
+            </div>
+            <div class="party-info">
+              <p class="party-name">${parties[i].party_name}</p>
+              <div class="party-date-venue">
+                <p>${parties[i].date}</p>
+                <p>${parties[i].venue}</p>
+              </div>
+            </div>
+          </li>
         </a>
         `
     }
-    $('#parties').html(result);
+    var no_parties = `
+      <div class="empty-placeholder">
+        <div class="placeholder-icon"></div>
+        <h1 class="placeholder-heading">OOPS!</h1>
+        <p class="placeholder-text">Looks like there are no parties going on here.</p>
+      </div>
+    `;
+    if(result == "")
+      $('#parties').html(no_parties);
+    else
+      $('#parties').html(result);
 }
 
 // Adding event listeners to the sorting buttons
