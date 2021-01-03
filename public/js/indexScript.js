@@ -28,7 +28,7 @@ function generateList(parties) {
     for (var i = 0; i < parties.length; i++) {
     result +=
       ` <a href="/party/${parties[i]._id}">
-          <li>
+          <li class="animate__animated animate__fadeInUp">
             <div class="party-thumb ${parties[i].party_theme}">
               <span class="${parties[i].status}-tag">${parties[i].status}</span>
             </div>
@@ -44,7 +44,7 @@ function generateList(parties) {
         `
     }
     var no_parties = `
-      <div class="empty-placeholder">
+      <div class="empty-placeholder animate__animated animate__fadeInUp">
         <div class="placeholder-icon"></div>
         <h1 class="placeholder-heading">OOPS!</h1>
         <p class="placeholder-text">Looks like there are no parties going on here.</p>
@@ -83,5 +83,8 @@ $("header>.profile-icon").on("click", function(){
 
 $("#logout").on( "click", function(){
   window.location.href = '/users/logout';
+});
+$("#profile-name").on( "click", function(){
+  window.location.href = '/dashboard';
 });
 //------------------------------------------------------------------------------

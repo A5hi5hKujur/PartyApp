@@ -1,11 +1,11 @@
 <%- include("partials/header") %>
-<body class="profile">
+<body class="profile animate__animated animate__fadeIn">
   <header>
     <a href="/"><div class="logo"><img src="/media/logo.png" alt="logo" class="profile-icon logo-icon"></div></a>
     <div class="profile-icon">
       <img class="profile-icon" src="<%= user.image %>" >
       <div class="profile-menu">
-        <!-- <div class="profile-name"><%= user.fname %> <%= user.lname %></div> -->
+        <div id="profile-name"><%= user.fname %> <%= user.lname %></div>
         <div id="logout">Logout</div>
       </div>
     </div>
@@ -32,7 +32,7 @@
   <ul class="party-list" id="parties">
     <% parties.forEach(party => { %>
         <a href="/party/<%= party._id %> ">
-          <li>
+          <li class="animate__animated animate__fadeInUp">
             <div class="party-thumb <%= party.party_theme %>">
               <span class="<%= party.status %>-tag"><%= party.status %></span>
             </div>
@@ -45,11 +45,18 @@
             </div>
           </li>
         </a>
-      <% }) %>
+      <% }); %>
+      <% if(!parties.length){ %>
+        <div class="empty-placeholder animate__animated animate__fadeInUp">
+          <div class="placeholder-icon"></div>
+          <h1 class="placeholder-heading">OOPS!</h1>
+          <p class="placeholder-text">Looks like there are no parties going on here.</p>
+        </div>
+      <% } %>
   </ul>
 </body>
 <!-- Overlay to create new party -->
-<div class="overlay">
+<div class="overlay animate__animated animate__fadeInDownBig">
   <div class="popup">
     <header>
       <h2>Host Party</h2>
@@ -78,7 +85,7 @@
 <!-- End of overlay to create new party -->
 
 <!-- Overlay to join other party -->
-<div class="overlay">
+<div class="overlay animate__animated animate__fadeInDownBig">
   <div class="popup">
     <header>
       <h2>Join Party</h2>

@@ -23,10 +23,15 @@ $('#items-form').submit(function(e) {
       if(!data.item.forall){
         midString = '<div class="remove-me">Remove Me</div><div class="view">View Consumers</div>'
       }
+      // if the item list is empty, remove the placeholder and then append
+      var placeholder = $('.item-list').find('empty-placeholder');
+      if(placeholder != undefined)
+        $('.item-list').html('');
+
       // append new item
         $('.item-list').append(
             `
-            <li id="${data.item._id.toString()}">
+            <li id="${data.item._id.toString()}" class="animate__animated animate__slideInRight">
                 <div class="item-icon ${data.item.category.toLowerCase()}-icon"></div>
                 <div class="item-content">
                   <div class="item-detail">
@@ -100,6 +105,17 @@ $('#items').on('click', '.delete', function(e) {
     var itemCost = $('#'+itemid+' .item-cost').text();
     var purchased = $('#'+itemid+' input[type="checkbox"]').prop('checked');
     $('#'+itemid).hide();
+
+    // check if the last item deleted was the last item, if so then display the placeholder message.
+    var item_len = $('#items').children().length - 1;
+    console.log(item_len);
+    if(item_len == 0)
+    {
+        $('#items').html(`<div class="empty-placeholder">
+          <h1 class="placeholder-heading" style="font-size : 20px; letter-spaceing : 0px;">Add Items</h1>
+          <p class="placeholder-text">Add some party items to get this party started.</p>
+        </div>`);
+    }
     // Some css or animation on removing item
     // $('#'+itemid).html(
     //   `
@@ -459,16 +475,35 @@ $("#items").on("click", ".options .view", function()
     });
   });
 //------------------------------------------------------------------------------
+// --------------------------------- Copy Party URL ----------------------------
+function copyPartyLink() {
+  var url = window.location.href;
+  $('#hidden-url-input').val(url);
+  var copyText = document.getElementById('hidden-url-input');
+  copyText.select();
+  copyText.setSelectionRange(0, 99999);
+  document.execCommand("copy");
 
+  var tooltip = document.getElementById("myTooltip");
+  $('#myTooltip').css({'background-color' : '#4A9FE3'});
+  tooltip.innerHTML = "Party Link Copied";
+}
+
+function outFunc() {
+  $('#myTooltip').css({'background-color' : '#555'});
+  var tooltip = document.getElementById("myTooltip");
+  tooltip.innerHTML = "Copy to clipboard";
+}
+//------------------------------------------------------------------------------
 //------------------------------- Exit Party -----------------------------------
 
-$(".exit").on("click", function() {
+$(".exit-button").on("click", function() {
 
   // get the party id
   var input_url = window.location.href;
   input_url = input_url.split('/');
   var id = input_url[input_url.length - 1];
-  
+
   var output_url = "/party/" + id;
 
   var options = {
@@ -501,5 +536,9 @@ $("header>.profile-icon").on("click", function(){
 
 $("#logout").on( "click", function(){
   window.location.href = '/users/logout';
+});
+
+$("#profile-name").on( "click", function(){
+  window.location.href = '/dashboard';
 });
 //------------------------------------------------------------------------------

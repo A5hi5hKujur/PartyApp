@@ -1,15 +1,15 @@
 <%- include("partials/header") %>
 <% if (currentUserContri === 0) { %>
-  <body class="party" onload="popup(0);">
+  <body class="party animate__animated animate__fadeIn" onload="popup(0);">
 <% } else { %>
-  <body class="party">
+  <body class="party animate__animated animate__fadeIn">
 <% } %>
     <header>
       <a href="/"><div class="logo"><img src="/media/logo.png" alt="logo" class="profile-icon logo-icon"></div></a>
       <div class="profile-icon">
         <img class="profile-icon" src="<%= currentUser.image %>" >
         <div class="profile-menu">
-          <!-- <div class="profile-name"><%= currentUser.fname %> <%= currentUser.lname %></div> -->
+          <div id="profile-name"><%= currentUser.fname %> <%= currentUser.lname %></div>
           <div id="logout">Logout</div>
         </div>
       </div>
@@ -20,9 +20,16 @@
         <div class="party-intro">
           <div class="card-header">
             <h3>Hosted By, <span><%= host.fname %> <%= host.lname %></span></h3>
-            <% if(currentUser._id.equals(party.hosts[0])) { %>
-              <p id="edit-description" onclick="popup(3);">Edit Discription</p>
-            <% } %>
+            <input type="text" name="" value="" id="hidden-url-input">
+            <div class="description-wrapper">
+              <div class="tooltip">
+                <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
+                <p id="copy-link" onclick="copyPartyLink();" onmouseout="outFunc();">Copy Party Link</p>
+              </div>
+              <% if(currentUser._id.equals(party.hosts[0])) { %>
+                <p id="edit-description" onclick="popup(3);">Edit Discription</p>
+              <% } %>
+            </div>
           </div>
           <hr>
           <p id="party-description"><%- party.description %></p>
@@ -78,8 +85,8 @@
                   <div class="item-ops">
                     <div class="option"></div>
                     <div class="options">
-                      <!-- If item is common only admin and the user adding this item has the privilage to access this options -->
-                      <% if( !item.purchased && (toString(item.consumers[0]) == toString(currentUser._id) || toString(party.hosts[0]._id) == toString(currentUser._id))){ %>
+                      <!-- If the party has not expired and item is common only admin and the user adding this item has the privilage to access this options -->
+                      <% if( party.status != "past" && !item.purchased && (toString(item.consumers[0]) == toString(currentUser._id) || toString(party.hosts[0]._id) == toString(currentUser._id))){ %>
                       <div class="edit">Edit</div>
                       <div class="delete">Delete</div>
                       <% } %>
@@ -95,7 +102,7 @@
                             break;
                           }
                       }
-                      if(!item.purchased)
+                      if(party.status != "past" && !item.purchased)
                       {
                         if(match == 0)
                         { %>
@@ -109,28 +116,37 @@
                       <div class="view">View Consumers</div>
                       <% } %>
                     </div>
-                    <label class="custom-checkbox">
-                      <% if (item.purchased) { %>
-                        <input class="checkbox" type="checkbox" checked="checked">
-                      <% } else { %>
-                        <input class="checkbox" type="checkbox">
-                      <% } %>
-
-                      <span class="checkmark"></span>
-                    </label>
+                    <% if(party.status != "past") { %>
+                      <label class="custom-checkbox">
+                        <% if (item.purchased) { %>
+                          <input class="checkbox" type="checkbox" checked="checked">
+                        <% } else { %>
+                          <input class="checkbox" type="checkbox">
+                        <% } %>
+                        <span class="checkmark"></span>
+                      </label>
+                    <% } %>
                   </div>
                 </div>
               </li>
             <% }); %>
+            <% if(!party.items.length) { %>
+              <div class="empty-placeholder">
+                <h1 class="placeholder-heading" style="font-size : 20px; letter-spaceing : 0px;">Add Items</h1>
+                <p class="placeholder-text">Add some party items to get this party started.</p>
+              </div>
+            <% } %>
           </ul>
           <!-- End of item list -->
+          <% if(party.status != "past") { %>
           <div class="add-item <%=party.status%>-status-display" onclick="popup(1)"></div>
+          <% } %>
         </div>
       </div>
     </div>
   </body>
   <!-- Overlay code to contribution form -->
-  <div class="overlay">
+  <div class="overlay animate__animated animate__fadeInDownBig">
     <div class="popup">
       <header>
         <h2>Contribute to the party</h2>
@@ -147,7 +163,7 @@
   <!-- End of Overlay code to contribution form -->
 
   <!-- Overlay code to add new item -->
-  <div class="overlay">
+  <div class="overlay animate__animated animate__fadeInDownBig">
     <div class="popup">
       <header>
         <h2>Add New Item</h2>
@@ -195,7 +211,7 @@
   <!-- End of Overlay code to add new item -->
 
   <!-- Overlay to display list of all participants -->
-  <div class="overlay">
+  <div class="overlay animate__animated animate__fadeInDownBig">
     <div class="popup">
       <header>
         <h2>List of participants</h2>
@@ -231,7 +247,7 @@
   <!-- End Overlay to display list of all participants -->
 
   <!-- Overlay to display description -->
-  <div class="overlay">
+  <div class="overlay animate__animated animate__fadeInDownBig">
     <div class="popup">
       <header>
         <h2>Edit Discription</h2>
@@ -247,7 +263,7 @@
   <!-- End Overlay to display description -->
 
   <!-- Overlay to Confirm party termination -->
-  <div class="overlay">
+  <div class="overlay animate__animated animate__fadeInDownBig">
     <div class="popup">
       <header>
         <h2>Leaving so soon ?</h2>
@@ -255,9 +271,15 @@
       </header>
       <!-- If host then show end party else show exit -->
       <% if (currentUser._id.toString() === party.hosts[0].toString()) { %>
-        <button class="exit">End Party!!</button>
+        <div class="end-party-image"></div>
+        <p class="popup-message">As a host, exiting a party will end it for everyone. Are
+        you sure you want to end the party ?</p>
+        <button class="exit-button">End Party</button>
       <% } else { %>
-        <button class="exit">Exit!!</button>
+        <div class="exit-party-image"></div>
+        <p class="popup-message">Are you sure you want to leave the party ? Once
+           exitted you will no longer have access to this party.</p>
+        <button class="exit-button">Exit Party</button>
       <% } %>
 
     </div>
@@ -265,7 +287,7 @@
   <!-- End Overlay to confirm party termination -->
 
   <!-- Overlay code to Edit existing item -->
-  <div class="overlay">
+  <div class="overlay animate__animated animate__fadeInDownBig">
     <div class="popup">
       <header>
         <h2>Edit Item</h2>
@@ -285,7 +307,7 @@
   <!-- End of Overlay code to edit existing item -->
 
   <!-- Overlay code to Confirm consumer addition -->
-  <div class="overlay">
+  <div class="overlay animate__animated animate__fadeInDownBig">
     <div class="popup">
       <header>
         <h2>You Have Been Added</h2>
@@ -299,7 +321,7 @@
   <!-- End of Overlay code to confirm consumer addition -->
 
   <!-- Overlay code to Confirm consumer removal -->
-  <div class="overlay">
+  <div class="overlay animate__animated animate__fadeInDownBig">
     <div class="popup">
       <header>
         <h2>You Have Been Removed</h2>
@@ -312,7 +334,7 @@
   </div>
   <!-- End of Overlay code to confirm consumer removal -->
   <!-- Overlay code to show consumer list -->
-  <div class="overlay">
+  <div class="overlay animate__animated animate__fadeInDownBig">
     <div class="popup">
       <header>
         <h2>List of consumers</h2>

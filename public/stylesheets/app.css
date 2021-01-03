@@ -154,9 +154,9 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
   cursor: pointer;
 }
 .profile-icon .profile-menu{
-  width : 150px;
+  min-width : 200px;
   font-size: 18px;
-  left : -130px;
+  left : -170px;
   padding : 10px;
   border-radius: 10px 0px 10px 10px;
   background: #364065;
@@ -164,6 +164,17 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
   z-index: 2;
   color : #ccc;
   display : none;
+}
+.profile-icon .profile-menu > div{
+  padding : 10px;
+  border-radius: 5px;
+  transition: .2s linear all;
+}
+.profile-icon .profile-menu > div:hover{
+  color : white;
+}
+.profile-icon .profile-menu #profile-name{
+  background: #1f2539;
 }
 .profile-icon .profile-menu.active{
   display: block;
@@ -243,7 +254,7 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
 }
 .party-list{
   width : 100%;
-  justify-content: space-around;
+  .justify-content: space-around;
   margin : 40px 0px;
   display: flex;
   flex-wrap: wrap;
@@ -252,8 +263,8 @@ input[type="text"], input[type="password"], input[type="number"], input[type="em
 }
 .party-list>a{
   width : auto;
-  flex-grow: .2;
-  min-width : 250px;
+  .flex-grow: .2;
+  width : 350px;
   /* margin : 0px; */
 }
 .party-list li{
@@ -277,7 +288,7 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 {
   width : 100%;
   height : 150px;
-  background-size: 100% 100%;
+  background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
   border-radius: 5px;
@@ -318,9 +329,10 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 }
 .party-info > .party-date-venue p:last-child{
   margin : 0px 0px 10px 10px;
+  text-align: right;
 }
 .party-thumb > .past-tag, .party-thumb > .upcoming-tag{
-  .display : none;
+  display : none;     /*Remove this to add tags for upcomming and past parties */
 }
 .party-thumb > .ongoing-tag
 {
@@ -385,7 +397,7 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
   min-height: 300px;
   background: #313A56;
   border-radius: 10px;
-  padding : 0px 30px;
+  padding : 0px 30px 20px 30px;
   z-index: 11;
 }
 .close-icon{
@@ -426,7 +438,7 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
   background: #424B71;
 }
 .popup form textarea{
-  height : 60px;
+  height : 150px;
   padding : 10px;
 }
 /*--------------------------------------------------------------------
@@ -467,18 +479,33 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 #party-description{
   color : white;
 }
-#show-participants, #edit-description{
+.description-wrapper{
+  display : flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#hidden-url-input{
+  width : 1px;
+  height : 1px;
+  opacity: 0;
+}
+.description-wrapper  p, #show-participants{
+  margin : 0px 10px;
   cursor: pointer;
   color : #E63E98;
   transition: all ease-in .2s;
   opacity: .7;
 }
-#show-participants:hover, #edit-description:hover{
+.description-wrapper #copy-link{
+  color : #4A9FE3;
+}
+.description-wrapper  p:hover, #show-participants:hover{
   opacity: 1;
 }
 .party-intro .participants{
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 .party-intro .participants .participant-list{
   display: flex;
@@ -491,6 +518,47 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
   border-radius: 100%;
   margin-left: 10px;
 }
+/*------------------------------------------------------------------------------
+                          Tool Tip External style
+-------------------------------------------------------------------------------*/
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 140px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -75px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+/*------------------------------------------------------------------------------*/
 .column-1 > .party-banner{
   width : 100%;
   height: 400px;
@@ -525,6 +593,8 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 }
 .party-items .item-list{
   margin-top : 20px;
+  max-height : 321px;
+  overflow-y : scroll;
 }
 .item-list li{
   width : 100%;
@@ -579,7 +649,7 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
   background: #364065;
   position: absolute;
   z-index : 2;
-  left : -50px;
+  left : -110px;
   top : 25px;
   border-radius: 10px;
   padding : 10px 15px;
@@ -687,13 +757,22 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
 }
 
-.party-entry, .party-invite, .add-consumer-image, .remove-consumer-image{
+.party-entry, .party-invite, .add-consumer-image, .remove-consumer-image, .exit-party-image, .end-party-image{
   height : 200px;
   width: 300px;
   margin : 0px auto;
   background-image: url(/media/party-entry.png);
   background-position: center;
   background-size: 100% 100%;
+}
+.exit-party-image, .end-party-image{
+  background-image: url(/media/exit.png);
+  margin : 20px auto;
+  height : 150px;
+  width: 150px;
+}
+.end-party-image{
+  background-image: url(/media/end.png);
 }
 .add-consumer-image{
   background-image: url(/media/consumer-add.png);
@@ -711,6 +790,15 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
     background-image: url(/media/party-invite.png);
     height : 150px;
     width: 150px;
+}
+.exit-button{
+  width : 100%;
+  color : white;
+  height: 40px;
+  border: 0px;
+  background: #c82e81;
+  border-radius: 10px;
+  margin-bottom: 30px;
 }
 .cake-icon {
   background-image: url(/media/icons/cake.jpg);
@@ -918,8 +1006,23 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
                                 MEDIA QUERIES
 --------------------------------------------------------------------------------
  */
+ @media only screen and (max-width: 1500px)
+ {
+   .party-list>a{
+     width : 320px;
+   }
+ }
+ @media only screen and (max-width: 1300px)
+ {
+   .party-list>a{
+     width : 350px;
+   }
+ }
  @media only screen and (max-width: 1200px)
  {
+   .party-list>a{
+     width : 320px;
+   }
    .party-grid .column-1{
      width: 49%;
    }
@@ -927,8 +1030,11 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
      width : 50%;
    }
  }
- @media only screen and (max-width: 1000px)
+ @media only screen and (max-width: 1100px)
  {
+   .party-list>a{
+     width : 400px;
+   }
    .party-grid{
      display: block;
    }
@@ -948,6 +1054,9 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
      width : auto;
      margin : 0px 0px;;
      flex-grow: 1;
+   }
+   .column-1 > .party-banner{
+     height: 300px;
    }
  }
  @media only screen and (max-width: 800px) {
@@ -979,6 +1088,9 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
    }
    .party-grid .column-1 > div, .party-grid .column-2 > div{
      padding : 20px 20px;
+   }
+   .column-1 > .party-banner{
+     height: 200px;
    }
  }
  @media only screen and (max-width: 400px)
