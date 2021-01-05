@@ -70,7 +70,20 @@ router.get('/:id',isLoggedIn,function(req, res){
 //---------------------- post route to create a new party ----------------------
   router.post('/',isLoggedIn,function(req,res)
   {
-    let inputed_date = req.body.date; //input
+
+    // check if date is valid or not
+    let date_check = false;
+    let inputed_date = new Date(req.body.date);
+
+    // toString() will convert date object to date string
+    // if the date is valid otherwise gives 'Invalid Date'
+    if(inputed_date.toString() !== 'Invalid Date') {
+      date_check = true;
+    }
+
+    // compare with current date
+    // convert current date in format 'yyyy-mm-dd'
+    // and compare with party date to set status
     let status; // output
     let today = new Date();
     let yyyy = today.getFullYear();
@@ -80,54 +93,85 @@ router.get('/:id',isLoggedIn,function(req, res){
     let dd = today.getDate();
     if (dd < 10)
       dd = '0' + dd;
+
     let date = yyyy + '-' + mm + '-' + dd;
-    if(inputed_date == date)
+
+    if(req.body.date == date)
       status = "ongoing";
-    else if (date < inputed_date)
+    else if (date < req.body.date)
       status = "upcoming";
     else
       status = "past";
-    let newParty = {
-      party_theme : req.body.theme,
-      party_name : req.body.name,
-      venue : req.body.venue,
-      date: req.body.date,
-      participants : [{
-        id : req.user._id,
-        contribution : 0,
-        host : true,
-        balance: 0
-      }],
-      totalcost : 0,
-      totalcontribution : 0,
-      totalpurchased: 0,
-      items : [],
-      hosts : [req.user._id],
-      description : req.sanitize(req.body.description),
-      status : status
-    };
-    Party.create(newParty, function(err, party){
-      if(err)
-      {
-        console.log(err);
-        res.redirect("/dashboard");
-      }
-      let new_party = party._id;  // newly created party id
-      User.findById(req.user._id, function(err, user)  // find logged in user
-      {
-        if(err) console.log(err);
-        else
+    
+    // sanitizing text inputs
+    var party_name = req.sanitize(req.body.name);
+    var venue = req.sanitize(req.body.venue);
+    var description = req.sanitize(req.body.description);
+
+    // check if correct theme is entered
+    var theme_check = false;
+    if(req.body.theme == "anniversery" || req.body.theme == "birthday" 
+      || req.body.theme == "casual" || req.body.theme == "formal") 
+    {
+      theme_check = true;
+    }
+
+    // party_name, venue must be non-empty && party must not be PAST
+    if(party_name && venue && status != 'past' && theme_check && date_check) {
+      
+      // undefined error check
+      if(description == undefined) description = "";
+      
+      // limiting the length of text inputs
+      party_name = party_name.substring(0, Math.min(30, party_name.length));
+      venue = venue.substring(0, Math.min(30, venue.length));
+      description = description.substring(0, Math.min(150, description.length));
+      
+      let newParty = {
+        party_theme : req.body.theme,
+        party_name : party_name,
+        venue : venue,
+        date: req.body.date,
+        participants : [{
+          id : req.user._id,
+          contribution : 0,
+          host : true,
+          balance: 0
+        }],
+        totalcost : 0,
+        totalcontribution : 0,
+        totalpurchased: 0,
+        items : [],
+        hosts : [req.user._id],
+        description : description,
+        status : status
+      };
+
+
+      Party.create(newParty, function(err, party){
+        if(err)
         {
-          user.parties.push(new_party);  // push new data to the found user.
-          user.save(function(err,user){
-            if(err){
-              console.log(err);
-            }
-          });
-          res.redirect("/party/"+party._id); // redirect to newly created party.
+          console.log(err);
+          res.redirect("/dashboard");
         }
+        let new_party = party._id;  // newly created party id
+        User.findById(req.user._id, function(err, user)  // find logged in user
+        {
+          if(err) console.log(err);
+          else
+          {
+            user.parties.push(new_party);  // push new data to the found user.
+            user.save(function(err,user){
+              if(err){
+                console.log(err);
+              }
+            });
+            res.redirect("/party/"+party._id); // redirect to newly created party.
+          }
+        });
       });
-    });
+    } else res.redirect("/dashboard");
+    
   });
 //------------------------------------------------------------------------------
 
@@ -209,7 +253,7 @@ router.get('/:id',isLoggedIn,function(req, res){
           
         }
       });
-    } res.redirect("/dashboard");
+    } else res.redirect("/dashboard");
     
   });
 //------------------------------------------------------------------------------
@@ -225,58 +269,120 @@ router.get('/:id',isLoggedIn,function(req, res){
 */
   router.post('/:id/item', isLoggedIn, function(req, res) {
     if(req.xhr) {
-      let cost = parseFloat(req.body.quantity) * parseFloat(req.body.cost);
-      var forall = req.body.type === '1' ? true : false;
-      // First consumer is the person who adds the item
-      var consumers = [req.user._id];
-      let newItem = {
-        name : req.body.name,
-        category : req.body.category,
-        quantity : req.body.quantity,
-        price : cost,
-        priority : req.body.priority,
-        purchased : false,
-        essential : false,
-        forall: forall,
-        consumers: consumers
-      };
-      Party.findOne({_id: req.params.id}, function(err, party) {
-        if(err) {
-          console.log(err);
-          res.redirect('/party/' + req.params.id);
-        } else {
-          if(party.status !== "past") {
-            // If the item is general then push all other members
-            // and increse balance of each member
-            if(forall) {
-              var average = newItem.price / party.participants.length;
-              party.participants.forEach(function(participant) {
-                participant.balance -= average;
-                if(!newItem.consumers[0].equals(participant.id)) {
-                  newItem.consumers.push(participant.id);
-                }
-              });
-            } else {
-              // Oterwise increase balance of that member only
-              for(var i=0; i<party.participants.length; i++) {
-                if(newItem.consumers[0].equals(party.participants[i].id)) {
-                  party.participants[i].balance -= newItem.price;
+
+      // check for valid inputs
+      // check item type, must be 1 (forall/common item) or 2 (individual item)
+      let type_check = false;
+      if(req.body.type === '1' || req.body.type === '2') {
+        type_check = true;
+      }
+
+      // check item category
+      let category_check = false;
+      switch(req.body.category) {
+        case "cake":
+        case "decorations":
+        case "party-popper":
+        case "pizza":
+        case "food":
+        case "fruits-vegetables":
+        case "water":
+        case "soda":
+        case "beer":
+        case "wine":
+        case "cups":
+        case "cards":
+        case "board-games":
+        case "video-games":
+          category_check = true;
+          break;
+        default:
+          category_check = false;
+      }
+
+      // check item priority
+      let priority_check = false;
+      if(req.body.priority === "1" || req.body.priority === "2" || req.body.priority === "3") {
+        priority_check = true;
+      }
+
+      // check item cost
+      let cost_check = false;
+      if(Number(req.body.cost) > 0) {
+        cost_check = true;
+      }
+
+      // check item quantity
+      let quantity_check = false;
+      if(Number(req.body.quantity) > 0) {
+        quantity_check = true;
+      }
+
+      // check text inputs i.e. name
+      // firstly sanitize the name
+      // a valid item name is any string which is not undefined or empty
+      let name = req.sanitize(req.body.name);
+      
+      if(name && type_check && category_check && priority_check && cost_check && quantity_check) {
+
+        let cost = parseFloat(req.body.quantity) * parseFloat(req.body.cost);
+        let forall = req.body.type === '1' ? true : false;
+        // First consumer is the person who adds the item
+        let consumers = [req.user._id];
+
+        // limiting the length of name
+        name = name.substring(0, Math.min(15, name.length));
+
+        let newItem = {
+          name : name,
+          category : req.body.category,
+          quantity : req.body.quantity,
+          price : cost,
+          priority : req.body.priority,
+          purchased : false,
+          essential : false,
+          forall: forall,
+          consumers: consumers
+        };
+        Party.findOne({_id: req.params.id}, function(err, party) {
+          if(err) {
+            console.log(err);
+            res.redirect('/party/' + req.params.id);
+          } else {
+            if(party.status !== "past") {
+              // If the item is general then push all other members
+              // and increse balance of each member
+              if(forall) {
+                var average = newItem.price / party.participants.length;
+                party.participants.forEach(function(participant) {
+                  participant.balance -= average;
+                  if(!newItem.consumers[0].equals(participant.id)) {
+                    newItem.consumers.push(participant.id);
+                  }
+                });
+              } else {
+                // Oterwise increase balance of that member only
+                for(var i=0; i<party.participants.length; i++) {
+                  if(newItem.consumers[0].equals(party.participants[i].id)) {
+                    party.participants[i].balance -= newItem.price;
+                  }
                 }
               }
+              party.items.push(newItem);
+              party.totalcost += parseFloat(newItem.price);
+              party.save();
+              res.json({
+                item: party.items[party.items.length - 1],
+                party: party,
+                user: req.user,
+                host: party.hosts[0],
+                itemAdder: newItem.consumers[0]
+              });
             }
-            party.items.push(newItem);
-            party.totalcost += parseFloat(newItem.price);
-            party.save();
-            res.json({
-              item: party.items[party.items.length - 1],
-              party: party,
-              user: req.user,
-              host: party.hosts[0],
-              itemAdder: newItem.consumers[0]
-            });
           }
-        }
-      });
+        });
+      } else res.json("invalid-input");
+
     } else res.redirect("/dashboard");
     
   });
@@ -379,7 +485,7 @@ router.put('/:id/item/delete', isLoggedIn, function(req, res) {
 //--------- POST ROUTE TO ADD CONTRIBUTION FROM PARTICIPANTS -------------------
  router.post('/:party_id/contribution', isLoggedIn, function(req, res)
  {
-  if(req.xhr) {
+  if(req.xhr && Number(req.body.contribution_amt) > 0) {
     Party.findById(req.params.party_id,function(err,party){
         if(err){
           console.log(err);
@@ -390,6 +496,7 @@ router.put('/:id/item/delete', isLoggedIn, function(req, res) {
               participant.contribution+=Number(req.body.contribution_amt);
               participant.balance += Number(req.body.contribution_amt);
               party.totalcontribution+=Number(req.body.contribution_amt);
+              return;
             }
           });
           party.save(function(err){
@@ -412,14 +519,21 @@ router.put('/:id/item/delete', isLoggedIn, function(req, res) {
 //------------------- PUT route to edit description-----------------------------
 router.put('/:id/description', isLoggedIn, function(req, res) {
   if(req.xhr) {
-    req.body.description = req.sanitize(req.body.description);
+
+    // sanitizing and limiting the length of description
+    let description = req.sanitize(req.body.description);
+    if(description === undefined) {
+      description = "";
+    }
+    description = description.substring(0, Math.min(150, description.length));
+
     Party.findOne({_id: req.params.id}, function(err, party) {
       if(err) {
         console.log(err);
         res.redirect('/party/' + req.params.id);
       } else {
         if(req.user._id.toString() === party.hosts[0].toString()) {
-          party.description = req.body.description;
+          party.description = description;
           party.save(function(err) {
             if(err) console.log(err);
           });
@@ -563,53 +677,79 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
 //------------------------Edit Item---------------------------------------------
 router.put("/:party_id/item/:item_id/edit",isLoggedIn,function(req,res){
   if(req.xhr) {
-    Party.findById(req.params.party_id,function(err,party){
-      if(err){
-        console.log(err);
-        res.redirect("/dashboard");
-      }else{
-        if(party.status !== "past" && req.body.purchased.toString() === 'false') {
-          var itemsLength=party.items.length;
-          let item;
-          let oldPrice;
-          // Update items
-          for(var i=0;i<itemsLength;i++)
-          {
-              if(party.items[i]._id.equals(req.params.item_id))
-              {
-                let cost = parseFloat(req.body.cost) * parseFloat(req.body.quantity);
-                party.items[i].name = req.body.name;
-                oldPrice = party.items[i].price;
-                party.items[i].price = cost;
-                party.items[i].quantity= req.body.quantity;
-                item = party.items[i];
-                // Update totalcost += (newPrice - oldPrice)
-                party.totalcost += (cost - oldPrice);
-                party.save(function(err){
-                  if(err) {
-                    console.log(err);
-                  }
-                });
-                break;
-              }
-          }
-          // Change in balance would be the difference divided by the no of consumers
-          var change = (oldPrice - item.price ) / item.consumers.length;
-          var index;
-          for(var i=0; i<item.consumers.length; i++) {
-            index = party.participants.map(function(e) { return e.id; }).indexOf(item.consumers[i]);
-            if(index != -1) {
-              party.participants[index].balance += change;
+
+    // check for valid inputs
+    // check item cost
+    let cost_check = false;
+    if(Number(req.body.cost) > 0) {
+      cost_check = true;
+    }
+
+    // check item quantity
+    let quantity_check = false;
+    if(Number(req.body.quantity) > 0) {
+      quantity_check = true;
+    }
+
+    // check text inputs i.e. name
+    // firstly sanitize the name
+    // a valid item name is any string which is not undefined or empty
+    let name = req.sanitize(req.body.name);
+
+    if(name && cost_check && quantity_check) {
+
+      // limiting the length of name
+      name = name.substring(0, Math.min(15, name.length));
+
+      Party.findById(req.params.party_id,function(err,party){
+        if(err){
+          console.log(err);
+          res.redirect("/dashboard");
+        }else{
+          if(party.status !== "past" && req.body.purchased.toString() === 'false') {
+            var itemsLength = party.items.length;
+            let item;
+            let oldPrice;
+            // Update items
+            for(var i=0;i<itemsLength;i++)
+            {
+                if(party.items[i]._id.equals(req.params.item_id))
+                {
+                  let cost = parseFloat(req.body.cost) * parseFloat(req.body.quantity);
+                  party.items[i].name = name;
+                  oldPrice = party.items[i].price;
+                  party.items[i].price = cost;
+                  party.items[i].quantity= req.body.quantity;
+                  item = party.items[i];
+                  // Update totalcost += (newPrice - oldPrice)
+                  party.totalcost += (cost - oldPrice);
+                  party.save(function(err){
+                    if(err) {
+                      console.log(err);
+                    }
+                  });
+                  break;
+                }
             }
+            // Change in balance would be the difference divided by the no of consumers
+            var change = (oldPrice - item.price ) / item.consumers.length;
+            var index;
+            for(var i=0; i<item.consumers.length; i++) {
+              index = party.participants.map(function(e) { return e.id; }).indexOf(item.consumers[i]);
+              if(index != -1) {
+                party.participants[index].balance += change;
+              }
+            }
+            res.json({
+              item: item,
+              change: change,
+              totalcost: party.totalcost
+            });
           }
-          res.json({
-            item: item,
-            change: change,
-            totalcost: party.totalcost
-          });
-        }
-      };
-    });
+        };
+      });
+    } else res.json("invalid-input"); 
+
   } else res.render("/dashboard");
   
 });

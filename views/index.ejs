@@ -152,7 +152,8 @@ $("#logout").on( "click", function(){
           const options = { // Ajax request
             method: 'post',
             url: output_url,
-            data: sendData
+            data: sendData,
+            async: false
           };
           // control returns here after being redirected from the backend
           $.ajax(options).done(response => {

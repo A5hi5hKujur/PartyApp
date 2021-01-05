@@ -13,81 +13,93 @@ $('#items-form').submit(function(e) {
     var url = window.location.href;
     url = url.split('/');
     var id = url[url.length - 1];
-    $.post('/party/'+ id +'/item', newItem, function(data) {
-      // close overlay
-      $(".overlay").eq(1).toggleClass("active");
-      // reset form
-      $('#items-form')[0].reset();
-      // if host, give delete option
-      let midString = '';
-      if(!data.item.forall){
-        midString = '<div class="remove-me">Remove Me</div><div class="view">View Consumers</div>'
-      }
-      // if the item list is empty, remove the placeholder and then append
-      var placeholder = $('.item-list').find('empty-placeholder');
-      if(placeholder != undefined)
-        $('.item-list').html('');
+    
+    $.ajax({
+      url: '/party/'+ id +'/item',
+      data: newItem,
+      type: 'POST',
+      success: function(data) {
 
-      // append new item
-        $('.item-list').append(
-            `
-            <li id="${data.item._id.toString()}" class="animate__animated animate__slideInRight">
-                <div class="item-icon ${data.item.category.toLowerCase()}-icon"></div>
-                <div class="item-content">
-                  <div class="item-detail">
-                    <p class="name">${data.item.name}</p>
-                    <p class="quantity">Quantity : <span class="item-quantity">${data.item.quantity}</span></p>
-                    <p class="cost">Rs. <span class="item-cost">${data.item.price}</span></p>
-                  </div>
-                  <div class="item-ops">
-                    <div class="option"></div>
-                      <div class="options">
-                        <div class="edit">Edit</div>
-                        <div class="delete">Delete</div>
-                        ` + midString + `
-                      </div>
-                    <label class="custom-checkbox">
-                      <input class="checkbox" type="checkbox">
-                      <span class="checkmark"></span>
-                    </label>
-                  </div>
-                </div>
-              </li>
-            `
-        );
-        var total = parseFloat($("#total-cost").text()) + data.item.price;
-        $("#total-cost").text(total);
-        // Update participants balance
-        // If item is for all, update balance of each member
-        if(data.item.forall) {
-          var average = data.item.price / data.party.participants.length;
-          for(var i=0; i<$('.adjustment').length; i++) {
-            $('.adjustment')[i].textContent = (parseFloat($('.adjustment')[i].textContent) - average).toFixed(2);
-            var updatedAdjust = $('.adjustment')[i].textContent;
-            // choose color shade and sign for balance
-            $($('.adjustment')[i]).removeClass('positive-adjust neutral-adjust negative-adjust');
-            if(updatedAdjust > 0) {
-              $($('.adjustment')[i]).addClass('positive-adjust');
-              $('.adjustment')[i].textContent = "+" + $('.adjustment')[i].textContent;
-            } else if(updatedAdjust == 0) {
-              $($('.adjustment')[i]).addClass('neutral-adjust');
-            } else {
-              $($('.adjustment')[i]).addClass('negative-adjust');
-            }
+        if(data !== "invalid-input") {
+          // close overlay
+          $(".overlay").eq(1).toggleClass("active");
+          // reset form
+          $('#items-form')[0].reset();
+          // if host, give delete option
+          let midString = '';
+          if(!data.item.forall){
+            midString = '<div class="remove-me">Remove Me</div><div class="view">View Consumers</div>'
           }
-        } else {
-          var adjust = parseFloat($('#'+data.itemAdder+' .adjustment').text()) - data.item.price;
-          $('#'+data.itemAdder+' .adjustment').text(adjust.toFixed(2));
-          $('#'+data.itemAdder+' .adjustment').removeClass('positive-adjust neutral-adjust negative-adjust');
-            if(adjust > 0) {
-              $('#'+data.itemAdder+' .adjustment').addClass('positive-adjust');
-              $('#'+data.itemAdder+' .adjustment').text("+" + $('#'+data.itemAdder+' .adjustment').text());
-            } else if(adjust == 0) {
-              $('#'+data.itemAdder+' .adjustment').addClass('neutral-adjust');
-            } else {
-              $('#'+data.itemAdder+' .adjustment').addClass('negative-adjust');
+          // if the item list is empty, remove the placeholder and then append
+          var placeholder = $('.item-list').find('.item-icon');
+          // console.log(placeholder);
+          if(placeholder.length === 0)
+            $('.item-list').html('');
+
+          // append new item
+          $('.item-list').prepend(
+              `
+              <li id="${data.item._id.toString()}" class="animate__animated animate__slideInRight">
+                  <div class="item-icon ${data.item.category.toLowerCase()}-icon"></div>
+                  <div class="item-content">
+                    <div class="item-detail">
+                      <p class="name">${data.item.name}</p>
+                      <p class="quantity">Quantity : <span class="item-quantity">${data.item.quantity}</span></p>
+                      <p class="cost">Rs. <span class="item-cost">${data.item.price}</span></p>
+                    </div>
+                    <div class="item-ops">
+                      <div class="option"></div>
+                        <div class="options">
+                          <div class="edit">Edit</div>
+                          <div class="delete">Delete</div>
+                          ` + midString + `
+                        </div>
+                      <label class="custom-checkbox">
+                        <input class="checkbox" type="checkbox">
+                        <span class="checkmark"></span>
+                      </label>
+                    </div>
+                  </div>
+                </li>
+              `
+          );
+          var total = parseFloat($("#total-cost").text()) + data.item.price;
+          $("#total-cost").text(total);
+          // Update participants balance
+          // If item is for all, update balance of each member
+          if(data.item.forall) {
+            var average = data.item.price / data.party.participants.length;
+            for(var i=0; i<$('.adjustment').length; i++) {
+              $('.adjustment')[i].textContent = (parseFloat($('.adjustment')[i].textContent) - average).toFixed(2);
+              var updatedAdjust = $('.adjustment')[i].textContent;
+              // choose color shade and sign for balance
+              $($('.adjustment')[i]).removeClass('positive-adjust neutral-adjust negative-adjust');
+              if(updatedAdjust > 0) {
+                $($('.adjustment')[i]).addClass('positive-adjust');
+                $('.adjustment')[i].textContent = "+" + $('.adjustment')[i].textContent;
+              } else if(updatedAdjust == 0) {
+                $($('.adjustment')[i]).addClass('neutral-adjust');
+              } else {
+                $($('.adjustment')[i]).addClass('negative-adjust');
+              }
             }
+          } else {
+            var adjust = parseFloat($('#'+data.itemAdder+' .adjustment').text()) - data.item.price;
+            $('#'+data.itemAdder+' .adjustment').text(adjust.toFixed(2));
+            $('#'+data.itemAdder+' .adjustment').removeClass('positive-adjust neutral-adjust negative-adjust');
+              if(adjust > 0) {
+                $('#'+data.itemAdder+' .adjustment').addClass('positive-adjust');
+                $('#'+data.itemAdder+' .adjustment').text("+" + $('#'+data.itemAdder+' .adjustment').text());
+              } else if(adjust == 0) {
+                $('#'+data.itemAdder+' .adjustment').addClass('neutral-adjust');
+              } else {
+                $('#'+data.itemAdder+' .adjustment').addClass('negative-adjust');
+              }
+          }
         }
+        
+      },
+      async: false
     });
 });
 // -------------------------------------------------------------------------
@@ -108,7 +120,7 @@ $('#items').on('click', '.delete', function(e) {
 
     // check if the last item deleted was the last item, if so then display the placeholder message.
     var item_len = $('#items').children().length - 1;
-    console.log(item_len);
+    // console.log(item_len);
     if(item_len == 0)
     {
         $('#items').html(`<div class="empty-placeholder">
@@ -144,7 +156,8 @@ $('#items').on('click', '.delete', function(e) {
               $('#'+data.consumers[i]+' .adjustment').addClass('negative-adjust');
             }
         }
-      }
+      },
+      async: false
     });
   }
 });
@@ -184,7 +197,8 @@ $( "#items" ).on('click', '.checkbox', function($this) {
   const options = { // Ajax request
     method: 'post',
     url: output_url,
-    data: data
+    data: data,
+    async: false
   };
   // console.log(data);
   // 4. control returns here after being redirected from the backend
@@ -233,25 +247,32 @@ $('#contribution-form').submit(function(e) {
   url = url.split('/');
   var id = url[url.length - 1];
   // some css or animation or gif of success for 1 sec
-  $.post('/party/'+ id +'/contribution', contribution, function(data) {
-    $(".overlay").eq(0).toggleClass("active");
-    $('#contribution-form')[0].reset();
-    $('#total-contribution').text(data.party.totalcontribution);
-    // Updated Contri of logged in user
-    var updatedContri = parseFloat($('#'+data.user._id+' .user-contribution').text()) + parseFloat(data.contribution);
-    $('#'+data.user._id+' .user-contribution').text(updatedContri);
-    // Updated Adjust of logged in user
-    var updatedAdjust = (parseFloat($('#'+data.user._id+' .adjustment').text()) + parseFloat(data.contribution)).toFixed(2);
-    $('#'+data.user._id+' .adjustment').text(updatedAdjust).removeClass('positive-adjust neutral-adjust negative-adjust');
-    // Checking adjust status
-    if(updatedAdjust > 0) {
-      $('#'+data.user._id+' .adjustment').addClass('positive-adjust');
-      $('#'+data.user._id+' .adjustment').text("+" + updatedAdjust);
-    } else if(updatedAdjust == 0) {
-      $('#'+data.user._id+' .adjustment').addClass('neutral-adjust');
-    } else {
-      $('#'+data.user._id+' .adjustment').addClass('negative-adjust');
-    }
+
+  $.ajax({
+    url: '/party/'+ id +'/contribution',
+    data: contribution,
+    type: 'POST',
+    success: function(data) {
+      $(".overlay").eq(0).toggleClass("active");
+      $('#contribution-form')[0].reset();
+      $('#total-contribution').text(data.party.totalcontribution);
+      // Updated Contri of logged in user
+      var updatedContri = parseFloat($('#'+data.user._id+' .user-contribution').text()) + parseFloat(data.contribution);
+      $('#'+data.user._id+' .user-contribution').text(updatedContri);
+      // Updated Adjust of logged in user
+      var updatedAdjust = (parseFloat($('#'+data.user._id+' .adjustment').text()) + parseFloat(data.contribution)).toFixed(2);
+      $('#'+data.user._id+' .adjustment').text(updatedAdjust).removeClass('positive-adjust neutral-adjust negative-adjust');
+      // Checking adjust status
+      if(updatedAdjust > 0) {
+        $('#'+data.user._id+' .adjustment').addClass('positive-adjust');
+        $('#'+data.user._id+' .adjustment').text("+" + updatedAdjust);
+      } else if(updatedAdjust == 0) {
+        $('#'+data.user._id+' .adjustment').addClass('neutral-adjust');
+      } else {
+        $('#'+data.user._id+' .adjustment').addClass('negative-adjust');
+      }
+    },
+    async: false
   });
 });
 // ------------------------------------------------------------------------------
@@ -275,7 +296,8 @@ $('#description-form').submit(function(e) {
       // update textarea and desc
       $('#description-form textarea').text(party.description);
       $('#party-description').text(party.description);
-    }
+    },
+    async: false
   });
 });
 // ------------------------------------------------------------------------------
@@ -327,30 +349,35 @@ $('#items-form-edit').submit(function(e) {
     data: data + "&purchased=" + purchased,
     type: 'put',
     success: function(data) {
-      // close form
-      popup(5);
-      // update item details
-      $('#'+item_id).find(".name").html(data.item.name);
-      $('#'+item_id).find(".item-quantity").html(data.item.quantity);
-      $('#'+item_id).find(".item-cost").html(data.item.price);
-      // Update total cost
-      $("#total-cost").text(data.totalcost);
-      var adjust;
-      // Update user balance
-      for(var i=0; i<data.item.consumers.length; i++) {
-        adjust = parseFloat($('#'+data.item.consumers[i]+' .adjustment').text()) + data.change;
-        $('#'+data.item.consumers[i]+' .adjustment').text(adjust.toFixed(2));
-        $('#'+data.item.consumers[i]+' .adjustment').removeClass('positive-adjust neutral-adjust negative-adjust');
-          if(adjust > 0) {
-            $('#'+data.item.consumers[i]+' .adjustment').addClass('positive-adjust');
-            $('#'+data.item.consumers[i]+' .adjustment').text("+" + $('#'+data.item.consumers[i]+' .adjustment').text());
-          } else if(adjust == 0) {
-            $('#'+data.item.consumers[i]+' .adjustment').addClass('neutral-adjust');
-          } else {
-            $('#'+data.item.consumers[i]+' .adjustment').addClass('negative-adjust');
-          }
+
+      if(data !== "invalid-input") {
+        // close form
+        popup(5);
+        // update item details
+        $('#'+item_id).find(".name").html(data.item.name);
+        $('#'+item_id).find(".item-quantity").html(data.item.quantity);
+        $('#'+item_id).find(".item-cost").html(data.item.price);
+        // Update total cost
+        $("#total-cost").text(data.totalcost);
+        var adjust;
+        // Update user balance
+        for(var i=0; i<data.item.consumers.length; i++) {
+          adjust = parseFloat($('#'+data.item.consumers[i]+' .adjustment').text()) + data.change;
+          $('#'+data.item.consumers[i]+' .adjustment').text(adjust.toFixed(2));
+          $('#'+data.item.consumers[i]+' .adjustment').removeClass('positive-adjust neutral-adjust negative-adjust');
+            if(adjust > 0) {
+              $('#'+data.item.consumers[i]+' .adjustment').addClass('positive-adjust');
+              $('#'+data.item.consumers[i]+' .adjustment').text("+" + $('#'+data.item.consumers[i]+' .adjustment').text());
+            } else if(adjust == 0) {
+              $('#'+data.item.consumers[i]+' .adjustment').addClass('neutral-adjust');
+            } else {
+              $('#'+data.item.consumers[i]+' .adjustment').addClass('negative-adjust');
+            }
+        }
       }
-    }
+      
+    },
+    async: false
   });
 });
 
@@ -376,7 +403,8 @@ $('#items-form-edit').submit(function(e) {
     const options = { // Ajax request
       method: 'post',
       url: output_url,
-      data: sendData
+      data: sendData,
+      async: false
     };
     // control returns here after being redirected from the backend
     $.ajax(options).done(participants => {
@@ -420,7 +448,8 @@ $('#items-form-edit').submit(function(e) {
     const options = { // Ajax request
       method: 'delete',
       url: output_url,
-      data: sendData
+      data: sendData,
+      async: false
     };
     // control returns here after being redirected from the backend
     $.ajax(options).done(data => {
@@ -508,8 +537,8 @@ $(".exit-button").on("click", function() {
 
   var options = {
     method: 'DELETE',
-    url: output_url
-    // async: false
+    url: output_url,
+    async: false
     // data: sendData
   }
 
@@ -518,7 +547,7 @@ $(".exit-button").on("click", function() {
 
     // data = "deleted" if party deleted (in case of a host exiting party)
     // data = "removed" if party removed (in case of a non-host exiting party)
-    console.log(data);
+    // console.log(data);
 
     // redirect to dashboard after exit
     window.location.href = "/";

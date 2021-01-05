@@ -332,19 +332,19 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
   text-align: right;
 }
 .party-thumb > .past-tag, .party-thumb > .upcoming-tag{
-  display : none;     /*Remove this to add tags for upcomming and past parties */
+  /* display : none;     Remove this to add tags for upcomming and past parties */
 }
 .party-thumb > .ongoing-tag
 {
-  background: rgba(27, 154, 41, 0.8);
+  background: rgba(27, 154, 41, 0.9);
 }
 .party-thumb > .past-tag
 {
-  background: rgba(179, 32, 32, 0.6);
+  background: rgba(179, 32, 32, 0.9);
 }
 .party-thumb > .upcoming-tag
 {
-  background: rgba(163, 0, 255, 0.7);
+  background: rgba(163, 0, 255, 0.9);
 }
 .empty-placeholder{
   width : 100%;

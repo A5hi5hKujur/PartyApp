@@ -73,7 +73,7 @@
           <!-- New items get appended here $(".item-list").innerHTML += <li>...</li> -->
           <ul class="item-list" id="items">
             <!-- Item to be populated dynamically with its data -->
-            <% party.items.forEach(item => { %>
+            <% party.items.slice().reverse().forEach(item => { %>
               <li id="<%=item._id%>">
                 <div class="item-icon <%=item.category.toLowerCase()%>-icon"></div>
                 <div class="item-content">
@@ -132,7 +132,7 @@
             <% }); %>
             <% if(!party.items.length) { %>
               <div class="empty-placeholder">
-                <h1 class="placeholder-heading" style="font-size : 20px; letter-spaceing : 0px;">Add Items</h1>
+                <h1 class="placeholder-heading" style="font-size : 20px; letter-spacing : 0px;">Add Items</h1>
                 <p class="placeholder-text">Add some party items to get this party started.</p>
               </div>
             <% } %>
@@ -155,7 +155,7 @@
       <div class="party-entry"></div>
       <form class="" id="contribution-form" action="/party/<%= party._id %>/contribution" method="post">
         <label for="contribution">Contribution</label>
-        <input type="number" name="contribution_amt" placeholder="Enter Amount" min="0" required>
+        <input type="number" name="contribution_amt" placeholder="Enter Amount" min="1" required>
         <input class="btn-pink" type="submit" name="" value="Pay">
       </form>
     </div>
@@ -187,7 +187,7 @@
             <option value="soda">Soda</option>
             <option value="beer">Beer</option>
             <option value="wine">Wine</option>
-            <option value="cups">Cups</option>
+            <option value="cups">Cups & Plates</option>
             <option value="cards">Cards</option>
             <option value="board-games">Board Games</option>
             <option value="video-games">Video Games</option>
@@ -297,9 +297,9 @@
         <label for="name">Name</label>
         <input type="text" class="name" name="name" placeholder="Item name" value="" maxlength="15" required>
         <label for="cost">Cost</label>
-        <input type="number" class="cost" name="cost" placeholder="Cost" min="0" value="" required>
+        <input type="number" class="cost" name="cost" placeholder="Cost" min="1" value="" required>
         <label for="quantity">Quantity</label>
-        <input type="number" class="quantity" name="quantity" placeholder="Cost" value="1" min="0" required>
+        <input type="number" class="quantity" name="quantity" placeholder="Cost" value="1" min="1" required>
         <input class="btn-blue" type="submit" name="" value="Edit Item">
       </form>
     </div>
