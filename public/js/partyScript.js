@@ -13,7 +13,7 @@ $('#items-form').submit(function(e) {
     var url = window.location.href;
     url = url.split('/');
     var id = url[url.length - 1];
-    
+
     $.ajax({
       url: '/party/'+ id +'/item',
       data: newItem,
@@ -39,7 +39,7 @@ $('#items-form').submit(function(e) {
           // append new item
           $('.item-list').prepend(
               `
-              <li id="${data.item._id.toString()}" class="animate__animated animate__slideInRight">
+              <li id="${data.item._id.toString()}" class="animate__animated animate__slideInRight" style="z-index : 1;">
                   <div class="item-icon ${data.item.category.toLowerCase()}-icon"></div>
                   <div class="item-content">
                     <div class="item-detail">
@@ -97,7 +97,7 @@ $('#items-form').submit(function(e) {
               }
           }
         }
-        
+
       },
       async: false
     });
@@ -375,7 +375,7 @@ $('#items-form-edit').submit(function(e) {
             }
         }
       }
-      
+
     },
     async: false
   });

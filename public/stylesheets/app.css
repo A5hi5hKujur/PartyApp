@@ -29,6 +29,21 @@ button, input[type="submit"]{
 input[type="text"], input[type="password"], input[type="number"], input[type="email"], input[type="date"]{
   color : white;
 }
+::-webkit-scrollbar {
+    height: 12px;
+    width: 12px;
+    background: #1F2539;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #5A627D;
+    -webkit-border-radius: 1ex;
+    -webkit-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.75);
+}
+
+::-webkit-scrollbar-corner {
+    background: #1F2539;
+}
 .btn-blue{
   background: #3C80ED;
   color : white;
@@ -595,6 +610,7 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
   margin-top : 20px;
   max-height : 321px;
   overflow-y : scroll;
+  scrollbar-width: thin;
 }
 .item-list li{
   width : 100%;
@@ -602,6 +618,8 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
   margin-bottom: 10px;
   background: #424B71;
   border-radius: 10px;
+  position: relative;
+  .z-index: 1;
   display: flex;
 }
 .item-list li .item-icon{
@@ -796,9 +814,13 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
   color : white;
   height: 40px;
   border: 0px;
-  background: #c82e81;
+  background: #E63E98;
   border-radius: 10px;
   margin-bottom: 30px;
+  transition: all linear .2s;
+}
+.exit-button:hover{
+  background: #c82e81;
 }
 .cake-icon {
   background-image: url(/media/icons/cake.jpg);
@@ -922,6 +944,7 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
   color : white;
   max-height: 350px;
   overflow-y: scroll;
+  scrollbar-width: thin;
   -ms-overflow-style: none;
 }
 .participant-list-complete::-webkit-scrollbar{
@@ -980,6 +1003,7 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
   color : white;
   max-height: 350px;
   overflow-y: scroll;
+  scrollbar-width: thin;
   -ms-overflow-style: none;
 }
 .consumer-list-complete::-webkit-scrollbar{
