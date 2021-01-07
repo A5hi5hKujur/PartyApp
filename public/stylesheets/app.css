@@ -405,7 +405,7 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
   display : block;
 }
 .overlay .popup{
-  position: fixed;
+  position: relative;
   width : 400px;
   margin-top : 50px;
   left : calc((100% - 400px)/2);

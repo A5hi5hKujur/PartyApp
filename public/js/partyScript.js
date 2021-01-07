@@ -1,6 +1,7 @@
 // ----------------------------  Overlay  ----------------------------------
 function popup(i) {
     $(".overlay").eq(i).toggleClass("active");
+    window.scrollTo(0, 0);
 }
 // -------------------------------------------------------------------------
 
@@ -23,6 +24,12 @@ $('#items-form').submit(function(e) {
         if(data !== "invalid-input") {
           // close overlay
           $(".overlay").eq(1).toggleClass("active");
+
+          // scroll window down to item list
+          // and scroll to the top of item list
+          window.scrollTo(0, document.body.scrollHeight);
+          $('.item-list').scrollTop(0);
+          
           // reset form
           $('#items-form')[0].reset();
           // if host, give delete option
@@ -116,11 +123,15 @@ $('#items').on('click', '.delete', function(e) {
     var itemid = $(this).parents('li').attr('id');
     var itemCost = $('#'+itemid+' .item-cost').text();
     var purchased = $('#'+itemid+' input[type="checkbox"]').prop('checked');
-    $('#'+itemid).hide();
 
-    // check if the last item deleted was the last item, if so then display the placeholder message.
-    var item_len = $('#items').children().length - 1;
-    // console.log(item_len);
+    // hide the deleted item
+    // then remove item-icon class
+    // now count of item-icon will give no. of items after deletion
+    $('#'+itemid).hide();
+    $('#'+itemid).children('.item-icon').removeClass('item-icon');
+
+    // if count of items = 0, add placeholder
+    var item_len = $('.item-list').find('.item-icon').length;
     if(item_len == 0)
     {
         $('#items').html(`<div class="empty-placeholder">
