@@ -39,7 +39,7 @@ $('#items-form').submit(function(e) {
           // append new item
           $('.item-list').prepend(
               `
-              <li id="${data.item._id.toString()}" class="animate__animated animate__slideInRight" style="z-index : 1;">
+              <li id="${data.item._id.toString()}" class="animate__animated animate__slideInRight">
                   <div class="item-icon ${data.item.category.toLowerCase()}-icon"></div>
                   <div class="item-content">
                     <div class="item-detail">

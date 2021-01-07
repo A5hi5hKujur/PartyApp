@@ -610,6 +610,8 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
   margin-top : 20px;
   max-height : 321px;
   overflow-y : scroll;
+  position: relative;
+  z-index: 0;
   scrollbar-width: thin;
 }
 .item-list li{
@@ -619,7 +621,6 @@ box-shadow: 0px 30px 22px 0px rgba(0,0,0,0.16);
   background: #424B71;
   border-radius: 10px;
   position: relative;
-  .z-index: 1;
   display: flex;
 }
 .item-list li .item-icon{
