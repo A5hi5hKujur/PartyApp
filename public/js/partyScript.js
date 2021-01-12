@@ -150,22 +150,25 @@ $('#items').on('click', '.delete', function(e) {
       data: {id: itemid, price: itemCost, purchased: purchased},
       type: 'PUT',
       success: function(data) {
-        var total = parseFloat($("#total-cost").text()) - itemCost;
-        $("#total-cost").text(total);
-        // Update participants balance
-        var adjust;
-        for(var i=0; i<data.consumers.length; i++) {
-          adjust = parseFloat($('#'+data.consumers[i]+' .adjustment').text()) + data.average;
-          $('#'+data.consumers[i]+' .adjustment').text(adjust.toFixed(2));
-          $('#'+data.consumers[i]+' .adjustment').removeClass('positive-adjust neutral-adjust negative-adjust');
-            if(adjust > 0) {
-              $('#'+data.consumers[i]+' .adjustment').addClass('positive-adjust');
-              $('#'+data.consumers[i]+' .adjustment').text("+" + $('#'+data.consumers[i]+' .adjustment').text());
-            } else if(adjust == 0) {
-              $('#'+data.consumers[i]+' .adjustment').addClass('neutral-adjust');
-            } else {
-              $('#'+data.consumers[i]+' .adjustment').addClass('negative-adjust');
-            }
+
+        if(data !== "no-access") {
+          var total = parseFloat($("#total-cost").text()) - itemCost;
+          $("#total-cost").text(total);
+          // Update participants balance
+          var adjust;
+          for(var i=0; i<data.consumers.length; i++) {
+            adjust = parseFloat($('#'+data.consumers[i]+' .adjustment').text()) + data.average;
+            $('#'+data.consumers[i]+' .adjustment').text(adjust.toFixed(2));
+            $('#'+data.consumers[i]+' .adjustment').removeClass('positive-adjust neutral-adjust negative-adjust');
+              if(adjust > 0) {
+                $('#'+data.consumers[i]+' .adjustment').addClass('positive-adjust');
+                $('#'+data.consumers[i]+' .adjustment').text("+" + $('#'+data.consumers[i]+' .adjustment').text());
+              } else if(adjust == 0) {
+                $('#'+data.consumers[i]+' .adjustment').addClass('neutral-adjust');
+              } else {
+                $('#'+data.consumers[i]+' .adjustment').addClass('negative-adjust');
+              }
+          }
         }
       },
       async: false
@@ -218,32 +221,39 @@ $( "#items" ).on('click', '.checkbox', function($this) {
       let total_cost = parseFloat($("#total-cost").html());
       if(this.checked) $("#total-cost").html(total_cost - parseFloat(item_cost));
       else $("#total-cost").html(total_cost + parseFloat(item_cost));
-      // console.log(response);
+
       // remove backout options for the user ones the items are marked purchased.
-      if(response.purchase_state == "true")
-      {
-        if(!response.forall)
-          $(".item-list").find("#"+item_id).find(".options").html('<div class="view">View Consumers</div>');
-        else
-          $(".item-list").find("#"+item_id).find(".options").html('<div></div>');
-      }
-      if(response.purchase_state == "false")
-      {
-        if(!response.forall && response.is_consumer)
-        {
-          $(".item-list").find("#"+item_id).find(".options").html('<div class="edit">Edit</div><div class="delete">Delete</div><div class="remove-me">Remove Me</div><div class="view">View Consumers</div>');
-        }
-        if(!response.forall && !response.is_consumer)
-        {
-          $(".item-list").find("#"+item_id).find(".options").html('<div class="add-me">Add Me</div><div class="view">View Consumers</div>');
-        }
-        if(response.forall && response.host.toString() === response.user._id.toString())
-        {
+      
+      // Options to show:
+      // 1. If item is forall and unpurchased, show: Edit and Delete 
+      // 2. If item is forall and purchased, show: "NOTHING"
+      // 3. If item is individual and unpurchased and user is consumer/host, show: Edit, Delete, View Consumers, Remove Me
+      // 4. If item if individual and unpurchased and user is NOT consumer/host, show: View Consumers, Add Me
+      // 5. If item if individual and purchased, show: View Consumers
+
+      if(response.forall) {
+        // 1. 
+        if(response.purchase_state == "false") {
           $(".item-list").find("#"+item_id).find(".options").html('<div class="edit">Edit</div><div class="delete">Delete</div>');
-        }
-        if(response.forall && response.host.toString() !== response.user._id.toString())
-        {
+        } 
+        // 2.
+        else {
           $(".item-list").find("#"+item_id).find(".options").html('<div></div>');
+        }
+      } else {
+        if(response.purchase_state == "false") {
+          // 3.
+          if(response.is_consumer || response.is_host) {
+            $(".item-list").find("#"+item_id).find(".options").html('<div class="edit">Edit</div><div class="delete">Delete</div><div class="remove-me">Remove Me</div><div class="view">View Consumers</div>');
+          }
+          // 4.
+          else {
+            $(".item-list").find("#"+item_id).find(".options").html('<div class="add-me">Add Me</div><div class="view">View Consumers</div>');
+          }
+        } 
+        // 5.
+        else {
+          $(".item-list").find("#"+item_id).find(".options").html('<div class="view">View Consumers</div>');
         }
       }
   });
@@ -361,7 +371,7 @@ $('#items-form-edit').submit(function(e) {
     type: 'put',
     success: function(data) {
 
-      if(data !== "invalid-input") {
+      if(data !== "invalid-input" && data !== "no-access") {
         // close form
         popup(5);
         // update item details
@@ -419,22 +429,26 @@ $('#items-form-edit').submit(function(e) {
     };
     // control returns here after being redirected from the backend
     $.ajax(options).done(participants => {
-      popup(6);
-      for(var i=0; i<participants.length; i++) {
-        $('#'+participants[i].id+' .adjustment').text(participants[i].balance.toFixed(2));
-        $('#'+participants[i].id+' .adjustment').removeClass('positive-adjust neutral-adjust negative-adjust');
-          if(participants[i].balance > 0) {
-            $('#'+participants[i].id+' .adjustment').addClass('positive-adjust');
-            $('#'+participants[i].id+' .adjustment').text("+" + $('#'+participants[i].id+' .adjustment').text());
-          } else if(participants[i].balance == 0) {
-            $('#'+participants[i].id+' .adjustment').addClass('neutral-adjust');
-          } else {
-            $('#'+participants[i].id+' .adjustment').addClass('negative-adjust');
-          }
 
-      }
-      // AJAX response to 'add consumer' on options :
-      $(".item-list").find("#"+item_id).find(".options").find(".add-me").removeClass("add-me").addClass("remove-me").html("Remove Me");
+      if(participants !== "no-access") {
+        popup(6);
+        for(var i=0; i<participants.length; i++) {
+          $('#'+participants[i].id+' .adjustment').text(participants[i].balance.toFixed(2));
+          $('#'+participants[i].id+' .adjustment').removeClass('positive-adjust neutral-adjust negative-adjust');
+            if(participants[i].balance > 0) {
+              $('#'+participants[i].id+' .adjustment').addClass('positive-adjust');
+              $('#'+participants[i].id+' .adjustment').text("+" + $('#'+participants[i].id+' .adjustment').text());
+            } else if(participants[i].balance == 0) {
+              $('#'+participants[i].id+' .adjustment').addClass('neutral-adjust');
+            } else {
+              $('#'+participants[i].id+' .adjustment').addClass('negative-adjust');
+            }
+
+        }
+        // Now current user is also a consumer to this item
+        // Options to show: Edit, Delete, Remove Me, View Consumers
+        $(".item-list").find("#"+item_id).find(".options").html('<div class="edit">Edit</div><div class="delete">Delete</div><div class="remove-me">Remove Me</div><div class="view">View Consumers</div>'); 
+      }     
     });
   });
 //------------------------------------------------------------------------------
@@ -464,27 +478,44 @@ $('#items-form-edit').submit(function(e) {
     };
     // control returns here after being redirected from the backend
     $.ajax(options).done(data => {
-      popup(7);
-      // console.log(data);
-      // If only consumer choose to remove, delete item
-      if(data.consumerLength <= 1) $('#'+item_id).hide();
-      // Update totalcost if item is deleted
-      $("#total-cost").text(data.totalcost - data.totalpurchased);
-      // Update balance and show
-      for(var i=0; i<data.participants.length; i++) {
-        $('#'+data.participants[i].id+' .adjustment').text(data.participants[i].balance.toFixed(2));
-        $('#'+data.participants[i].id+' .adjustment').removeClass('positive-adjust neutral-adjust negative-adjust');
-          if(data.participants[i].balance > 0) {
-            $('#'+data.participants[i].id+' .adjustment').addClass('positive-adjust');
-            $('#'+data.participants[i].id+' .adjustment').text("+" + $('#'+data.participants[i].id+' .adjustment').text());
-          } else if(data.participants[i].balance == 0) {
-            $('#'+data.participants[i].id+' .adjustment').addClass('neutral-adjust');
-          } else {
-            $('#'+data.participants[i].id+' .adjustment').addClass('negative-adjust');
-          }
-      }
-      // AJAX response to 'remove consumer' on options :
-      $(".item-list").find("#"+item_id).find(".options").find(".remove-me").removeClass("remove-me").addClass("add-me").html("Add Me");
+
+      if(data !== "no-access") {
+        popup(7);
+        // If only consumer choose to remove, delete item
+        if(data.consumerLength <= 1) {
+          $('#'+item_id).hide();
+          $('#'+item_id).children('.item-icon').removeClass('item-icon');
+        }
+
+        // if count of items = 0, add placeholder
+        var item_len = $('.item-list').find('.item-icon').length;
+        if(item_len == 0)
+        {
+            $('#items').html(`<div class="empty-placeholder">
+              <h1 class="placeholder-heading" style="font-size : 20px; letter-spaceing : 0px;">Add Items</h1>
+              <p class="placeholder-text">Add some party items to get this party started.</p>
+            </div>`);
+        }
+
+        // Update totalcost if item is deleted
+        $("#total-cost").text(data.totalcost - data.totalpurchased);
+        // Update balance and show
+        for(var i=0; i<data.participants.length; i++) {
+          $('#'+data.participants[i].id+' .adjustment').text(data.participants[i].balance.toFixed(2));
+          $('#'+data.participants[i].id+' .adjustment').removeClass('positive-adjust neutral-adjust negative-adjust');
+            if(data.participants[i].balance > 0) {
+              $('#'+data.participants[i].id+' .adjustment').addClass('positive-adjust');
+              $('#'+data.participants[i].id+' .adjustment').text("+" + $('#'+data.participants[i].id+' .adjustment').text());
+            } else if(data.participants[i].balance == 0) {
+              $('#'+data.participants[i].id+' .adjustment').addClass('neutral-adjust');
+            } else {
+              $('#'+data.participants[i].id+' .adjustment').addClass('negative-adjust');
+            }
+        }
+        // Now current user is not a consumer to this item
+        // Options to show: Add Me, View Consumers
+        $(".item-list").find("#"+item_id).find(".options").html('<div class="add-me">Add Me</div><div class="view">View Consumers</div>');
+      }      
     });
   });
 //------------------------------------------------------------------------------

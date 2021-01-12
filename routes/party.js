@@ -403,33 +403,59 @@ router.put('/:id/item/delete', isLoggedIn, function(req, res) {
         res.redirect('/party/' + req.params.id);
       } else {
         if(req.body.purchased.toString() === 'false' && party.status !== "past") {
-          party.totalcost -= price;
-          var itemId = req.body.id;
-          var itemToRemove;
+          
+          // only consumer or host can delete an item
+          let is_consumer = false;
+          let is_host = false;
           for(var i=0; i<party.items.length; i++) {
-            if(itemId.toString() === party.items[i]._id.toString()) {
-              // Copy and remove the party item
-              itemToRemove = party.items[i];
-              party.items.splice(i, 1);
+            if(party.items[i]._id.equals(req.body.id)) {
+              if(party.items[i].forall) {
+                is_consumer = true;
+              } else {
+                party.items[i].consumers.forEach(function(consumer) {
+                  if(consumer.equals(req.user._id)) {
+                    is_consumer = true;
+                  }
+                });
+              }
               break;
             }
           }
-          // Refresh participants balance list
-          var average = itemToRemove.price / itemToRemove.consumers.length;
-          for(var i=0; i<itemToRemove.consumers.length; i++) {
-            index = party.participants.map(function(e) { return e.id.toString(); }).indexOf(itemToRemove.consumers[i].toString());
-            if(index != -1) {
-              party.participants[index].balance += average;
-            }
+
+          if(party.hosts[0].equals(req.user._id)) {
+            is_host = true;
           }
-          party.save();
-          res.json({
-            party: party,
-            consumers: itemToRemove.consumers,
-            average: average
-          });
+          // only consumer or host can delete an item
+          if(is_consumer || is_host) {
+
+            party.totalcost -= price;
+            var itemId = req.body.id;
+            var itemToRemove;
+            for(var i=0; i<party.items.length; i++) {
+              if(itemId.toString() === party.items[i]._id.toString()) {
+                // Copy and remove the party item
+                itemToRemove = party.items[i];
+                party.items.splice(i, 1);
+                break;
+              }
+            }
+            // Refresh participants balance list
+            var average = itemToRemove.price / itemToRemove.consumers.length;
+            for(var i=0; i<itemToRemove.consumers.length; i++) {
+              index = party.participants.map(function(e) { return e.id.toString(); }).indexOf(itemToRemove.consumers[i].toString());
+              if(index != -1) {
+                party.participants[index].balance += average;
+              }
+            }
+            party.save();
+            res.json({
+              party: party,
+              consumers: itemToRemove.consumers,
+              average: average
+            });
+          } else res.json("no-access");
           
-        }
+        } else res.json("no-access");
       }
     });
   } else res.redirect("/dashboard");
@@ -450,30 +476,52 @@ router.put('/:id/item/delete', isLoggedIn, function(req, res) {
       else
         {
           if(party.status !== "past") {
-            party.items[req.body.item_index].purchased = req.body.purchase;  // push new user to found party.
-            if(req.body.purchase === 'true') {
-              party.totalpurchased += parseFloat(req.body.item_cost);
-            } else {
-              party.totalpurchased -= parseFloat(req.body.item_cost);
-            }
-            // find if the person purchasing the item a consumer of the item or not.
+            
             let is_consumer = false;
-            party.items[req.body.item_index].consumers.forEach((consumer) => {
-              if(consumer._id == req.user) is_consumer = true;
+            let forall = false;
+
+            // find item
+            party.items.forEach(function(item, i) {
+              if(item._id.equals(item_id)) {
+
+                // mark item's purchased status
+                item.purchased = req.body.purchase;
+
+                // update totalpurchased amount accordingly
+                if(req.body.purchase === 'true') {
+                  party.totalpurchased += parseFloat(req.body.item_cost);
+                } else {
+                  party.totalpurchased -= parseFloat(req.body.item_cost);
+                }
+
+                // (for frontend)
+
+                // find if the person purchasing the item a consumer of the item or not.
+                // consumer unlocks the option of remove-me
+                // otherwise add-me option will be shown
+                item.consumers.forEach((consumer) => {
+                  if(consumer._id.equals(req.user._id)) is_consumer = true;
+                });
+                // check item type
+                forall = item.forall;
+
+                return;
+              }
             });
-            party.save(function(err,user)
-            {
-              if(err) console.log(err);
-              res.json({
-                purchase_state : req.body.purchase,
-                forall : party.items[req.body.item_index].forall,
-                is_consumer : is_consumer,
-                host : party.hosts[0],
-                user : req.user
-              });
+            
+            let is_host = false;
+            if(party.hosts[0].equals(req.user._id)) {
+              is_host = true;
+            }
+
+            party.save();
+            res.json({
+              purchase_state : req.body.purchase,
+              forall : forall,
+              is_consumer : is_consumer,
+              is_host : is_host
             });
-          }
-          
+          }  
         }
     });
    } else res.redirect("/dashboard");
@@ -559,42 +607,63 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
           res.redirect("/dashboard");
         }else{
           if(party.status !== "past" && req.body.purchased.toString() === 'false') {
-            for(var i=0;i<party.items.length;i++){
-              if(party.items[i]._id.equals(req.params.item_id)){
-                  if(!party.items[i].forall){
-                    let flag=0;
-                    let consumerLength=party.items[i].consumers.length;
-                      for(var j=0;j<consumerLength;j++){
-                        if(party.items[i].consumers[j].equals(req.user._id)){
-                          flag=1;
-                          break;
-                        }
-                      }
-                      if(flag===0){
-                        party.items[i].consumers.push(req.user._id);
-                        // Calculate change in balance for existing consumers and new consumer
-                        let changeForOld = (req.body.cost / consumerLength) - (req.body.cost / (consumerLength + 1));
-                        let changeForNew = (req.body.cost / (consumerLength + 1));
-                        for(var j=0; j<consumerLength+1; j++) {
-                          index = party.participants.map(function(e) { return e.id.toString(); }).indexOf(party.items[i].consumers[j].toString());
-                          if(index != -1 ) {
-                            if(party.items[i].consumers[j].equals(req.user._id)) {
-                              party.participants[index].balance -= changeForNew;
-                            } else {
-                              party.participants[index].balance += changeForOld;
-                            }
-                          }
-                        }
-                        party.save(function(err){
-                          if(err) console.log(err);
-                        });
-                        break;
-                      }
-                  }
+
+            // check whether user is a consumer or not
+            let is_consumer = false;
+            for(var i=0; i<party.items.length; i++) {
+              if(party.items[i]._id.equals(req.params.item_id)) {
+                if(party.items[i].forall) {
+                  is_consumer = true;
+                } else {
+                  party.items[i].consumers.forEach(function(consumer) {
+                    if(consumer.equals(req.user._id)) {
+                      is_consumer = true;
+                    }
+                  });
+                }
+                break;
               }
             }
-            res.json(party.participants);
-          }
+
+            // if already a consumer then don't add
+            if(!is_consumer) {
+              for(var i=0;i<party.items.length;i++){
+                if(party.items[i]._id.equals(req.params.item_id)){
+                    if(!party.items[i].forall){
+                      let flag=0;
+                      let consumerLength=party.items[i].consumers.length;
+                        for(var j=0;j<consumerLength;j++){
+                          if(party.items[i].consumers[j].equals(req.user._id)){
+                            flag=1;
+                            break;
+                          }
+                        }
+                        if(flag===0){
+                          party.items[i].consumers.push(req.user._id);
+                          // Calculate change in balance for existing consumers and new consumer
+                          let changeForOld = (req.body.cost / consumerLength) - (req.body.cost / (consumerLength + 1));
+                          let changeForNew = (req.body.cost / (consumerLength + 1));
+                          for(var j=0; j<consumerLength+1; j++) {
+                            index = party.participants.map(function(e) { return e.id.toString(); }).indexOf(party.items[i].consumers[j].toString());
+                            if(index != -1 ) {
+                              if(party.items[i].consumers[j].equals(req.user._id)) {
+                                party.participants[index].balance -= changeForNew;
+                              } else {
+                                party.participants[index].balance += changeForOld;
+                              }
+                            }
+                          }
+                          party.save(function(err){
+                            if(err) console.log(err);
+                          });
+                          break;
+                        }
+                    }
+                }
+              }
+              res.json(party.participants);
+            } else res.json("no-access");
+          } else res.json("no-access");
         }
       });
     } else res.redirect("/dashboard");
@@ -614,58 +683,81 @@ router.put('/:id/description', isLoggedIn, function(req, res) {
           res.redirect("/dashboard");
         }else{
           if(party.status !== "past" && req.body.purchased.toString() === 'false') {
-            let consumerLength;
-            for(var i=0;i<party.items.length;i++){
-              if(party.items[i]._id.equals(req.params.item_id)){
-                  if(party.items[i].forall.toString() === 'false'){
-                      let index;
-                      consumerLength = party.items[i].consumers.length;
-                      if(consumerLength<=1){
-                        // If only consumer removes, delete item
-                          // update balance
-                          index = party.participants.map(function(e) { return e.id.toString(); }).indexOf(req.user._id.toString());
-                          party.participants[index].balance += Number(req.body.cost);
-                          // Update totalcost because item is removed now
-                          party.totalcost -= Number(req.body.cost);
-                          // delete item
-                          party.items.splice(i,1);
-                          party.save(function(err){
-                            if(err) console.log(err);
-                          });
-                          break;
-                      } else {
-                        let currUserIndex;
-                        for(var j=0; j<consumerLength; j++) {
-                          index = party.participants.map(function(e) { return e.id.toString(); }).indexOf(party.items[i].consumers[j].toString());
-                          if(index != -1 ) {
-                            if(party.items[i].consumers[j].equals(req.user._id)) {
-                              party.participants[index].balance += (req.body.cost / consumerLength);
-                            } else {
-                              party.participants[index].balance += (req.body.cost / consumerLength) - (req.body.cost / (consumerLength-1));
-                            }
-                          }
-                        }
-                        for(var j=0; j<consumerLength; j++) {
-                          if(party.items[i].consumers[j].equals(req.user._id)){
-                            // Remove the user from the consumer list
-                          party.items[i].consumers.splice(j, 1);
-                          party.save(function(err){
-                            if(err) console.log(err);
-                          });
-                          break;
-                          };
-                        }
-                      }
-                  }
+
+            // check whether user is a consumer or not
+            let is_consumer = false;
+            let fall = false;
+            for(var i=0; i<party.items.length; i++) {
+              if(party.items[i]._id.equals(req.params.item_id)) {
+                if(party.items[i].forall) {
+                  fall = true;
+                } else {
+                  party.items[i].consumers.forEach(function(consumer) {
+                    if(consumer.equals(req.user._id)) {
+                      is_consumer = true;
+                    }
+                  });
+                }
+                break;
               }
             }
-            res.json({
-            participants: party.participants,
-            consumerLength: consumerLength,
-            totalcost: party.totalcost,
-            totalpurchased: party.totalpurchased
-            });
-          }
+            // if item is not forall and consumer exist
+            // only then remove
+            if(!fall && is_consumer) {
+              let consumerLength;
+              for(var i=0;i<party.items.length;i++){
+                if(party.items[i]._id.equals(req.params.item_id)){
+                    if(party.items[i].forall.toString() === 'false'){
+                        let index;
+                        consumerLength = party.items[i].consumers.length;
+                        if(consumerLength<=1){
+                          // If only consumer removes, delete item
+                            // update balance
+                            index = party.participants.map(function(e) { return e.id.toString(); }).indexOf(req.user._id.toString());
+                            party.participants[index].balance += Number(req.body.cost);
+                            // Update totalcost because item is removed now
+                            party.totalcost -= Number(req.body.cost);
+                            // delete item
+                            party.items.splice(i,1);
+                            party.save(function(err){
+                              if(err) console.log(err);
+                            });
+                            break;
+                        } else {
+                          let currUserIndex;
+                          for(var j=0; j<consumerLength; j++) {
+                            index = party.participants.map(function(e) { return e.id.toString(); }).indexOf(party.items[i].consumers[j].toString());
+                            if(index != -1 ) {
+                              if(party.items[i].consumers[j].equals(req.user._id)) {
+                                party.participants[index].balance += (req.body.cost / consumerLength);
+                              } else {
+                                party.participants[index].balance += (req.body.cost / consumerLength) - (req.body.cost / (consumerLength-1));
+                              }
+                            }
+                          }
+                          for(var j=0; j<consumerLength; j++) {
+                            if(party.items[i].consumers[j].equals(req.user._id)){
+                              // Remove the user from the consumer list
+                            party.items[i].consumers.splice(j, 1);
+                            party.save(function(err){
+                              if(err) console.log(err);
+                            });
+                            break;
+                            };
+                          }
+                        }
+                    }
+                }
+              }
+              res.json({
+              participants: party.participants,
+              consumerLength: consumerLength,
+              totalcost: party.totalcost,
+              totalpurchased: party.totalpurchased
+              });
+            } else res.json("no-access");
+
+          } else res.json("no-access");
         }
       });
     } else res.redirect("/dashboard");
@@ -707,45 +799,71 @@ router.put("/:party_id/item/:item_id/edit",isLoggedIn,function(req,res){
           res.redirect("/dashboard");
         }else{
           if(party.status !== "past" && req.body.purchased.toString() === 'false') {
-            var itemsLength = party.items.length;
-            let item;
-            let oldPrice;
-            // Update items
-            for(var i=0;i<itemsLength;i++)
-            {
-                if(party.items[i]._id.equals(req.params.item_id))
-                {
-                  let cost = parseFloat(req.body.cost) * parseFloat(req.body.quantity);
-                  party.items[i].name = name;
-                  oldPrice = party.items[i].price;
-                  party.items[i].price = cost;
-                  party.items[i].quantity= req.body.quantity;
-                  item = party.items[i];
-                  // Update totalcost += (newPrice - oldPrice)
-                  party.totalcost += (cost - oldPrice);
-                  party.save(function(err){
-                    if(err) {
-                      console.log(err);
+
+            // only consumer or host can edit an item
+            let is_consumer = false;
+            let is_host = false;
+            for(var i=0; i<party.items.length; i++) {
+              if(party.items[i]._id.equals(req.params.item_id)) {
+                if(party.items[i].forall) {
+                  is_consumer = true;
+                } else {
+                  party.items[i].consumers.forEach(function(consumer) {
+                    if(consumer.equals(req.user._id)) {
+                      is_consumer = true;
                     }
                   });
-                  break;
                 }
-            }
-            // Change in balance would be the difference divided by the no of consumers
-            var change = (oldPrice - item.price ) / item.consumers.length;
-            var index;
-            for(var i=0; i<item.consumers.length; i++) {
-              index = party.participants.map(function(e) { return e.id; }).indexOf(item.consumers[i]);
-              if(index != -1) {
-                party.participants[index].balance += change;
+                break;
               }
             }
-            res.json({
-              item: item,
-              change: change,
-              totalcost: party.totalcost
-            });
-          }
+
+            if(party.hosts[0].equals(req.user._id)) {
+              is_host = true;
+            }
+
+            // only consumer or host can edit item
+            if(is_consumer || is_host) {
+              var itemsLength = party.items.length;
+              let item;
+              let oldPrice;
+              // Update items
+              for(var i=0;i<itemsLength;i++)
+              {
+                  if(party.items[i]._id.equals(req.params.item_id))
+                  {
+                    let cost = parseFloat(req.body.cost) * parseFloat(req.body.quantity);
+                    party.items[i].name = name;
+                    oldPrice = party.items[i].price;
+                    party.items[i].price = cost;
+                    party.items[i].quantity= req.body.quantity;
+                    item = party.items[i];
+                    // Update totalcost += (newPrice - oldPrice)
+                    party.totalcost += (cost - oldPrice);
+                    party.save(function(err){
+                      if(err) {
+                        console.log(err);
+                      }
+                    });
+                    break;
+                  }
+              }
+              // Change in balance would be the difference divided by the no of consumers
+              var change = (oldPrice - item.price ) / item.consumers.length;
+              var index;
+              for(var i=0; i<item.consumers.length; i++) {
+                index = party.participants.map(function(e) { return e.id; }).indexOf(item.consumers[i]);
+                if(index != -1) {
+                  party.participants[index].balance += change;
+                }
+              }
+              res.json({
+                item: item,
+                change: change,
+                totalcost: party.totalcost
+              });
+            } else res.json("no-access");
+          } else res.json("no-access");
         };
       });
     } else res.json("invalid-input"); 
