@@ -101,8 +101,8 @@
   </div>
 </div>
 <!-- End of overlay to join another party -->
+
 <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
-<script type="text/javascript" src="/js/indexScript.js"></script>
 <script type="text/javascript">
 $("#logout").on( "click", function(){
   window.location.href = '/users/logout';
@@ -184,5 +184,10 @@ $("#logout").on( "click", function(){
       }
   }
 });
+
+  // fetching route data
+  let all =  <%- JSON.stringify(parties) %> // store objects of all parties
+
 </script>
+<script type="text/javascript" src="/js/indexScript.js"></script>
 <%- include("partials/footer") %>

@@ -1,25 +1,20 @@
 
-let all = []; // store objects of all parties
 let past = [];      // store objects of past parties
 let upcoming = []; // store objects of upcoming parties
 let ongoing = [];   // store objects of onging parties
 
-// Fetching data from backend
-$.get('/dashboard.json', function (parties) {
-    parties.forEach(function(party){
-        party.date = new Date(party.date);
-        party.date = party.date.toDateString();
-        if(party.status === "past") {
-            past.push(party);
-        }
-        if(party.status === "upcoming") {
-            upcoming.push(party);
-        }
-        if(party.status === "ongoing") {
-            ongoing.push(party);
-        }
-    });
-    all = parties;
+all.forEach(function(party){
+    party.date = new Date(party.date);
+    party.date = party.date.toDateString();
+    if(party.status === "past") {
+        past.push(party);
+    }
+    if(party.status === "upcoming") {
+        upcoming.push(party);
+    }
+    if(party.status === "ongoing") {
+        ongoing.push(party);
+    }
 });
 
 // List generating function

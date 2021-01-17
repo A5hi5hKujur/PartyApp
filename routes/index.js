@@ -66,35 +66,6 @@ router.get('/dashboard', isLoggedIn, (req, res) => {
   });
 });
 
-// Dashboard sort-section route to handle asynchronous toggle
-router.get('/dashboard.json', isLoggedIn, (req, res) => {
-  if(req.xhr) {
-    var userParties = req.user.parties;
-    Party.find().where('_id').in(userParties).exec((err, parties) => {
-      if (err) {
-        console.log(err);
-        res.redirect('/dashboard');
-      } else {
-
-        // sort parties according to date
-        parties.sort(compareDate);
-
-        // push ongoing parties to front
-        for(var i=0; i<parties.length; i++) {
-          if(parties[i].status === "ongoing") {
-            var temp_party = parties[i];
-            parties.splice(i, 1);
-            parties.unshift(temp_party);
-          }
-        }
-        res.json(parties);
-      }
-    });
-  } else res.redirect("/dashboard");
-  
-});
-
-
 //------------------------------------------------------------------------------
 
 //----------------------Party Status Function-----------------------------------
